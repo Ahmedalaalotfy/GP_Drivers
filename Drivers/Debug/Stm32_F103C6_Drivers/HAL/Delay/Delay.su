@@ -1,0 +1,4 @@
+Delay.c:14:6:timer1_us	4	static
+Delay.c:19:6:timer1_ms	4	static
+Delay.c:24:6:Delay_us	40	static
+Delay.c:41:6:Delay_ms	40	static
