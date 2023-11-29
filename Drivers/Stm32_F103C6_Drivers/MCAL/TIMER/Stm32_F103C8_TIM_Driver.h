@@ -26,7 +26,8 @@ typedef enum
 	TIMx_No_Error,
 	TIMx_NOT_Found,
 	TIM_MODE_NOT_Found,
-	TIM_Auto_Reload_Value_Exceeded
+	TIM_Auto_Reload_Value_Exceeded,
+	TIM_Counter_Auto_Reload_Value_Exceeded
 }Error_status;
 
 //struct S_IRQ_SRC
@@ -41,6 +42,7 @@ typedef struct
 {
 	uint16_t   TIM_Mode ;             //specifies the TIM operation mode @ref TIM_Mode
 	uint16_t   Prescaler ;            //specifies the Prescaler that will be divided on
+	uint16_t   Counter_Preload_Value;
 	uint16_t   Auto_Reload_status ;   //specifies the auto reload buffer status @ref TIM_Auto_Reload_status
 	uint16_t   Auto_Reload_Value ;    //specifies the reloed value that will be count to
 	uint16_t   IRQ_Enable ;           //Specifies the source of interrupt @ref TIM_IRQ_Mode
@@ -74,6 +76,11 @@ typedef struct
 #define TIM_IRQ_MODE_UnderFlow                 2
 
 
+//@ref Counter_Peeload_Value
+//specifies the first cycle starting Value to be added to the counter register [TIMx counter (TIMx_CNT)]
+// Note: This value must not exceed The Auto_Reload_Value  @ref Counter_Peeload_Value
+// if no preload value is needed set it to Zero
+#define Counter_Preload_Value 				0
 /*
  * ===============================================
  * APIs Supported by "MCAL TIM DRIVER"

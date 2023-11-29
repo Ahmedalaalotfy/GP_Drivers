@@ -62,7 +62,7 @@ void Start_Ticker()
 	// 8Mhz
 	// 1 Count -> 0.125
 	// X Count -> 1 ms
-	// X = 800 Count
+	// X = 8000 Count
 	SysTick_Config(8000);
 }
 

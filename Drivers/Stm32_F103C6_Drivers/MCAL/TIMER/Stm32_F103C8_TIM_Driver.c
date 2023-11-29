@@ -81,22 +81,42 @@ Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
 
 	if (TIM_Config->TIM_Mode == TIM_Mode_UP_Count)
 	{
+		/*
+Bit 2 URS: Update request source
+This bit is set and cleared by software to select the UEV event sources.
+0: Any of the following events generate an update interrupt or DMA request if enabled.
+These events can be:
+– Counter overflow/underflow
+– Setting the UG bit
+– Update generation through the slave mode controller
+1: Only counter overflow/underflow generates an update interrupt or DMA request if
+enabled.
+		 */
+		SET_BIT(TIMx->CR1,2) ;
+
+		//Bit 4 DIR: Direction
 		CLR_BIT(TIMx->CR1,4) ;
 	}
 	else if (TIM_Config->TIM_Mode == TIM_Mode_DOWN_Count)
 	{
+
+		//Bit 2 URS: Update request source
+		SET_BIT(TIMx->CR1,2) ;
+
+		//Bit 4 DIR: Direction
 		SET_BIT(TIMx->CR1,4) ;
 	}
 	else if (TIM_Config->TIM_Mode == TIM_Mode_UP_DOWN_Count)
 	{
-
+		SET_BIT(TIMx->CR1,2) ;
 	}
 	else
 	{
+		CLR_BIT(TIMx->CR1,2) ;
 		return TIM_MODE_NOT_Found ;
 	}
 
-	CLR_BIT(TIMx->CR1,1) ; //Update disable
+	SET_BIT(TIMx->CR1,1) ; //Update enable Bit 1 UDIS: Update disable
 
 	TIMx->PSC = (uint16_t)(TIM_Config->Prescaler-1) ; // Prescaler set
 	TIMx->CR1 |= TIM_Config->Auto_Reload_status ;  //auto reload status
@@ -128,7 +148,9 @@ Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
 		CLR_BIT(TIMx->CR1,1);
 	}
 
-	MCAL_TIM_Count_Reset(TIMx);
+
+
+
 
 }
 
