@@ -7,7 +7,7 @@
 
 
 #include <Stm32_F103C8_TIM_Driver.h>
-#include <BIT_MATH.h>
+
 
 
 /*
@@ -44,15 +44,14 @@ TIM_Config_t Global_TIM_Config[3] ;
 /**================================================================
  * @Fn			 -MCAL_TIM_Init
  * @brief 		 -Initialize TIM according to the specified parameters in TIM_Config
- * @param [in]   -TIMx :  were x can be (1,2 depending on device used)to select the TIM Peripheral
+ * @param [in]   -TIMx :  were x can be (1,2,3,4 depending on device used)to select the Timer Peripheral
  * @param [in]   -PinConfig : pointer to TIM_Config Structure that Contains
- * 						      the configuration information for All TIM.
+ * 						      the configuration information for All TIMER.
  * @retval		 -none
- * Note			 -Support for TIM Full Duplex Master/Slave & NSS HW/SW
- * 				 -In Case of Master you have to Configure pin and drive it.
+ * Note			 -none
  */
 
-void MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
+Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
 {
 
 
@@ -129,9 +128,17 @@ void MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
 		CLR_BIT(TIMx->CR1,1);
 	}
 
-	SET_BIT(TIMx->CR1,0) ; //Timer Enable
+	MCAL_TIM_Count_Reset(TIMx);
 
 }
+
+/**================================================================
+ * @Fn			 -MCAL_TIM_DeInit
+ * @brief 		 -Reset Timer Registers and NVIC corresponding to IRQ Mask
+ * @param [in]   -TIMx :  were x can be (1,2,3,4 depending on device used)to select the Timer Peripheral
+ * @retval		 -none
+ * Note			 -none
+ */
 void MCAL_TIM_DeInit(TIM_TypeDef *TIMx)
 {
 	if (TIMx == TIM2)
@@ -151,11 +158,115 @@ void MCAL_TIM_DeInit(TIM_TypeDef *TIMx)
 	}
 }
 
+
+/**================================================================
+ * @Fn			 -MCAL_TIM_GPIO_Set_Pins
+ * @brief 		 -Reset Timer Registers and NVIC corresponding to IRQ Mask
+ * @param [in]   -TIMx :  were x can be (1,2,3,4 depending on device used)to select the Timer Peripheral
+ * @retval		 -none
+ * Note			 -none
+ */
 void MCAL_TIM_GPIO_Set_Pins(TIM_TypeDef *TIMx)
 {
 
 }
 
+
+
+
+/**================================================================
+ * @Fn			 -MCAL_TIM_Start
+ * @brief 		 -Start Timer counting
+ * @param [in]   -TIMx :  were x can be (1,2,3,4 depending on device used)to select the Timer Peripheral
+ * @retval		 -none
+ * Note			 -none
+ */
+Error_status MCAL_TIM_Start(TIM_TypeDef *TIMx)
+{
+
+/*
+Bit 0 CEN: Counter enable
+0: Counter disabled
+1: Counter enabled
+Note: External clock, gated mode and encoder mode can work only if the CEN bit has been
+previously set by software. However trigger mode can set the CEN bit automatically by
+hardware.
+CEN is cleared automatically in one-pulse mode, when an update event occurs.
+*/
+
+	if(TIMx != NULL)
+	{
+		SET_BIT(TIMx->CR1,0) ; //Timer Enable
+	}
+	else
+	{
+		return TIMx_NOT_Found;
+	}
+
+
+}
+
+
+/**================================================================
+ * @Fn			 -MCAL_TIM_Stop
+ * @brief 		 -Stop Timer counting
+ * @param [in]   -TIMx :  were x can be (1,2,3,4 depending on device used)to select the Timer Peripheral
+ * @retval		 -none
+ * Note			 -none
+ */
+Error_status MCAL_TIM_Stop(TIM_TypeDef *TIMx)
+{
+	/*
+	Bit 0 CEN: Counter enable
+	0: Counter disabled
+	1: Counter enabled
+	Note: External clock, gated mode and encoder mode can work only if the CEN bit has been
+	previously set by software. However trigger mode can set the CEN bit automatically by
+	hardware.
+	CEN is cleared automatically in one-pulse mode, when an update event occurs.
+	*/
+
+		if(TIMx != NULL)
+		{
+			CLR_BIT(TIMx->CR1,0) ; //Timer Enable
+		}
+		else
+		{
+			return TIMx_NOT_Found;
+		}
+
+
+
+}
+
+/**================================================================
+ * @Fn			 -MCAL_TIM_Count_Reset
+ * @brief 		 -Reset Timer counter register to zero
+ * @param [in]   -TIMx :  were x can be (1,2,3,4 depending on device used)to select the Timer Peripheral
+ * @retval		 -none
+ * Note			 -none
+ */
+Error_status MCAL_TIM_Count_Reset(TIM_TypeDef *TIMx)
+{
+
+
+	if(TIMx != NULL)
+	{
+		TIMx->CNT = 0x0000;
+		return TIMx_No_Error;
+	}
+
+
+	return TIMx_NOT_Found;
+
+}
+
+
+/*
+ * =====================================================================================
+ * 							IRQHandler Functions
+ * =====================================================================================
+ */
 
 void TIM2_IRQHandler()
 {
@@ -174,4 +285,6 @@ void TIM4_IRQHandler()
 	TIM4->SR = 0x00 ;
 	Global_TIM_Config[2].P_IRQ_CallBack();
 }
+
+
 

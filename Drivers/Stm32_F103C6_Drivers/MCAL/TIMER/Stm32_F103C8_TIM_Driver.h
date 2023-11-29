@@ -14,7 +14,7 @@
 
 #include "stm32f103x6.h"
 #include "Stm32_F103C6_GPIO_Driver.h"
-
+#include <BIT_MATH.h>
 
 //-----------------------------
 //User type definitions (structures)
@@ -23,6 +23,7 @@
 
 typedef enum
 {
+	TIMx_No_Error,
 	TIMx_NOT_Found,
 	TIM_MODE_NOT_Found,
 	TIM_Auto_Reload_Value_Exceeded
@@ -73,18 +74,19 @@ typedef struct
 #define TIM_IRQ_MODE_UnderFlow                 2
 
 
-
-
-
 /*
  * ===============================================
  * APIs Supported by "MCAL TIM DRIVER"
  * ===============================================
  */
-void MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config);
+Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config);
 void MCAL_TIM_DeInit(TIM_TypeDef *TIMx);
 
 void MCAL_TIM_GPIO_Set_Pins(TIM_TypeDef *TIMx);
+
+Error_status MCAL_TIM_Start(TIM_TypeDef *TIMx);
+Error_status MCAL_TIM_Stop(TIM_TypeDef *TIMx);
+Error_status MCAL_TIM_Count_Reset(TIM_TypeDef *TIMx);
 
 
 

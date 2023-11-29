@@ -59,6 +59,7 @@ void clock_init(void)
 int main(void)
 {
 	clock_init();
+	HAL_Delay_Init();
 
 	GPIO_PinConfig_t PinConfig ;
 	//toggle--> PA1
@@ -71,8 +72,9 @@ int main(void)
 	while (1)
 	{
 		//MCAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1) ;
-		__asm("NOP");
+
 		Delay_us(10);
+
 
 	}
 
