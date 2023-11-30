@@ -26,6 +26,7 @@ Stm32_F103C6_Drivers/HAL/Delay \
 Stm32_F103C6_Drivers/HAL/EEPROM \
 Stm32_F103C6_Drivers/HAL/KPD_Driver \
 Stm32_F103C6_Drivers/HAL/LCD_Driver \
+Stm32_F103C6_Drivers/MCAL/ADC \
 Stm32_F103C6_Drivers/MCAL/EXTI \
 Stm32_F103C6_Drivers/MCAL/GPIO \
 Stm32_F103C6_Drivers/MCAL/I2C \

@@ -94,7 +94,9 @@
 #define TIM3_BASE                             0x40000400UL
 #define TIM4_BASE                             0x40000800UL
 
-
+//ADC
+#define	ADC1_BASE 							  0x40012400UL
+#define	ADC2_BASE 							  0x40012800UL
 
 
 
@@ -247,6 +249,32 @@ typedef struct
 }TIM_TypeDef;
 
 
+//-*-*-*-*-*-*-*-*-*-*-*-
+//Peripheral register: ADC
+//-*-*-*-*-*-*-*-*-*-*-*
+typedef struct
+{
+	volatile uint32_t SR;
+	volatile uint32_t CR1;
+	volatile uint32_t CR2;
+	volatile uint32_t SMPR1;
+	volatile uint32_t SMPR2;
+	volatile uint32_t JOFR1;
+	volatile uint32_t JOFR2;
+	volatile uint32_t JOFR3;
+	volatile uint32_t JOFR4;
+	volatile uint32_t HTR;
+	volatile uint32_t LTR;
+	volatile uint32_t SQR1;
+	volatile uint32_t SQR2;
+	volatile uint32_t SQR3;
+	volatile uint32_t JSQR;
+	volatile uint32_t JDR1;
+	volatile uint32_t JDR2;
+	volatile uint32_t JDR3;
+	volatile uint32_t JDR4;
+	volatile uint32_t DR;
+}ADC_TypeDef;
 
 //-*-*-*-*-*-*-*-*-*-*-*-
 //Peripheral Instants:
@@ -278,6 +306,8 @@ typedef struct
 #define TIM3                             ((TIM_TypeDef*)TIM3_BASE)
 #define TIM4                             ((TIM_TypeDef*)TIM4_BASE)
 
+#define ADC1                    		 ((ADC_TypeDef*)ADC1_BASE)
+#define ADC2                   			 ((ADC_TypeDef*)ADC2_BASE)
 
 //-*-*-*-*-*-*-*-*-*-*-*-
 //clock enable Macros:
@@ -330,6 +360,13 @@ typedef struct
 #define RCC_TIM4_CLK_Reset()      (RCC->APB1RSTR |= 1<<2)
 
 
+//clock Enable ADC
+#define RCC_ADC1_CLK_EN  	(RCC->APB2ENR |=(1<<9))
+#define RCC_ADC2_CLK_EN     (RCC->APB2ENR |=(1<<10))
+
+//clock Reset ADC
+#define RCC_ADC1_CLK_DIS  (RCC->APB2RSTR |=(1<<9))
+#define RCC_ADC2_CLK_DIS  (RCC->APB2RSTR |=(1<<10))
 
 
 //-*-*-*-*-*-*-*-*-*-*-*-
@@ -376,7 +413,8 @@ typedef struct
 #define TIM3_IRQ 		   29
 #define TIM4_IRQ 		   30
 
-
+//ADC
+#define ADC_IRQ               18
 
 
 //-*-*-*-*-*-*-*-*-*-*-*-
@@ -444,6 +482,11 @@ typedef struct
 #define NVIC_IQR29_TIM3_Disable()		    	(NVIC_ICER0 |= (1<<TIM3_IRQ)) // NVIC_ICER0
 #define NVIC_IQR30_TIM4_Disable()			    (NVIC_ICER0 |= (1<<TIM4_IRQ)) // NVIC_ICER0
 
+
+//ADC
+#define NVIC_IRQ18_ADC_EN					    (NVIC_ISER0 |= (1<<(ADC_IRQ)))
+
+#define NVIC_IRQ18_ADC_DIS					    (NVIC_ICER0 |= (1<<(ADC_IRQ)))
 
 /********************************************************/
 /********************************************************/

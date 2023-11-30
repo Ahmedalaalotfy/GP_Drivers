@@ -37,15 +37,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  16 .debug_ranges 000003a8  00000000  00000000  0001d408  2**3
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_macro  000050a8  00000000  00000000  0001d7b0  2**0
+ 17 .debug_macro  000050f3  00000000  00000000  0001d7b0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_line   00004bb7  00000000  00000000  00022858  2**0
+ 18 .debug_line   00004bbb  00000000  00000000  000228a3  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .debug_str    00013db0  00000000  00000000  0002740f  2**0
+ 19 .debug_str    00013ef8  00000000  00000000  0002745e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 20 .comment      0000007b  00000000  00000000  0003b1bf  2**0
+ 20 .comment      0000007b  00000000  00000000  0003b356  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00000f04  00000000  00000000  0003b23c  2**2
+ 21 .debug_frame  00000f04  00000000  00000000  0003b3d4  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -202,11 +202,21 @@ void SysTick_Handler()
  80001f0:	200000b0 	.word	0x200000b0
 
 080001f4 <FIFO_enqueue>:
+
+}
+
+/* *********************************** */
+
+Buffer_status FIFO_enqueue (FIFO_Buf_t* fifo,element_type item){
  80001f4:	b480      	push	{r7}
  80001f6:	b083      	sub	sp, #12
  80001f8:	af00      	add	r7, sp, #0
  80001fa:	6078      	str	r0, [r7, #4]
  80001fc:	6039      	str	r1, [r7, #0]
+
+	/* fifo null*/
+
+	if (!fifo->base || !fifo->length)
  80001fe:	687b      	ldr	r3, [r7, #4]
  8000200:	68db      	ldr	r3, [r3, #12]
  8000202:	2b00      	cmp	r3, #0
@@ -215,8 +225,13 @@ void SysTick_Handler()
  8000208:	691b      	ldr	r3, [r3, #16]
  800020a:	2b00      	cmp	r3, #0
  800020c:	d101      	bne.n	8000212 <FIFO_enqueue+0x1e>
+		return FIFO_NULL;
  800020e:	2303      	movs	r3, #3
  8000210:	e02d      	b.n	800026e <FIFO_enqueue+0x7a>
+	/*fifo is full*/
+
+	/* fifo full */
+	if ((fifo->head == fifo->tail) && (fifo->counter == fifo->length))
  8000212:	687b      	ldr	r3, [r7, #4]
  8000214:	685a      	ldr	r2, [r3, #4]
  8000216:	687b      	ldr	r3, [r7, #4]
@@ -229,17 +244,26 @@ void SysTick_Handler()
  8000224:	691b      	ldr	r3, [r3, #16]
  8000226:	429a      	cmp	r2, r3
  8000228:	d101      	bne.n	800022e <FIFO_enqueue+0x3a>
+		return FIFO_FULL;
  800022a:	2301      	movs	r3, #1
  800022c:	e01f      	b.n	800026e <FIFO_enqueue+0x7a>
+
+	*(fifo->tail)=item;
  800022e:	687b      	ldr	r3, [r7, #4]
  8000230:	689b      	ldr	r3, [r3, #8]
  8000232:	683a      	ldr	r2, [r7, #0]
  8000234:	601a      	str	r2, [r3, #0]
+	fifo->counter++;
  8000236:	687b      	ldr	r3, [r7, #4]
  8000238:	681b      	ldr	r3, [r3, #0]
  800023a:	1c5a      	adds	r2, r3, #1
  800023c:	687b      	ldr	r3, [r7, #4]
  800023e:	601a      	str	r2, [r3, #0]
+
+	/*for circular fifo again */
+
+	/* circular enqueue */
+	if (fifo->tail == (((unsigned int)fifo->base + (4*fifo->length )) - 4 ))
  8000240:	687b      	ldr	r3, [r7, #4]
  8000242:	689b      	ldr	r3, [r3, #8]
  8000244:	687a      	ldr	r2, [r7, #4]
@@ -252,17 +276,25 @@ void SysTick_Handler()
  8000252:	3a04      	subs	r2, #4
  8000254:	4293      	cmp	r3, r2
  8000256:	d104      	bne.n	8000262 <FIFO_enqueue+0x6e>
+		fifo->tail = fifo->base;
  8000258:	687b      	ldr	r3, [r7, #4]
  800025a:	68da      	ldr	r2, [r3, #12]
  800025c:	687b      	ldr	r3, [r7, #4]
  800025e:	609a      	str	r2, [r3, #8]
  8000260:	e004      	b.n	800026c <FIFO_enqueue+0x78>
+	else
+		fifo->tail++;
  8000262:	687b      	ldr	r3, [r7, #4]
  8000264:	689b      	ldr	r3, [r3, #8]
  8000266:	1d1a      	adds	r2, r3, #4
  8000268:	687b      	ldr	r3, [r7, #4]
  800026a:	609a      	str	r2, [r3, #8]
+
+	return FIFO_NO_ERROR;
  800026c:	2300      	movs	r3, #0
+
+
+}
  800026e:	4618      	mov	r0, r3
  8000270:	370c      	adds	r7, #12
  8000272:	46bd      	mov	sp, r7
@@ -270,11 +302,17 @@ void SysTick_Handler()
  8000276:	4770      	bx	lr
 
 08000278 <FIFO_dequeue>:
+
+/* *********************************** */
+
+Buffer_status FIFO_dequeue (FIFO_Buf_t* fifo, element_type* item){
  8000278:	b480      	push	{r7}
  800027a:	b083      	sub	sp, #12
  800027c:	af00      	add	r7, sp, #0
  800027e:	6078      	str	r0, [r7, #4]
  8000280:	6039      	str	r1, [r7, #0]
+	/* check fifo valid */
+	if (!fifo->base || !fifo->length)
  8000282:	687b      	ldr	r3, [r7, #4]
  8000284:	68db      	ldr	r3, [r3, #12]
  8000286:	2b00      	cmp	r3, #0
@@ -283,26 +321,39 @@ void SysTick_Handler()
  800028c:	691b      	ldr	r3, [r3, #16]
  800028e:	2b00      	cmp	r3, #0
  8000290:	d101      	bne.n	8000296 <FIFO_dequeue+0x1e>
+		return FIFO_NULL;
  8000292:	2303      	movs	r3, #3
  8000294:	e028      	b.n	80002e8 <FIFO_dequeue+0x70>
+
+	/* fifo empty */
+	if (fifo->head == fifo->tail)
  8000296:	687b      	ldr	r3, [r7, #4]
  8000298:	685a      	ldr	r2, [r3, #4]
  800029a:	687b      	ldr	r3, [r7, #4]
  800029c:	689b      	ldr	r3, [r3, #8]
  800029e:	429a      	cmp	r2, r3
  80002a0:	d101      	bne.n	80002a6 <FIFO_dequeue+0x2e>
+		return FIFO_EMPTY;
  80002a2:	2302      	movs	r3, #2
  80002a4:	e020      	b.n	80002e8 <FIFO_dequeue+0x70>
+
+
+
+	*item = *(fifo->head);
  80002a6:	687b      	ldr	r3, [r7, #4]
  80002a8:	685b      	ldr	r3, [r3, #4]
  80002aa:	681a      	ldr	r2, [r3, #0]
  80002ac:	683b      	ldr	r3, [r7, #0]
  80002ae:	601a      	str	r2, [r3, #0]
+	fifo->counter--;
  80002b0:	687b      	ldr	r3, [r7, #4]
  80002b2:	681b      	ldr	r3, [r3, #0]
  80002b4:	1e5a      	subs	r2, r3, #1
  80002b6:	687b      	ldr	r3, [r7, #4]
  80002b8:	601a      	str	r2, [r3, #0]
+
+	/* circular dequeue */
+	if (fifo->head == (((unsigned int)fifo->base + (4*fifo->length )) - 4 ))
  80002ba:	687b      	ldr	r3, [r7, #4]
  80002bc:	685b      	ldr	r3, [r3, #4]
  80002be:	687a      	ldr	r2, [r7, #4]
@@ -315,17 +366,23 @@ void SysTick_Handler()
  80002cc:	3a04      	subs	r2, #4
  80002ce:	4293      	cmp	r3, r2
  80002d0:	d104      	bne.n	80002dc <FIFO_dequeue+0x64>
+		fifo->head = fifo->base;
  80002d2:	687b      	ldr	r3, [r7, #4]
  80002d4:	68da      	ldr	r2, [r3, #12]
  80002d6:	687b      	ldr	r3, [r7, #4]
  80002d8:	605a      	str	r2, [r3, #4]
  80002da:	e004      	b.n	80002e6 <FIFO_dequeue+0x6e>
+	else
+		fifo->head++;
  80002dc:	687b      	ldr	r3, [r7, #4]
  80002de:	685b      	ldr	r3, [r3, #4]
  80002e0:	1d1a      	adds	r2, r3, #4
  80002e2:	687b      	ldr	r3, [r7, #4]
  80002e4:	605a      	str	r2, [r3, #4]
+
+	return FIFO_NO_ERROR;
  80002e6:	2300      	movs	r3, #0
+}
  80002e8:	4618      	mov	r0, r3
  80002ea:	370c      	adds	r7, #12
  80002ec:	46bd      	mov	sp, r7
@@ -334,205 +391,276 @@ void SysTick_Handler()
 	...
 
 080002f4 <PendSV_Handler>:
+{
+	//====================================
+	//Save the Context of the Current Task
+	//====================================
+	//Get the Current Task "Current PSP from CPU register" as CPU Push XPSR,.....,R0
+	OS_GET_PSP(OS_Control.CurrentTask->Current_PSP);
  80002f4:	4b6f      	ldr	r3, [pc, #444]	; (80004b4 <PendSV_Handler+0x1c0>)
  80002f6:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  80002fa:	f3ef 8009 	mrs	r0, PSP
  80002fe:	4602      	mov	r2, r0
  8000300:	619a      	str	r2, [r3, #24]
+
+	//using this Current_PSP (Pointer) tp store (R4 to R11)
+	OS_Control.CurrentTask->Current_PSP-- ;
  8000302:	4b6c      	ldr	r3, [pc, #432]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000304:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000308:	699a      	ldr	r2, [r3, #24]
  800030a:	3a04      	subs	r2, #4
  800030c:	619a      	str	r2, [r3, #24]
+	__asm("mov %0,r4" : "=r" (*(OS_Control.CurrentTask->Current_PSP)));
  800030e:	4b69      	ldr	r3, [pc, #420]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000310:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000314:	699b      	ldr	r3, [r3, #24]
  8000316:	4622      	mov	r2, r4
  8000318:	601a      	str	r2, [r3, #0]
+	OS_Control.CurrentTask->Current_PSP-- ;
  800031a:	4b66      	ldr	r3, [pc, #408]	; (80004b4 <PendSV_Handler+0x1c0>)
  800031c:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000320:	699a      	ldr	r2, [r3, #24]
  8000322:	3a04      	subs	r2, #4
  8000324:	619a      	str	r2, [r3, #24]
+	__asm("mov %0,r5" : "=r" (*(OS_Control.CurrentTask->Current_PSP)));
  8000326:	4b63      	ldr	r3, [pc, #396]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000328:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  800032c:	699b      	ldr	r3, [r3, #24]
  800032e:	462a      	mov	r2, r5
  8000330:	601a      	str	r2, [r3, #0]
+	OS_Control.CurrentTask->Current_PSP-- ;
  8000332:	4b60      	ldr	r3, [pc, #384]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000334:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000338:	699a      	ldr	r2, [r3, #24]
  800033a:	3a04      	subs	r2, #4
  800033c:	619a      	str	r2, [r3, #24]
+	__asm("mov %0,r6" : "=r" (*(OS_Control.CurrentTask->Current_PSP)));
  800033e:	4b5d      	ldr	r3, [pc, #372]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000340:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000344:	699b      	ldr	r3, [r3, #24]
  8000346:	4632      	mov	r2, r6
  8000348:	601a      	str	r2, [r3, #0]
+	OS_Control.CurrentTask->Current_PSP-- ;
  800034a:	4b5a      	ldr	r3, [pc, #360]	; (80004b4 <PendSV_Handler+0x1c0>)
  800034c:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000350:	699a      	ldr	r2, [r3, #24]
  8000352:	3a04      	subs	r2, #4
  8000354:	619a      	str	r2, [r3, #24]
+	__asm("mov %0,r7" : "=r" (*(OS_Control.CurrentTask->Current_PSP)));
  8000356:	4b57      	ldr	r3, [pc, #348]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000358:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  800035c:	699b      	ldr	r3, [r3, #24]
  800035e:	463a      	mov	r2, r7
  8000360:	601a      	str	r2, [r3, #0]
+	OS_Control.CurrentTask->Current_PSP-- ;
  8000362:	4b54      	ldr	r3, [pc, #336]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000364:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000368:	699a      	ldr	r2, [r3, #24]
  800036a:	3a04      	subs	r2, #4
  800036c:	619a      	str	r2, [r3, #24]
+	__asm("mov %0,r8" : "=r" (*(OS_Control.CurrentTask->Current_PSP)));
  800036e:	4b51      	ldr	r3, [pc, #324]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000370:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000374:	699b      	ldr	r3, [r3, #24]
  8000376:	4642      	mov	r2, r8
  8000378:	601a      	str	r2, [r3, #0]
+	OS_Control.CurrentTask->Current_PSP-- ;
  800037a:	4b4e      	ldr	r3, [pc, #312]	; (80004b4 <PendSV_Handler+0x1c0>)
  800037c:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000380:	699a      	ldr	r2, [r3, #24]
  8000382:	3a04      	subs	r2, #4
  8000384:	619a      	str	r2, [r3, #24]
+	__asm("mov %0,r9" : "=r" (*(OS_Control.CurrentTask->Current_PSP)));
  8000386:	4b4b      	ldr	r3, [pc, #300]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000388:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  800038c:	699b      	ldr	r3, [r3, #24]
  800038e:	464a      	mov	r2, r9
  8000390:	601a      	str	r2, [r3, #0]
+	OS_Control.CurrentTask->Current_PSP-- ;
  8000392:	4b48      	ldr	r3, [pc, #288]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000394:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000398:	699a      	ldr	r2, [r3, #24]
  800039a:	3a04      	subs	r2, #4
  800039c:	619a      	str	r2, [r3, #24]
+	__asm("mov %0,r10" : "=r" (*(OS_Control.CurrentTask->Current_PSP)));
  800039e:	4b45      	ldr	r3, [pc, #276]	; (80004b4 <PendSV_Handler+0x1c0>)
  80003a0:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  80003a4:	699b      	ldr	r3, [r3, #24]
  80003a6:	4652      	mov	r2, sl
  80003a8:	601a      	str	r2, [r3, #0]
+	OS_Control.CurrentTask->Current_PSP-- ;
  80003aa:	4b42      	ldr	r3, [pc, #264]	; (80004b4 <PendSV_Handler+0x1c0>)
  80003ac:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  80003b0:	699a      	ldr	r2, [r3, #24]
  80003b2:	3a04      	subs	r2, #4
  80003b4:	619a      	str	r2, [r3, #24]
+	__asm("mov %0,r11" : "=r" (*(OS_Control.CurrentTask->Current_PSP)));
  80003b6:	4b3f      	ldr	r3, [pc, #252]	; (80004b4 <PendSV_Handler+0x1c0>)
  80003b8:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  80003bc:	699b      	ldr	r3, [r3, #24]
  80003be:	465a      	mov	r2, fp
  80003c0:	601a      	str	r2, [r3, #0]
+
+
+	//====================================
+	//Restore the Context of the Next Task
+	//====================================
+	if(OS_Control.NextTask != NULL)
  80003c2:	4b3c      	ldr	r3, [pc, #240]	; (80004b4 <PendSV_Handler+0x1c0>)
  80003c4:	f8d3 31a4 	ldr.w	r3, [r3, #420]	; 0x1a4
  80003c8:	2b00      	cmp	r3, #0
  80003ca:	d009      	beq.n	80003e0 <PendSV_Handler+0xec>
+	{
+		OS_Control.CurrentTask = OS_Control.NextTask ;
  80003cc:	4b39      	ldr	r3, [pc, #228]	; (80004b4 <PendSV_Handler+0x1c0>)
  80003ce:	f8d3 31a4 	ldr.w	r3, [r3, #420]	; 0x1a4
  80003d2:	4a38      	ldr	r2, [pc, #224]	; (80004b4 <PendSV_Handler+0x1c0>)
  80003d4:	f8c2 31a0 	str.w	r3, [r2, #416]	; 0x1a0
+		OS_Control.NextTask = NULL ;
  80003d8:	4b36      	ldr	r3, [pc, #216]	; (80004b4 <PendSV_Handler+0x1c0>)
  80003da:	2200      	movs	r2, #0
  80003dc:	f8c3 21a4 	str.w	r2, [r3, #420]	; 0x1a4
+	}
+	__asm("mov r11,%0" : : "r" (*(OS_Control.CurrentTask->Current_PSP)));
  80003e0:	4b34      	ldr	r3, [pc, #208]	; (80004b4 <PendSV_Handler+0x1c0>)
  80003e2:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  80003e6:	699b      	ldr	r3, [r3, #24]
  80003e8:	681b      	ldr	r3, [r3, #0]
  80003ea:	469b      	mov	fp, r3
+	OS_Control.CurrentTask->Current_PSP++ ;
  80003ec:	4b31      	ldr	r3, [pc, #196]	; (80004b4 <PendSV_Handler+0x1c0>)
  80003ee:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  80003f2:	699a      	ldr	r2, [r3, #24]
  80003f4:	3204      	adds	r2, #4
  80003f6:	619a      	str	r2, [r3, #24]
+	__asm("mov r10,%0" : : "r" (*(OS_Control.CurrentTask->Current_PSP)));
  80003f8:	4b2e      	ldr	r3, [pc, #184]	; (80004b4 <PendSV_Handler+0x1c0>)
  80003fa:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  80003fe:	699b      	ldr	r3, [r3, #24]
  8000400:	681b      	ldr	r3, [r3, #0]
  8000402:	469a      	mov	sl, r3
+	OS_Control.CurrentTask->Current_PSP++ ;
  8000404:	4b2b      	ldr	r3, [pc, #172]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000406:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  800040a:	699a      	ldr	r2, [r3, #24]
  800040c:	3204      	adds	r2, #4
  800040e:	619a      	str	r2, [r3, #24]
+	__asm("mov r9,%0" : : "r" (*(OS_Control.CurrentTask->Current_PSP)));
  8000410:	4b28      	ldr	r3, [pc, #160]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000412:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000416:	699b      	ldr	r3, [r3, #24]
  8000418:	681b      	ldr	r3, [r3, #0]
  800041a:	4699      	mov	r9, r3
+	OS_Control.CurrentTask->Current_PSP++ ;
  800041c:	4b25      	ldr	r3, [pc, #148]	; (80004b4 <PendSV_Handler+0x1c0>)
  800041e:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000422:	699a      	ldr	r2, [r3, #24]
  8000424:	3204      	adds	r2, #4
  8000426:	619a      	str	r2, [r3, #24]
+	__asm("mov r8,%0" : : "r" (*(OS_Control.CurrentTask->Current_PSP)));
  8000428:	4b22      	ldr	r3, [pc, #136]	; (80004b4 <PendSV_Handler+0x1c0>)
  800042a:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  800042e:	699b      	ldr	r3, [r3, #24]
  8000430:	681b      	ldr	r3, [r3, #0]
  8000432:	4698      	mov	r8, r3
+	OS_Control.CurrentTask->Current_PSP++ ;
  8000434:	4b1f      	ldr	r3, [pc, #124]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000436:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  800043a:	699a      	ldr	r2, [r3, #24]
  800043c:	3204      	adds	r2, #4
  800043e:	619a      	str	r2, [r3, #24]
+	__asm("mov r7,%0" : : "r" (*(OS_Control.CurrentTask->Current_PSP)));
  8000440:	4b1c      	ldr	r3, [pc, #112]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000442:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000446:	699b      	ldr	r3, [r3, #24]
  8000448:	681b      	ldr	r3, [r3, #0]
  800044a:	461f      	mov	r7, r3
+	OS_Control.CurrentTask->Current_PSP++ ;
  800044c:	4b19      	ldr	r3, [pc, #100]	; (80004b4 <PendSV_Handler+0x1c0>)
  800044e:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000452:	699a      	ldr	r2, [r3, #24]
  8000454:	3204      	adds	r2, #4
  8000456:	619a      	str	r2, [r3, #24]
+	__asm("mov r6,%0" : : "r" (*(OS_Control.CurrentTask->Current_PSP)));
  8000458:	4b16      	ldr	r3, [pc, #88]	; (80004b4 <PendSV_Handler+0x1c0>)
  800045a:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  800045e:	699b      	ldr	r3, [r3, #24]
  8000460:	681b      	ldr	r3, [r3, #0]
  8000462:	461e      	mov	r6, r3
+	OS_Control.CurrentTask->Current_PSP++ ;
  8000464:	4b13      	ldr	r3, [pc, #76]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000466:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  800046a:	699a      	ldr	r2, [r3, #24]
  800046c:	3204      	adds	r2, #4
  800046e:	619a      	str	r2, [r3, #24]
+	__asm("mov r5,%0" : : "r" (*(OS_Control.CurrentTask->Current_PSP)));
  8000470:	4b10      	ldr	r3, [pc, #64]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000472:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000476:	699b      	ldr	r3, [r3, #24]
  8000478:	681b      	ldr	r3, [r3, #0]
  800047a:	461d      	mov	r5, r3
+	OS_Control.CurrentTask->Current_PSP++ ;
  800047c:	4b0d      	ldr	r3, [pc, #52]	; (80004b4 <PendSV_Handler+0x1c0>)
  800047e:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000482:	699a      	ldr	r2, [r3, #24]
  8000484:	3204      	adds	r2, #4
  8000486:	619a      	str	r2, [r3, #24]
+	__asm("mov r4,%0" : : "r" (*(OS_Control.CurrentTask->Current_PSP)));
  8000488:	4b0a      	ldr	r3, [pc, #40]	; (80004b4 <PendSV_Handler+0x1c0>)
  800048a:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  800048e:	699b      	ldr	r3, [r3, #24]
  8000490:	681b      	ldr	r3, [r3, #0]
  8000492:	461c      	mov	r4, r3
+	OS_Control.CurrentTask->Current_PSP++ ;
  8000494:	4b07      	ldr	r3, [pc, #28]	; (80004b4 <PendSV_Handler+0x1c0>)
  8000496:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  800049a:	699a      	ldr	r2, [r3, #24]
  800049c:	3204      	adds	r2, #4
  800049e:	619a      	str	r2, [r3, #24]
+
+	//Update PSP and exit
+	OS_SET_PSP(OS_Control.CurrentTask->Current_PSP);
  80004a0:	4b04      	ldr	r3, [pc, #16]	; (80004b4 <PendSV_Handler+0x1c0>)
  80004a2:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  80004a6:	699b      	ldr	r3, [r3, #24]
  80004a8:	4618      	mov	r0, r3
  80004aa:	f380 8809 	msr	PSP, r0
+	__asm("BX LR");
  80004ae:	4770      	bx	lr
+
+
+}
  80004b0:	bf00      	nop
  80004b2:	bf00      	nop
  80004b4:	200000b4 	.word	0x200000b4
 
 080004b8 <bubbleSort>:
+	return error ;
+}
+
+//Handler mode
+void bubbleSort()
+{
  80004b8:	b480      	push	{r7}
  80004ba:	b085      	sub	sp, #20
  80004bc:	af00      	add	r7, sp, #0
+	unsigned int i, j , n;
+	Task_ref* temp ;
+	n = OS_Control.NoOfActiveTasks ;
  80004be:	4b21      	ldr	r3, [pc, #132]	; (8000544 <bubbleSort+0x8c>)
  80004c0:	f8d3 319c 	ldr.w	r3, [r3, #412]	; 0x19c
  80004c4:	607b      	str	r3, [r7, #4]
+	for (i = 0; i < n - 1; i++)
  80004c6:	2300      	movs	r3, #0
  80004c8:	60fb      	str	r3, [r7, #12]
  80004ca:	e030      	b.n	800052e <bubbleSort+0x76>
+
+		// Last i elements are already in place
+		for (j = 0; j < n - i - 1; j++)
  80004cc:	2300      	movs	r3, #0
  80004ce:	60bb      	str	r3, [r7, #8]
  80004d0:	e023      	b.n	800051a <bubbleSort+0x62>
+			if (OS_Control.OSTasks[j]->priority > OS_Control.OSTasks[j + 1]->priority)
  80004d2:	4a1c      	ldr	r2, [pc, #112]	; (8000544 <bubbleSort+0x8c>)
  80004d4:	68bb      	ldr	r3, [r7, #8]
  80004d6:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
@@ -544,10 +672,13 @@ void SysTick_Handler()
  80004e6:	791b      	ldrb	r3, [r3, #4]
  80004e8:	429a      	cmp	r2, r3
  80004ea:	d913      	bls.n	8000514 <bubbleSort+0x5c>
+			{
+				temp = OS_Control.OSTasks[j] ;
  80004ec:	4a15      	ldr	r2, [pc, #84]	; (8000544 <bubbleSort+0x8c>)
  80004ee:	68bb      	ldr	r3, [r7, #8]
  80004f0:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
  80004f4:	603b      	str	r3, [r7, #0]
+				OS_Control.OSTasks[j] = OS_Control.OSTasks[j + 1 ] ;
  80004f6:	68bb      	ldr	r3, [r7, #8]
  80004f8:	3301      	adds	r3, #1
  80004fa:	4a12      	ldr	r2, [pc, #72]	; (8000544 <bubbleSort+0x8c>)
@@ -555,11 +686,13 @@ void SysTick_Handler()
  8000500:	4910      	ldr	r1, [pc, #64]	; (8000544 <bubbleSort+0x8c>)
  8000502:	68bb      	ldr	r3, [r7, #8]
  8000504:	f841 2023 	str.w	r2, [r1, r3, lsl #2]
+				OS_Control.OSTasks[j + 1] = temp ;
  8000508:	68bb      	ldr	r3, [r7, #8]
  800050a:	3301      	adds	r3, #1
  800050c:	490d      	ldr	r1, [pc, #52]	; (8000544 <bubbleSort+0x8c>)
  800050e:	683a      	ldr	r2, [r7, #0]
  8000510:	f841 2023 	str.w	r2, [r1, r3, lsl #2]
+		for (j = 0; j < n - i - 1; j++)
  8000514:	68bb      	ldr	r3, [r7, #8]
  8000516:	3301      	adds	r3, #1
  8000518:	60bb      	str	r3, [r7, #8]
@@ -570,6 +703,7 @@ void SysTick_Handler()
  8000522:	68ba      	ldr	r2, [r7, #8]
  8000524:	429a      	cmp	r2, r3
  8000526:	d3d4      	bcc.n	80004d2 <bubbleSort+0x1a>
+	for (i = 0; i < n - 1; i++)
  8000528:	68fb      	ldr	r3, [r7, #12]
  800052a:	3301      	adds	r3, #1
  800052c:	60fb      	str	r3, [r7, #12]
@@ -578,6 +712,9 @@ void SysTick_Handler()
  8000532:	68fa      	ldr	r2, [r7, #12]
  8000534:	429a      	cmp	r2, r3
  8000536:	d3c9      	bcc.n	80004cc <bubbleSort+0x14>
+			}
+
+}
  8000538:	bf00      	nop
  800053a:	3714      	adds	r7, #20
  800053c:	46bd      	mov	sp, r7
@@ -587,14 +724,28 @@ void SysTick_Handler()
  8000544:	200000b4 	.word	0x200000b4
 
 08000548 <MYRTOS_Update_Schadule_Tables>:
+
+//Handler mode
+void MYRTOS_Update_Schadule_Tables()
+{
  8000548:	b580      	push	{r7, lr}
  800054a:	b084      	sub	sp, #16
  800054c:	af00      	add	r7, sp, #0
+	Task_ref* temp = NULL ;
  800054e:	2300      	movs	r3, #0
  8000550:	603b      	str	r3, [r7, #0]
+	Task_ref* Ptask ;
+	Task_ref* PnextTask ;
+	int i = 0 ;
  8000552:	2300      	movs	r3, #0
  8000554:	60fb      	str	r3, [r7, #12]
+
+	//1- bubble sort SchTable OS_Control-> OSTASKS[100] (priority high then low)
+	bubbleSort();
  8000556:	f7ff ffaf 	bl	80004b8 <bubbleSort>
+
+	//2- free Ready Queue
+	while(FIFO_dequeue(&Ready_QUEUE, &temp /*pointer to pointer*/)!=FIFO_EMPTY);
  800055a:	bf00      	nop
  800055c:	463b      	mov	r3, r7
  800055e:	4619      	mov	r1, r3
@@ -603,73 +754,116 @@ void SysTick_Handler()
  8000566:	4603      	mov	r3, r0
  8000568:	2b02      	cmp	r3, #2
  800056a:	d1f7      	bne.n	800055c <MYRTOS_Update_Schadule_Tables+0x14>
+
+	//3- update ready queue
+	while(i< OS_Control.NoOfActiveTasks)
  800056c:	e044      	b.n	80005f8 <MYRTOS_Update_Schadule_Tables+0xb0>
+	{
+		Ptask = OS_Control.OSTasks[i] ;
  800056e:	4a29      	ldr	r2, [pc, #164]	; (8000614 <MYRTOS_Update_Schadule_Tables+0xcc>)
  8000570:	68fb      	ldr	r3, [r7, #12]
  8000572:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
  8000576:	60bb      	str	r3, [r7, #8]
+		PnextTask = OS_Control.OSTasks[i+1] ;
  8000578:	68fb      	ldr	r3, [r7, #12]
  800057a:	3301      	adds	r3, #1
  800057c:	4a25      	ldr	r2, [pc, #148]	; (8000614 <MYRTOS_Update_Schadule_Tables+0xcc>)
  800057e:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
  8000582:	607b      	str	r3, [r7, #4]
+		if (Ptask->TaskState != Suspend)
  8000584:	68bb      	ldr	r3, [r7, #8]
  8000586:	f893 303a 	ldrb.w	r3, [r3, #58]	; 0x3a
  800058a:	2b00      	cmp	r3, #0
  800058c:	d031      	beq.n	80005f2 <MYRTOS_Update_Schadule_Tables+0xaa>
+		{
+			//In case of reaching to the end of available OSTASKS
+			if (PnextTask->TaskState == Suspend)
  800058e:	687b      	ldr	r3, [r7, #4]
  8000590:	f893 303a 	ldrb.w	r3, [r3, #58]	; 0x3a
  8000594:	2b00      	cmp	r3, #0
  8000596:	d108      	bne.n	80005aa <MYRTOS_Update_Schadule_Tables+0x62>
+			{
+				FIFO_enqueue(&Ready_QUEUE, Ptask);
  8000598:	68b9      	ldr	r1, [r7, #8]
  800059a:	481d      	ldr	r0, [pc, #116]	; (8000610 <MYRTOS_Update_Schadule_Tables+0xc8>)
  800059c:	f7ff fe2a 	bl	80001f4 <FIFO_enqueue>
+				Ptask->TaskState = ready ;
  80005a0:	68bb      	ldr	r3, [r7, #8]
  80005a2:	2203      	movs	r2, #3
  80005a4:	f883 203a 	strb.w	r2, [r3, #58]	; 0x3a
+				break ;
  80005a8:	e02e      	b.n	8000608 <MYRTOS_Update_Schadule_Tables+0xc0>
+			}
+			//If Ptask Priority > PnextTask Priority then (lowest number is meaning higher priority)
+			if (Ptask->priority < PnextTask->priority )
  80005aa:	68bb      	ldr	r3, [r7, #8]
  80005ac:	791a      	ldrb	r2, [r3, #4]
  80005ae:	687b      	ldr	r3, [r7, #4]
  80005b0:	791b      	ldrb	r3, [r3, #4]
  80005b2:	429a      	cmp	r2, r3
  80005b4:	d208      	bcs.n	80005c8 <MYRTOS_Update_Schadule_Tables+0x80>
+			{
+				FIFO_enqueue(&Ready_QUEUE, Ptask);
  80005b6:	68b9      	ldr	r1, [r7, #8]
  80005b8:	4815      	ldr	r0, [pc, #84]	; (8000610 <MYRTOS_Update_Schadule_Tables+0xc8>)
  80005ba:	f7ff fe1b 	bl	80001f4 <FIFO_enqueue>
+				Ptask->TaskState = ready ;
  80005be:	68bb      	ldr	r3, [r7, #8]
  80005c0:	2203      	movs	r2, #3
  80005c2:	f883 203a 	strb.w	r2, [r3, #58]	; 0x3a
+				break ;
  80005c6:	e01f      	b.n	8000608 <MYRTOS_Update_Schadule_Tables+0xc0>
+			}
+			else if (Ptask->priority == PnextTask->priority)
  80005c8:	68bb      	ldr	r3, [r7, #8]
  80005ca:	791a      	ldrb	r2, [r3, #4]
  80005cc:	687b      	ldr	r3, [r7, #4]
  80005ce:	791b      	ldrb	r3, [r3, #4]
  80005d0:	429a      	cmp	r2, r3
  80005d2:	d108      	bne.n	80005e6 <MYRTOS_Update_Schadule_Tables+0x9e>
+			{
+				//if the Ptask priority == PnextTask Priority then
+				//Push Ptask to ready state
+				//make the Ptask = PnextTask and PnextTask++
+				FIFO_enqueue(&Ready_QUEUE, Ptask);
  80005d4:	68b9      	ldr	r1, [r7, #8]
  80005d6:	480e      	ldr	r0, [pc, #56]	; (8000610 <MYRTOS_Update_Schadule_Tables+0xc8>)
  80005d8:	f7ff fe0c 	bl	80001f4 <FIFO_enqueue>
+				Ptask->TaskState = ready ;
  80005dc:	68bb      	ldr	r3, [r7, #8]
  80005de:	2203      	movs	r2, #3
  80005e0:	f883 203a 	strb.w	r2, [r3, #58]	; 0x3a
  80005e4:	e005      	b.n	80005f2 <MYRTOS_Update_Schadule_Tables+0xaa>
+			}
+			else if (Ptask->priority > PnextTask->priority)
  80005e6:	68bb      	ldr	r3, [r7, #8]
  80005e8:	791a      	ldrb	r2, [r3, #4]
  80005ea:	687b      	ldr	r3, [r7, #4]
  80005ec:	791b      	ldrb	r3, [r3, #4]
  80005ee:	429a      	cmp	r2, r3
  80005f0:	d809      	bhi.n	8000606 <MYRTOS_Update_Schadule_Tables+0xbe>
+				break ;
+			}
+		}
+
+
+		i++ ;
  80005f2:	68fb      	ldr	r3, [r7, #12]
  80005f4:	3301      	adds	r3, #1
  80005f6:	60fb      	str	r3, [r7, #12]
+	while(i< OS_Control.NoOfActiveTasks)
  80005f8:	4b06      	ldr	r3, [pc, #24]	; (8000614 <MYRTOS_Update_Schadule_Tables+0xcc>)
  80005fa:	f8d3 219c 	ldr.w	r2, [r3, #412]	; 0x19c
  80005fe:	68fb      	ldr	r3, [r7, #12]
  8000600:	429a      	cmp	r2, r3
  8000602:	d8b4      	bhi.n	800056e <MYRTOS_Update_Schadule_Tables+0x26>
+	}
+
+}
  8000604:	e000      	b.n	8000608 <MYRTOS_Update_Schadule_Tables+0xc0>
+				break ;
  8000606:	bf00      	nop
+}
  8000608:	bf00      	nop
  800060a:	3710      	adds	r7, #16
  800060c:	46bd      	mov	sp, r7
@@ -678,8 +872,14 @@ void SysTick_Handler()
  8000614:	200000b4 	.word	0x200000b4
 
 08000618 <Decide_WhatNext>:
+
+//Handler mode
+void Decide_WhatNext()
+{
  8000618:	b580      	push	{r7, lr}
  800061a:	af00      	add	r7, sp, #0
+	//If Ready Queue is empty && OS_Control->currentTask != suspend
+	if (Ready_QUEUE.counter == 0 && OS_Control.CurrentTask->TaskState != Suspend) //FIFO_EMPTY
  800061c:	4b24      	ldr	r3, [pc, #144]	; (80006b0 <Decide_WhatNext+0x98>)
  800061e:	681b      	ldr	r3, [r3, #0]
  8000620:	2b00      	cmp	r3, #0
@@ -689,27 +889,41 @@ void SysTick_Handler()
  800062a:	f893 303a 	ldrb.w	r3, [r3, #58]	; 0x3a
  800062e:	2b00      	cmp	r3, #0
  8000630:	d013      	beq.n	800065a <Decide_WhatNext+0x42>
+	{
+		OS_Control.CurrentTask->TaskState = Running ;
  8000632:	4b20      	ldr	r3, [pc, #128]	; (80006b4 <Decide_WhatNext+0x9c>)
  8000634:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000638:	2201      	movs	r2, #1
  800063a:	f883 203a 	strb.w	r2, [r3, #58]	; 0x3a
+		//Add the current task again(round robin)
+		FIFO_enqueue(&Ready_QUEUE, OS_Control.CurrentTask);
  800063e:	4b1d      	ldr	r3, [pc, #116]	; (80006b4 <Decide_WhatNext+0x9c>)
  8000640:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000644:	4619      	mov	r1, r3
  8000646:	481a      	ldr	r0, [pc, #104]	; (80006b0 <Decide_WhatNext+0x98>)
  8000648:	f7ff fdd4 	bl	80001f4 <FIFO_enqueue>
+		OS_Control.NextTask = OS_Control.CurrentTask ;
  800064c:	4b19      	ldr	r3, [pc, #100]	; (80006b4 <Decide_WhatNext+0x9c>)
  800064e:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000652:	4a18      	ldr	r2, [pc, #96]	; (80006b4 <Decide_WhatNext+0x9c>)
  8000654:	f8c2 31a4 	str.w	r3, [r2, #420]	; 0x1a4
+		{
+			FIFO_enqueue(&Ready_QUEUE, OS_Control.CurrentTask);
+			OS_Control.CurrentTask->TaskState = ready ;
+		}
+	}
+}
  8000658:	e027      	b.n	80006aa <Decide_WhatNext+0x92>
+		FIFO_dequeue(&Ready_QUEUE, &OS_Control.NextTask);
  800065a:	4917      	ldr	r1, [pc, #92]	; (80006b8 <Decide_WhatNext+0xa0>)
  800065c:	4814      	ldr	r0, [pc, #80]	; (80006b0 <Decide_WhatNext+0x98>)
  800065e:	f7ff fe0b 	bl	8000278 <FIFO_dequeue>
+		OS_Control.NextTask->TaskState = Running ;
  8000662:	4b14      	ldr	r3, [pc, #80]	; (80006b4 <Decide_WhatNext+0x9c>)
  8000664:	f8d3 31a4 	ldr.w	r3, [r3, #420]	; 0x1a4
  8000668:	2201      	movs	r2, #1
  800066a:	f883 203a 	strb.w	r2, [r3, #58]	; 0x3a
+		if ((OS_Control.CurrentTask->priority == OS_Control.NextTask->priority )&&(OS_Control.CurrentTask->TaskState != Suspend))
  800066e:	4b11      	ldr	r3, [pc, #68]	; (80006b4 <Decide_WhatNext+0x9c>)
  8000670:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000674:	791a      	ldrb	r2, [r3, #4]
@@ -723,15 +937,18 @@ void SysTick_Handler()
  8000688:	f893 303a 	ldrb.w	r3, [r3, #58]	; 0x3a
  800068c:	2b00      	cmp	r3, #0
  800068e:	d00c      	beq.n	80006aa <Decide_WhatNext+0x92>
+			FIFO_enqueue(&Ready_QUEUE, OS_Control.CurrentTask);
  8000690:	4b08      	ldr	r3, [pc, #32]	; (80006b4 <Decide_WhatNext+0x9c>)
  8000692:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  8000696:	4619      	mov	r1, r3
  8000698:	4805      	ldr	r0, [pc, #20]	; (80006b0 <Decide_WhatNext+0x98>)
  800069a:	f7ff fdab 	bl	80001f4 <FIFO_enqueue>
+			OS_Control.CurrentTask->TaskState = ready ;
  800069e:	4b05      	ldr	r3, [pc, #20]	; (80006b4 <Decide_WhatNext+0x9c>)
  80006a0:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  80006a4:	2203      	movs	r2, #3
  80006a6:	f883 203a 	strb.w	r2, [r3, #58]	; 0x3a
+}
  80006aa:	bf00      	nop
  80006ac:	bd80      	pop	{r7, pc}
  80006ae:	bf00      	nop
@@ -740,16 +957,29 @@ void SysTick_Handler()
  80006b8:	20000258 	.word	0x20000258
 
 080006bc <OS_SVC>:
+
+
+//Handler mode
+void OS_SVC(int* StackFramePointer)
+{
  80006bc:	b580      	push	{r7, lr}
  80006be:	b084      	sub	sp, #16
  80006c0:	af00      	add	r7, sp, #0
  80006c2:	6078      	str	r0, [r7, #4]
+	//OS_SVC_Set stack start found in -> r0 , r0 is pointed by StackFramePointer
+	//OS_SVC_Set stack : r0,r1,r2,r12,LR,PC,XPSR
+
+	unsigned char SVC_number ;
+
+	SVC_number = *((unsigned char*)(((unsigned char*)StackFramePointer[6])-2)) ;
  80006c4:	687b      	ldr	r3, [r7, #4]
  80006c6:	3318      	adds	r3, #24
  80006c8:	681b      	ldr	r3, [r3, #0]
  80006ca:	3b02      	subs	r3, #2
  80006cc:	781b      	ldrb	r3, [r3, #0]
  80006ce:	73fb      	strb	r3, [r7, #15]
+
+	switch(SVC_number)
  80006d0:	7bfb      	ldrb	r3, [r7, #15]
  80006d2:	2b00      	cmp	r3, #0
  80006d4:	db1f      	blt.n	8000716 <OS_SVC+0x5a>
@@ -757,12 +987,21 @@ void SysTick_Handler()
  80006d8:	dd02      	ble.n	80006e0 <OS_SVC+0x24>
  80006da:	2b02      	cmp	r3, #2
  80006dc:	d017      	beq.n	800070e <OS_SVC+0x52>
+		//Update Scheduler Table , Ready Queue
+		MYRTOS_Update_Schadule_Tables();
+		break ;
+	}
+
+}
  80006de:	e01a      	b.n	8000716 <OS_SVC+0x5a>
+		MYRTOS_Update_Schadule_Tables();
  80006e0:	f7ff ff32 	bl	8000548 <MYRTOS_Update_Schadule_Tables>
+		if (OS_Control.OSmodeID == OSRunning)
  80006e4:	4b0e      	ldr	r3, [pc, #56]	; (8000720 <OS_SVC+0x64>)
  80006e6:	f893 31a8 	ldrb.w	r3, [r3, #424]	; 0x1a8
  80006ea:	2b01      	cmp	r3, #1
  80006ec:	d112      	bne.n	8000714 <OS_SVC+0x58>
+			if (strcmp(OS_Control.CurrentTask->TaskName,"IdleTask") != 0)
  80006ee:	4b0c      	ldr	r3, [pc, #48]	; (8000720 <OS_SVC+0x64>)
  80006f0:	f8d3 31a0 	ldr.w	r3, [r3, #416]	; 0x1a0
  80006f4:	331c      	adds	r3, #28
@@ -772,12 +1011,19 @@ void SysTick_Handler()
  80006fe:	4603      	mov	r3, r0
  8000700:	2b00      	cmp	r3, #0
  8000702:	d007      	beq.n	8000714 <OS_SVC+0x58>
+				Decide_WhatNext();
  8000704:	f7ff ff88 	bl	8000618 <Decide_WhatNext>
+				trigger_OS_PendSV();
  8000708:	f7ff fd52 	bl	80001b0 <trigger_OS_PendSV>
+		break ;
  800070c:	e002      	b.n	8000714 <OS_SVC+0x58>
+		MYRTOS_Update_Schadule_Tables();
  800070e:	f7ff ff1b 	bl	8000548 <MYRTOS_Update_Schadule_Tables>
+		break ;
  8000712:	e000      	b.n	8000716 <OS_SVC+0x5a>
+		break ;
  8000714:	bf00      	nop
+}
  8000716:	bf00      	nop
  8000718:	3710      	adds	r7, #16
  800071a:	46bd      	mov	sp, r7
@@ -787,11 +1033,16 @@ void SysTick_Handler()
  8000724:	08001288 	.word	0x08001288
 
 08000728 <MYRTOS_OS_SVC_Set>:
+
+//Thread mode
+void MYRTOS_OS_SVC_Set(SVC_ID ID)
+{
  8000728:	b480      	push	{r7}
  800072a:	b083      	sub	sp, #12
  800072c:	af00      	add	r7, sp, #0
  800072e:	4603      	mov	r3, r0
  8000730:	71fb      	strb	r3, [r7, #7]
+	switch(ID)
  8000732:	79fb      	ldrb	r3, [r7, #7]
  8000734:	2b01      	cmp	r3, #1
  8000736:	d006      	beq.n	8000746 <MYRTOS_OS_SVC_Set+0x1e>
@@ -799,13 +1050,26 @@ void SysTick_Handler()
  800073a:	d006      	beq.n	800074a <MYRTOS_OS_SVC_Set+0x22>
  800073c:	2b00      	cmp	r3, #0
  800073e:	d000      	beq.n	8000742 <MYRTOS_OS_SVC_Set+0x1a>
+	case SVC_TaskWaiting :
+		__asm("svc #0x02");
+
+		break ;
+	}
+}
  8000740:	e005      	b.n	800074e <MYRTOS_OS_SVC_Set+0x26>
+		__asm("svc #0x00");
  8000742:	df00      	svc	0
+		break ;
  8000744:	e003      	b.n	800074e <MYRTOS_OS_SVC_Set+0x26>
+		__asm("svc #0x01");
  8000746:	df01      	svc	1
+		break ;
  8000748:	e001      	b.n	800074e <MYRTOS_OS_SVC_Set+0x26>
+		__asm("svc #0x02");
  800074a:	df02      	svc	2
+		break ;
  800074c:	bf00      	nop
+}
  800074e:	bf00      	nop
  8000750:	370c      	adds	r7, #12
  8000752:	46bd      	mov	sp, r7
@@ -813,12 +1077,22 @@ void SysTick_Handler()
  8000756:	4770      	bx	lr
 
 08000758 <MYRTOS_Update_TaskWaiting_Time>:
+	MYRTOS_idleTask.p_TaskEntry();
+}
+
+
+void MYRTOS_Update_TaskWaiting_Time()
+{
  8000758:	b580      	push	{r7, lr}
  800075a:	b082      	sub	sp, #8
  800075c:	af00      	add	r7, sp, #0
+	int i ;
+	for (i = 0 ; i < OS_Control.NoOfActiveTasks ; i++)
  800075e:	2300      	movs	r3, #0
  8000760:	607b      	str	r3, [r7, #4]
  8000762:	e031      	b.n	80007c8 <MYRTOS_Update_TaskWaiting_Time+0x70>
+	{
+		if ((OS_Control.OSTasks[i]->TaskState == Suspend) && (OS_Control.OSTasks[i]->TimingWaiting.Blocking == Enable ))
  8000764:	4a1d      	ldr	r2, [pc, #116]	; (80007dc <MYRTOS_Update_TaskWaiting_Time+0x84>)
  8000766:	687b      	ldr	r3, [r7, #4]
  8000768:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
@@ -831,30 +1105,39 @@ void SysTick_Handler()
  800077c:	f893 303c 	ldrb.w	r3, [r3, #60]	; 0x3c
  8000780:	2b00      	cmp	r3, #0
  8000782:	d11e      	bne.n	80007c2 <MYRTOS_Update_TaskWaiting_Time+0x6a>
+		{
+			OS_Control.OSTasks[i]->TimingWaiting.Ticks_Count-- ;
  8000784:	4a15      	ldr	r2, [pc, #84]	; (80007dc <MYRTOS_Update_TaskWaiting_Time+0x84>)
  8000786:	687b      	ldr	r3, [r7, #4]
  8000788:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
  800078c:	6c1a      	ldr	r2, [r3, #64]	; 0x40
  800078e:	3a01      	subs	r2, #1
  8000790:	641a      	str	r2, [r3, #64]	; 0x40
+
+			if(OS_Control.OSTasks[i]->TimingWaiting.Ticks_Count == 0)
  8000792:	4a12      	ldr	r2, [pc, #72]	; (80007dc <MYRTOS_Update_TaskWaiting_Time+0x84>)
  8000794:	687b      	ldr	r3, [r7, #4]
  8000796:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
  800079a:	6c1b      	ldr	r3, [r3, #64]	; 0x40
  800079c:	2b00      	cmp	r3, #0
  800079e:	d110      	bne.n	80007c2 <MYRTOS_Update_TaskWaiting_Time+0x6a>
+			{
+				OS_Control.OSTasks[i]->TimingWaiting.Blocking = Disable ;
  80007a0:	4a0e      	ldr	r2, [pc, #56]	; (80007dc <MYRTOS_Update_TaskWaiting_Time+0x84>)
  80007a2:	687b      	ldr	r3, [r7, #4]
  80007a4:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
  80007a8:	2201      	movs	r2, #1
  80007aa:	f883 203c 	strb.w	r2, [r3, #60]	; 0x3c
+				OS_Control.OSTasks[i]->TaskState = Waiting ;
  80007ae:	4a0b      	ldr	r2, [pc, #44]	; (80007dc <MYRTOS_Update_TaskWaiting_Time+0x84>)
  80007b0:	687b      	ldr	r3, [r7, #4]
  80007b2:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
  80007b6:	2202      	movs	r2, #2
  80007b8:	f883 203a 	strb.w	r2, [r3, #58]	; 0x3a
+				MYRTOS_OS_SVC_Set(SVC_TaskWaiting);
  80007bc:	2002      	movs	r0, #2
  80007be:	f7ff ffb3 	bl	8000728 <MYRTOS_OS_SVC_Set>
+	for (i = 0 ; i < OS_Control.NoOfActiveTasks ; i++)
  80007c2:	687b      	ldr	r3, [r7, #4]
  80007c4:	3301      	adds	r3, #1
  80007c6:	607b      	str	r3, [r7, #4]
@@ -863,6 +1146,10 @@ void SysTick_Handler()
  80007ce:	687b      	ldr	r3, [r7, #4]
  80007d0:	429a      	cmp	r2, r3
  80007d2:	d8c7      	bhi.n	8000764 <MYRTOS_Update_TaskWaiting_Time+0xc>
+			}
+		}
+	}
+}
  80007d4:	bf00      	nop
  80007d6:	3708      	adds	r7, #8
  80007d8:	46bd      	mov	sp, r7
@@ -1017,63 +1304,134 @@ int main(void)
  80008a0:	40010800 	.word	0x40010800
 
 080008a4 <Reset_Handler>:
+
+  .section .text.Reset_Handler
+  .weak Reset_Handler
+  .type Reset_Handler, %function
+Reset_Handler:
+  ldr   r0, =_estack
  80008a4:	480d      	ldr	r0, [pc, #52]	; (80008dc <LoopForever+0x2>)
+  mov   sp, r0          /* set stack pointer */
  80008a6:	4685      	mov	sp, r0
+/* Call the clock system intitialization function.*/
+  bl  SystemInit
  80008a8:	f3af 8000 	nop.w
+
+/* Copy the data segment initializers from flash to SRAM */
+  ldr r0, =_sdata
  80008ac:	480c      	ldr	r0, [pc, #48]	; (80008e0 <LoopForever+0x6>)
+  ldr r1, =_edata
  80008ae:	490d      	ldr	r1, [pc, #52]	; (80008e4 <LoopForever+0xa>)
+  ldr r2, =_sidata
  80008b0:	4a0d      	ldr	r2, [pc, #52]	; (80008e8 <LoopForever+0xe>)
+  movs r3, #0
  80008b2:	2300      	movs	r3, #0
+  b LoopCopyDataInit
  80008b4:	e002      	b.n	80008bc <LoopCopyDataInit>
 
 080008b6 <CopyDataInit>:
+
+CopyDataInit:
+  ldr r4, [r2, r3]
  80008b6:	58d4      	ldr	r4, [r2, r3]
+  str r4, [r0, r3]
  80008b8:	50c4      	str	r4, [r0, r3]
+  adds r3, r3, #4
  80008ba:	3304      	adds	r3, #4
 
 080008bc <LoopCopyDataInit>:
+
+LoopCopyDataInit:
+  adds r4, r0, r3
  80008bc:	18c4      	adds	r4, r0, r3
+  cmp r4, r1
  80008be:	428c      	cmp	r4, r1
+  bcc CopyDataInit
  80008c0:	d3f9      	bcc.n	80008b6 <CopyDataInit>
+
+/* Zero fill the bss segment. */
+  ldr r2, =_sbss
  80008c2:	4a0a      	ldr	r2, [pc, #40]	; (80008ec <LoopForever+0x12>)
+  ldr r4, =_ebss
  80008c4:	4c0a      	ldr	r4, [pc, #40]	; (80008f0 <LoopForever+0x16>)
+  movs r3, #0
  80008c6:	2300      	movs	r3, #0
+  b LoopFillZerobss
  80008c8:	e001      	b.n	80008ce <LoopFillZerobss>
 
 080008ca <FillZerobss>:
+
+FillZerobss:
+  str  r3, [r2]
  80008ca:	6013      	str	r3, [r2, #0]
+  adds r2, r2, #4
  80008cc:	3204      	adds	r2, #4
 
 080008ce <LoopFillZerobss>:
+
+LoopFillZerobss:
+  cmp r2, r4
  80008ce:	42a2      	cmp	r2, r4
+  bcc FillZerobss
  80008d0:	d3fb      	bcc.n	80008ca <FillZerobss>
+
+/* Call static constructors */
+  bl __libc_init_array
  80008d2:	f000 fca9 	bl	8001228 <__libc_init_array>
+/* Call the application's entry point.*/
+  bl main
  80008d6:	f7ff ffb9 	bl	800084c <main>
 
 080008da <LoopForever>:
+
+LoopForever:
+    b LoopForever
  80008da:	e7fe      	b.n	80008da <LoopForever>
+  ldr   r0, =_estack
  80008dc:	20002800 	.word	0x20002800
+  ldr r0, =_sdata
  80008e0:	20000000 	.word	0x20000000
+  ldr r1, =_edata
  80008e4:	20000000 	.word	0x20000000
+  ldr r2, =_sidata
  80008e8:	0800129c 	.word	0x0800129c
+  ldr r2, =_sbss
  80008ec:	20000000 	.word	0x20000000
+  ldr r4, =_ebss
  80008f0:	2000047c 	.word	0x2000047c
 
 080008f4 <ADC1_2_IRQHandler>:
+ * @retval : None
+*/
+  .section .text.Default_Handler,"ax",%progbits
+Default_Handler:
+Infinite_Loop:
+  b Infinite_Loop
  80008f4:	e7fe      	b.n	80008f4 <ADC1_2_IRQHandler>
 	...
 
 080008f8 <EXTI0_IRQHandler>:
+ * =====================================================================================
+ */
+
+
+void EXTI0_IRQHandler(void)
+{
  80008f8:	b580      	push	{r7, lr}
  80008fa:	af00      	add	r7, sp, #0
+	// cleared by writing a ‘1’ into the bit Pending register (EXTI_PR)
+	EXTI->PR |= 1<<0;
  80008fc:	4b05      	ldr	r3, [pc, #20]	; (8000914 <EXTI0_IRQHandler+0x1c>)
  80008fe:	695b      	ldr	r3, [r3, #20]
  8000900:	4a04      	ldr	r2, [pc, #16]	; (8000914 <EXTI0_IRQHandler+0x1c>)
  8000902:	f043 0301 	orr.w	r3, r3, #1
  8000906:	6153      	str	r3, [r2, #20]
+	//Call IRQ_CALL
+	GP_IRQ_CallBack[0]();
  8000908:	4b03      	ldr	r3, [pc, #12]	; (8000918 <EXTI0_IRQHandler+0x20>)
  800090a:	681b      	ldr	r3, [r3, #0]
  800090c:	4798      	blx	r3
+}
  800090e:	bf00      	nop
  8000910:	bd80      	pop	{r7, pc}
  8000912:	bf00      	nop
@@ -1081,16 +1439,22 @@ int main(void)
  8000918:	20000020 	.word	0x20000020
 
 0800091c <EXTI1_IRQHandler>:
+
+void EXTI1_IRQHandler(void)
+{
  800091c:	b580      	push	{r7, lr}
  800091e:	af00      	add	r7, sp, #0
+	EXTI->PR |= 1<<1;
  8000920:	4b05      	ldr	r3, [pc, #20]	; (8000938 <EXTI1_IRQHandler+0x1c>)
  8000922:	695b      	ldr	r3, [r3, #20]
  8000924:	4a04      	ldr	r2, [pc, #16]	; (8000938 <EXTI1_IRQHandler+0x1c>)
  8000926:	f043 0302 	orr.w	r3, r3, #2
  800092a:	6153      	str	r3, [r2, #20]
+	GP_IRQ_CallBack[1]();
  800092c:	4b03      	ldr	r3, [pc, #12]	; (800093c <EXTI1_IRQHandler+0x20>)
  800092e:	685b      	ldr	r3, [r3, #4]
  8000930:	4798      	blx	r3
+}
  8000932:	bf00      	nop
  8000934:	bd80      	pop	{r7, pc}
  8000936:	bf00      	nop
@@ -1098,16 +1462,22 @@ int main(void)
  800093c:	20000020 	.word	0x20000020
 
 08000940 <EXTI2_IRQHandler>:
+
+void EXTI2_IRQHandler(void)
+{
  8000940:	b580      	push	{r7, lr}
  8000942:	af00      	add	r7, sp, #0
+	EXTI->PR |= 1<<2;
  8000944:	4b05      	ldr	r3, [pc, #20]	; (800095c <EXTI2_IRQHandler+0x1c>)
  8000946:	695b      	ldr	r3, [r3, #20]
  8000948:	4a04      	ldr	r2, [pc, #16]	; (800095c <EXTI2_IRQHandler+0x1c>)
  800094a:	f043 0304 	orr.w	r3, r3, #4
  800094e:	6153      	str	r3, [r2, #20]
+	GP_IRQ_CallBack[2]();
  8000950:	4b03      	ldr	r3, [pc, #12]	; (8000960 <EXTI2_IRQHandler+0x20>)
  8000952:	689b      	ldr	r3, [r3, #8]
  8000954:	4798      	blx	r3
+}
  8000956:	bf00      	nop
  8000958:	bd80      	pop	{r7, pc}
  800095a:	bf00      	nop
@@ -1115,16 +1485,22 @@ int main(void)
  8000960:	20000020 	.word	0x20000020
 
 08000964 <EXTI3_IRQHandler>:
+
+void EXTI3_IRQHandler(void)
+{
  8000964:	b580      	push	{r7, lr}
  8000966:	af00      	add	r7, sp, #0
+	EXTI->PR |= 1<<3;
  8000968:	4b05      	ldr	r3, [pc, #20]	; (8000980 <EXTI3_IRQHandler+0x1c>)
  800096a:	695b      	ldr	r3, [r3, #20]
  800096c:	4a04      	ldr	r2, [pc, #16]	; (8000980 <EXTI3_IRQHandler+0x1c>)
  800096e:	f043 0308 	orr.w	r3, r3, #8
  8000972:	6153      	str	r3, [r2, #20]
+	GP_IRQ_CallBack[3]();
  8000974:	4b03      	ldr	r3, [pc, #12]	; (8000984 <EXTI3_IRQHandler+0x20>)
  8000976:	68db      	ldr	r3, [r3, #12]
  8000978:	4798      	blx	r3
+}
  800097a:	bf00      	nop
  800097c:	bd80      	pop	{r7, pc}
  800097e:	bf00      	nop
@@ -1132,16 +1508,22 @@ int main(void)
  8000984:	20000020 	.word	0x20000020
 
 08000988 <EXTI4_IRQHandler>:
+
+void EXTI4_IRQHandler(void)
+{
  8000988:	b580      	push	{r7, lr}
  800098a:	af00      	add	r7, sp, #0
+	EXTI->PR |= 1<<4;
  800098c:	4b05      	ldr	r3, [pc, #20]	; (80009a4 <EXTI4_IRQHandler+0x1c>)
  800098e:	695b      	ldr	r3, [r3, #20]
  8000990:	4a04      	ldr	r2, [pc, #16]	; (80009a4 <EXTI4_IRQHandler+0x1c>)
  8000992:	f043 0310 	orr.w	r3, r3, #16
  8000996:	6153      	str	r3, [r2, #20]
+	GP_IRQ_CallBack[4]();
  8000998:	4b03      	ldr	r3, [pc, #12]	; (80009a8 <EXTI4_IRQHandler+0x20>)
  800099a:	691b      	ldr	r3, [r3, #16]
  800099c:	4798      	blx	r3
+}
  800099e:	bf00      	nop
  80009a0:	bd80      	pop	{r7, pc}
  80009a2:	bf00      	nop
@@ -1149,8 +1531,12 @@ int main(void)
  80009a8:	20000020 	.word	0x20000020
 
 080009ac <EXTI9_5_IRQHandler>:
+
+void EXTI9_5_IRQHandler(void)
+{
  80009ac:	b580      	push	{r7, lr}
  80009ae:	af00      	add	r7, sp, #0
+	if( EXTI->PR & 1<<5 ) { EXTI->PR |= 1<<5; GP_IRQ_CallBack[5](); }
  80009b0:	4b26      	ldr	r3, [pc, #152]	; (8000a4c <EXTI9_5_IRQHandler+0xa0>)
  80009b2:	695b      	ldr	r3, [r3, #20]
  80009b4:	f003 0320 	and.w	r3, r3, #32
@@ -1164,6 +1550,7 @@ int main(void)
  80009c8:	4b21      	ldr	r3, [pc, #132]	; (8000a50 <EXTI9_5_IRQHandler+0xa4>)
  80009ca:	695b      	ldr	r3, [r3, #20]
  80009cc:	4798      	blx	r3
+	if( EXTI->PR & 1<<6 ) { EXTI->PR |= 1<<6; GP_IRQ_CallBack[6](); }
  80009ce:	4b1f      	ldr	r3, [pc, #124]	; (8000a4c <EXTI9_5_IRQHandler+0xa0>)
  80009d0:	695b      	ldr	r3, [r3, #20]
  80009d2:	f003 0340 	and.w	r3, r3, #64	; 0x40
@@ -1177,6 +1564,7 @@ int main(void)
  80009e6:	4b1a      	ldr	r3, [pc, #104]	; (8000a50 <EXTI9_5_IRQHandler+0xa4>)
  80009e8:	699b      	ldr	r3, [r3, #24]
  80009ea:	4798      	blx	r3
+	if( EXTI->PR & 1<<7 ) { EXTI->PR |= 1<<7; GP_IRQ_CallBack[7](); }
  80009ec:	4b17      	ldr	r3, [pc, #92]	; (8000a4c <EXTI9_5_IRQHandler+0xa0>)
  80009ee:	695b      	ldr	r3, [r3, #20]
  80009f0:	f003 0380 	and.w	r3, r3, #128	; 0x80
@@ -1190,6 +1578,7 @@ int main(void)
  8000a04:	4b12      	ldr	r3, [pc, #72]	; (8000a50 <EXTI9_5_IRQHandler+0xa4>)
  8000a06:	69db      	ldr	r3, [r3, #28]
  8000a08:	4798      	blx	r3
+	if( EXTI->PR & 1<<8 ) { EXTI->PR |= 1<<8; GP_IRQ_CallBack[8](); }
  8000a0a:	4b10      	ldr	r3, [pc, #64]	; (8000a4c <EXTI9_5_IRQHandler+0xa0>)
  8000a0c:	695b      	ldr	r3, [r3, #20]
  8000a0e:	f403 7380 	and.w	r3, r3, #256	; 0x100
@@ -1203,6 +1592,7 @@ int main(void)
  8000a22:	4b0b      	ldr	r3, [pc, #44]	; (8000a50 <EXTI9_5_IRQHandler+0xa4>)
  8000a24:	6a1b      	ldr	r3, [r3, #32]
  8000a26:	4798      	blx	r3
+	if( EXTI->PR & 1<<9 ) { EXTI->PR |= 1<<9; GP_IRQ_CallBack[9](); }
  8000a28:	4b08      	ldr	r3, [pc, #32]	; (8000a4c <EXTI9_5_IRQHandler+0xa0>)
  8000a2a:	695b      	ldr	r3, [r3, #20]
  8000a2c:	f403 7300 	and.w	r3, r3, #512	; 0x200
@@ -1216,6 +1606,7 @@ int main(void)
  8000a40:	4b03      	ldr	r3, [pc, #12]	; (8000a50 <EXTI9_5_IRQHandler+0xa4>)
  8000a42:	6a5b      	ldr	r3, [r3, #36]	; 0x24
  8000a44:	4798      	blx	r3
+}
  8000a46:	bf00      	nop
  8000a48:	bd80      	pop	{r7, pc}
  8000a4a:	bf00      	nop
@@ -1223,8 +1614,12 @@ int main(void)
  8000a50:	20000020 	.word	0x20000020
 
 08000a54 <EXTI15_10_IRQHandler>:
+
+void EXTI15_10_IRQHandler(void)
+{
  8000a54:	b580      	push	{r7, lr}
  8000a56:	af00      	add	r7, sp, #0
+	if( EXTI->PR & 1<<10 ) { EXTI->PR |= 1<<10; GP_IRQ_CallBack[10](); }
  8000a58:	4b2d      	ldr	r3, [pc, #180]	; (8000b10 <EXTI15_10_IRQHandler+0xbc>)
  8000a5a:	695b      	ldr	r3, [r3, #20]
  8000a5c:	f403 6380 	and.w	r3, r3, #1024	; 0x400
@@ -1238,6 +1633,7 @@ int main(void)
  8000a70:	4b28      	ldr	r3, [pc, #160]	; (8000b14 <EXTI15_10_IRQHandler+0xc0>)
  8000a72:	6a9b      	ldr	r3, [r3, #40]	; 0x28
  8000a74:	4798      	blx	r3
+	if( EXTI->PR & 1<<11 ) { EXTI->PR |= 1<<11; GP_IRQ_CallBack[11](); }
  8000a76:	4b26      	ldr	r3, [pc, #152]	; (8000b10 <EXTI15_10_IRQHandler+0xbc>)
  8000a78:	695b      	ldr	r3, [r3, #20]
  8000a7a:	f403 6300 	and.w	r3, r3, #2048	; 0x800
@@ -1251,6 +1647,7 @@ int main(void)
  8000a8e:	4b21      	ldr	r3, [pc, #132]	; (8000b14 <EXTI15_10_IRQHandler+0xc0>)
  8000a90:	6adb      	ldr	r3, [r3, #44]	; 0x2c
  8000a92:	4798      	blx	r3
+	if( EXTI->PR & 1<<12 ) { EXTI->PR |= 1<<12; GP_IRQ_CallBack[12](); }
  8000a94:	4b1e      	ldr	r3, [pc, #120]	; (8000b10 <EXTI15_10_IRQHandler+0xbc>)
  8000a96:	695b      	ldr	r3, [r3, #20]
  8000a98:	f403 5380 	and.w	r3, r3, #4096	; 0x1000
@@ -1264,6 +1661,7 @@ int main(void)
  8000aac:	4b19      	ldr	r3, [pc, #100]	; (8000b14 <EXTI15_10_IRQHandler+0xc0>)
  8000aae:	6b1b      	ldr	r3, [r3, #48]	; 0x30
  8000ab0:	4798      	blx	r3
+	if( EXTI->PR & 1<<13 ) { EXTI->PR |= 1<<13; GP_IRQ_CallBack[13](); }
  8000ab2:	4b17      	ldr	r3, [pc, #92]	; (8000b10 <EXTI15_10_IRQHandler+0xbc>)
  8000ab4:	695b      	ldr	r3, [r3, #20]
  8000ab6:	f403 5300 	and.w	r3, r3, #8192	; 0x2000
@@ -1277,6 +1675,7 @@ int main(void)
  8000aca:	4b12      	ldr	r3, [pc, #72]	; (8000b14 <EXTI15_10_IRQHandler+0xc0>)
  8000acc:	6b5b      	ldr	r3, [r3, #52]	; 0x34
  8000ace:	4798      	blx	r3
+	if( EXTI->PR & 1<<14 ) { EXTI->PR |= 1<<14; GP_IRQ_CallBack[14](); }
  8000ad0:	4b0f      	ldr	r3, [pc, #60]	; (8000b10 <EXTI15_10_IRQHandler+0xbc>)
  8000ad2:	695b      	ldr	r3, [r3, #20]
  8000ad4:	f403 4380 	and.w	r3, r3, #16384	; 0x4000
@@ -1290,6 +1689,7 @@ int main(void)
  8000ae8:	4b0a      	ldr	r3, [pc, #40]	; (8000b14 <EXTI15_10_IRQHandler+0xc0>)
  8000aea:	6b9b      	ldr	r3, [r3, #56]	; 0x38
  8000aec:	4798      	blx	r3
+	if( EXTI->PR & 1<<14 ) { EXTI->PR |= 1<<15; GP_IRQ_CallBack[15](); }
  8000aee:	4b08      	ldr	r3, [pc, #32]	; (8000b10 <EXTI15_10_IRQHandler+0xbc>)
  8000af0:	695b      	ldr	r3, [r3, #20]
  8000af2:	f403 4380 	and.w	r3, r3, #16384	; 0x4000
@@ -1303,17 +1703,25 @@ int main(void)
  8000b06:	4b03      	ldr	r3, [pc, #12]	; (8000b14 <EXTI15_10_IRQHandler+0xc0>)
  8000b08:	6bdb      	ldr	r3, [r3, #60]	; 0x3c
  8000b0a:	4798      	blx	r3
+}
  8000b0c:	bf00      	nop
  8000b0e:	bd80      	pop	{r7, pc}
  8000b10:	40010400 	.word	0x40010400
  8000b14:	20000020 	.word	0x20000020
 
 08000b18 <Get_CRLH_Position>:
+
+#include "Stm32_F103C6_GPIO_Driver.h"
+
+
+uint8_t Get_CRLH_Position(uint16_t PinNumber)
+{
  8000b18:	b480      	push	{r7}
  8000b1a:	b083      	sub	sp, #12
  8000b1c:	af00      	add	r7, sp, #0
  8000b1e:	4603      	mov	r3, r0
  8000b20:	80fb      	strh	r3, [r7, #6]
+	switch (PinNumber)
  8000b22:	88fb      	ldrh	r3, [r7, #6]
  8000b24:	2b80      	cmp	r3, #128	; 0x80
  8000b26:	d042      	beq.n	8000bae <Get_CRLH_Position+0x96>
@@ -1360,39 +1768,109 @@ int main(void)
  8000b8a:	f5b3 4f00 	cmp.w	r3, #32768	; 0x8000
  8000b8e:	d01e      	beq.n	8000bce <Get_CRLH_Position+0xb6>
  8000b90:	e01f      	b.n	8000bd2 <Get_CRLH_Position+0xba>
+	{
+	case GPIO_PIN_0:
+		return 0;
  8000b92:	2300      	movs	r3, #0
  8000b94:	e01e      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_1:
+		return 4;
  8000b96:	2304      	movs	r3, #4
  8000b98:	e01c      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_2:
+		return 8;
  8000b9a:	2308      	movs	r3, #8
  8000b9c:	e01a      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_3:
+		return 12;
  8000b9e:	230c      	movs	r3, #12
  8000ba0:	e018      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_4:
+		return 16;
  8000ba2:	2310      	movs	r3, #16
  8000ba4:	e016      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_5:
+		return 20;
  8000ba6:	2314      	movs	r3, #20
  8000ba8:	e014      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_6:
+		return 24;
  8000baa:	2318      	movs	r3, #24
  8000bac:	e012      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_7:
+		return 28;
  8000bae:	231c      	movs	r3, #28
  8000bb0:	e010      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_8:
+		return 0;
  8000bb2:	2300      	movs	r3, #0
  8000bb4:	e00e      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_9:
+		return 4;
  8000bb6:	2304      	movs	r3, #4
  8000bb8:	e00c      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_10:
+		return 8;
  8000bba:	2308      	movs	r3, #8
  8000bbc:	e00a      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_11:
+		return 12;
  8000bbe:	230c      	movs	r3, #12
  8000bc0:	e008      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_12:
+		return 16;
  8000bc2:	2310      	movs	r3, #16
  8000bc4:	e006      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_13:
+		return 20;
  8000bc6:	2314      	movs	r3, #20
  8000bc8:	e004      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_14:
+		return 24;
  8000bca:	2318      	movs	r3, #24
  8000bcc:	e002      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	case GPIO_PIN_15:
+		return 28;
  8000bce:	231c      	movs	r3, #28
  8000bd0:	e000      	b.n	8000bd4 <Get_CRLH_Position+0xbc>
+		break;
+
+	default:
+		return 0;
  8000bd2:	2300      	movs	r3, #0
+		break;
+	}
+}
  8000bd4:	4618      	mov	r0, r3
  8000bd6:	370c      	adds	r7, #12
  8000bd8:	46bd      	mov	sp, r7
@@ -1400,15 +1878,27 @@ int main(void)
  8000bdc:	4770      	bx	lr
 
 08000bde <MCAL_GPIO_Init>:
+ * @retval			- none
+ * Note				- stm32F103c6 MCU has GPIO A,B,C,D,E Modules
+ * 					  But LQFP48 package has only GPIO A,B,Part of C/D exported as external PINS from the MCU
+ */
+void MCAL_GPIO_Init(GPIO_TypeDef *GPIOx,GPIO_PinConfig_t *PinConfig)
+{
  8000bde:	b590      	push	{r4, r7, lr}
  8000be0:	b085      	sub	sp, #20
  8000be2:	af00      	add	r7, sp, #0
  8000be4:	6078      	str	r0, [r7, #4]
  8000be6:	6039      	str	r1, [r7, #0]
+	// Port configuration register low  (GPIOx_CRL) configure PINS from 0 ==> 7
+	// Port configuration register high (GPIOx_CRH) configure PINS from 8 ==> 15
+
+	volatile uint32_t* configregister = NULL ;
  8000be8:	2300      	movs	r3, #0
  8000bea:	60bb      	str	r3, [r7, #8]
+	uint8_t PIN_CONFIG = 0 ;
  8000bec:	2300      	movs	r3, #0
  8000bee:	73fb      	strb	r3, [r7, #15]
+	configregister = (PinConfig->GPIO_PinNumber < GPIO_PIN_8) ?  &GPIOx->CRL : &GPIOx->CRH ;
  8000bf0:	683b      	ldr	r3, [r7, #0]
  8000bf2:	881b      	ldrh	r3, [r3, #0]
  8000bf4:	2bff      	cmp	r3, #255	; 0xff
@@ -1418,6 +1908,9 @@ int main(void)
  8000bfc:	687b      	ldr	r3, [r7, #4]
  8000bfe:	3304      	adds	r3, #4
  8000c00:	60bb      	str	r3, [r7, #8]
+
+	//clear CNF MODE
+	(*configregister) &= ~(0xf << Get_CRLH_Position(PinConfig->GPIO_PinNumber)) ;
  8000c02:	683b      	ldr	r3, [r7, #0]
  8000c04:	881b      	ldrh	r3, [r3, #0]
  8000c06:	4618      	mov	r0, r3
@@ -1432,6 +1925,9 @@ int main(void)
  8000c1a:	401a      	ands	r2, r3
  8000c1c:	68bb      	ldr	r3, [r7, #8]
  8000c1e:	601a      	str	r2, [r3, #0]
+
+	//if PIN is output
+	if ( (PinConfig->GPIO_MODE == GPIO_MODE_OUTPUT_AF_OD)|| (PinConfig->GPIO_MODE == GPIO_MODE_OUTPUT_AF_PP) || (PinConfig->GPIO_MODE == GPIO_MODE_OUTPUT_OD) || (PinConfig->GPIO_MODE == GPIO_MODE_OUTPUT_PP) )
  8000c20:	683b      	ldr	r3, [r7, #0]
  8000c22:	789b      	ldrb	r3, [r3, #2]
  8000c24:	2b07      	cmp	r3, #7
@@ -1448,6 +1944,9 @@ int main(void)
  8000c3a:	789b      	ldrb	r3, [r3, #2]
  8000c3c:	2b04      	cmp	r3, #4
  8000c3e:	d10e      	bne.n	8000c5e <MCAL_GPIO_Init+0x80>
+	{
+		//Set CNF MODE
+		PIN_CONFIG = ( (((PinConfig->GPIO_MODE -4 ) << 2) | (PinConfig->GPIO_Output_Speed)) & 0x0f) ;
  8000c40:	683b      	ldr	r3, [r7, #0]
  8000c42:	789b      	ldrb	r3, [r3, #2]
  8000c44:	3b04      	subs	r3, #4
@@ -1462,6 +1961,11 @@ int main(void)
  8000c56:	f003 030f 	and.w	r3, r3, #15
  8000c5a:	73fb      	strb	r3, [r7, #15]
  8000c5c:	e02c      	b.n	8000cb8 <MCAL_GPIO_Init+0xda>
+	}
+
+	else
+	{
+		if ( (PinConfig->GPIO_MODE == GPIO_MODE_INPUT_FLO) || (PinConfig->GPIO_MODE == GPIO_MODE_Analog) )
  8000c5e:	683b      	ldr	r3, [r7, #0]
  8000c60:	789b      	ldrb	r3, [r3, #2]
  8000c62:	2b01      	cmp	r3, #1
@@ -1470,6 +1974,9 @@ int main(void)
  8000c68:	789b      	ldrb	r3, [r3, #2]
  8000c6a:	2b00      	cmp	r3, #0
  8000c6c:	d107      	bne.n	8000c7e <MCAL_GPIO_Init+0xa0>
+		{
+			//set CNF
+			PIN_CONFIG = ( (((PinConfig->GPIO_MODE ) << 2) | (0x00)) & 0x0f) ;
  8000c6e:	683b      	ldr	r3, [r7, #0]
  8000c70:	789b      	ldrb	r3, [r3, #2]
  8000c72:	009b      	lsls	r3, r3, #2
@@ -1477,19 +1984,32 @@ int main(void)
  8000c76:	f003 030f 	and.w	r3, r3, #15
  8000c7a:	73fb      	strb	r3, [r7, #15]
  8000c7c:	e01c      	b.n	8000cb8 <MCAL_GPIO_Init+0xda>
+		}
+		else if (PinConfig->GPIO_MODE == GPIO_MODE_INPUT_AF ) //Consider it as input floating
  8000c7e:	683b      	ldr	r3, [r7, #0]
  8000c80:	789b      	ldrb	r3, [r3, #2]
  8000c82:	2b08      	cmp	r3, #8
  8000c84:	d102      	bne.n	8000c8c <MCAL_GPIO_Init+0xae>
+		{
+			PIN_CONFIG = ( (((GPIO_MODE_INPUT_FLO) << 2) | (0x00)) & 0x0f) ;
  8000c86:	2304      	movs	r3, #4
  8000c88:	73fb      	strb	r3, [r7, #15]
  8000c8a:	e015      	b.n	8000cb8 <MCAL_GPIO_Init+0xda>
+		}
+		else //PU PD
+		{
+			PIN_CONFIG = ( (((GPIO_MODE_INPUT_PU) << 2) | (0x00)) & 0x0f) ;
  8000c8c:	2308      	movs	r3, #8
  8000c8e:	73fb      	strb	r3, [r7, #15]
+
+			if(PinConfig->GPIO_MODE == GPIO_MODE_INPUT_PU)
  8000c90:	683b      	ldr	r3, [r7, #0]
  8000c92:	789b      	ldrb	r3, [r3, #2]
  8000c94:	2b02      	cmp	r3, #2
  8000c96:	d107      	bne.n	8000ca8 <MCAL_GPIO_Init+0xca>
+			{
+				// PXODR = 1 Input pull up
+				GPIOx->ODR |= PinConfig->GPIO_PinNumber ;
  8000c98:	687b      	ldr	r3, [r7, #4]
  8000c9a:	68db      	ldr	r3, [r3, #12]
  8000c9c:	683a      	ldr	r2, [r7, #0]
@@ -1498,6 +2018,12 @@ int main(void)
  8000ca2:	687b      	ldr	r3, [r7, #4]
  8000ca4:	60da      	str	r2, [r3, #12]
  8000ca6:	e007      	b.n	8000cb8 <MCAL_GPIO_Init+0xda>
+			}
+
+			else
+			{
+				// PXODR = 0 Input pull down
+				GPIOx->ODR &= ~(PinConfig->GPIO_PinNumber) ;
  8000ca8:	687b      	ldr	r3, [r7, #4]
  8000caa:	68db      	ldr	r3, [r3, #12]
  8000cac:	683a      	ldr	r2, [r7, #0]
@@ -1506,6 +2032,11 @@ int main(void)
  8000cb2:	401a      	ands	r2, r3
  8000cb4:	687b      	ldr	r3, [r7, #4]
  8000cb6:	60da      	str	r2, [r3, #12]
+			}
+		}
+	}
+	//write on CRL or CRH
+	(*configregister) |= ( (PIN_CONFIG) << Get_CRLH_Position(PinConfig->GPIO_PinNumber)) ;
  8000cb8:	7bfc      	ldrb	r4, [r7, #15]
  8000cba:	683b      	ldr	r3, [r7, #0]
  8000cbc:	881b      	ldrh	r3, [r3, #0]
@@ -1518,24 +2049,35 @@ int main(void)
  8000cce:	431a      	orrs	r2, r3
  8000cd0:	68bb      	ldr	r3, [r7, #8]
  8000cd2:	601a      	str	r2, [r3, #0]
+
+
+}
  8000cd4:	bf00      	nop
  8000cd6:	3714      	adds	r7, #20
  8000cd8:	46bd      	mov	sp, r7
  8000cda:	bd90      	pop	{r4, r7, pc}
 
 08000cdc <MCAL_GPIO_TogglePin>:
+ * @param [in] 		- PinNumber : Specifies the port bit to write. Set by @ref GPIO_PINS_define
+ * @retval			- none
+ * Note				- none
+ */
+void MCAL_GPIO_TogglePin(GPIO_TypeDef *GPIOx,uint16_t PinNumber)
+{
  8000cdc:	b480      	push	{r7}
  8000cde:	b083      	sub	sp, #12
  8000ce0:	af00      	add	r7, sp, #0
  8000ce2:	6078      	str	r0, [r7, #4]
  8000ce4:	460b      	mov	r3, r1
  8000ce6:	807b      	strh	r3, [r7, #2]
+	GPIOx->ODR ^= (PinNumber) ;
  8000ce8:	687b      	ldr	r3, [r7, #4]
  8000cea:	68da      	ldr	r2, [r3, #12]
  8000cec:	887b      	ldrh	r3, [r7, #2]
  8000cee:	405a      	eors	r2, r3
  8000cf0:	687b      	ldr	r3, [r7, #4]
  8000cf2:	60da      	str	r2, [r3, #12]
+}
  8000cf4:	bf00      	nop
  8000cf6:	370c      	adds	r7, #12
  8000cf8:	46bd      	mov	sp, r7
@@ -1544,12 +2086,19 @@ int main(void)
 	...
 
 08000d00 <Slave_States>:
+	/*Send The Address*/
+	I2Cx->DR = Address ;
+}
+
+void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
+{
  8000d00:	b580      	push	{r7, lr}
  8000d02:	b084      	sub	sp, #16
  8000d04:	af00      	add	r7, sp, #0
  8000d06:	6078      	str	r0, [r7, #4]
  8000d08:	460b      	mov	r3, r1
  8000d0a:	70fb      	strb	r3, [r7, #3]
+	uint8_t index = (I2Cx == I2C1) ? I2C1_INDEX : I2C2_INDEX ;
  8000d0c:	687b      	ldr	r3, [r7, #4]
  8000d0e:	4a32      	ldr	r2, [pc, #200]	; (8000dd8 <Slave_States+0xd8>)
  8000d10:	4293      	cmp	r3, r2
@@ -1558,6 +2107,8 @@ int main(void)
  8000d16:	2300      	moveq	r3, #0
  8000d18:	b2db      	uxtb	r3, r3
  8000d1a:	73fb      	strb	r3, [r7, #15]
+
+	switch(State)
  8000d1c:	78fb      	ldrb	r3, [r7, #3]
  8000d1e:	2b04      	cmp	r3, #4
  8000d20:	d856      	bhi.n	8000dd0 <Slave_States+0xd0>
@@ -1568,14 +2119,29 @@ int main(void)
  8000d30:	08000d67 	.word	0x08000d67
  8000d34:	08000d7f 	.word	0x08000d7f
  8000d38:	08000da3 	.word	0x08000da3
+	{
+	case I2C_ERROR_AF:
+		//make sure that the slave is really in transmitter mode
+		if(I2Cx->SR2 & (I2C_SR2_TRA))
  8000d3c:	687b      	ldr	r3, [r7, #4]
  8000d3e:	699b      	ldr	r3, [r3, #24]
+		{
+			//Slave shouldn't send anything else
+		}
+		break;
  8000d40:	e046      	b.n	8000dd0 <Slave_States+0xd0>
+
+	case I2C_EV_STOP:
+		//make sure that the slave is really in transmitter mode
+		if(I2Cx->SR2 & (I2C_SR2_TRA))
  8000d42:	687b      	ldr	r3, [r7, #4]
  8000d44:	699b      	ldr	r3, [r3, #24]
  8000d46:	f003 0304 	and.w	r3, r3, #4
  8000d4a:	2b00      	cmp	r3, #0
  8000d4c:	d03b      	beq.n	8000dc6 <Slave_States+0xc6>
+		{
+			//Notify APP that the Stop Condition is Sent by the master
+			Global_I2C_Config[index].P_Slave_Event_CallBack(I2C_EV_STOP);
  8000d4e:	7bfa      	ldrb	r2, [r7, #15]
  8000d50:	4922      	ldr	r1, [pc, #136]	; (8000ddc <Slave_States+0xdc>)
  8000d52:	4613      	mov	r3, r2
@@ -1587,7 +2153,13 @@ int main(void)
  8000d5e:	681b      	ldr	r3, [r3, #0]
  8000d60:	2000      	movs	r0, #0
  8000d62:	4798      	blx	r3
+		}
+		break;
  8000d64:	e02f      	b.n	8000dc6 <Slave_States+0xc6>
+
+	case I2C_EV_ADDR_Matched:
+		//Notify APP that The address is matched with The slave address
+		Global_I2C_Config[index].P_Slave_Event_CallBack(I2C_EV_ADDR_Matched);
  8000d66:	7bfa      	ldrb	r2, [r7, #15]
  8000d68:	491c      	ldr	r1, [pc, #112]	; (8000ddc <Slave_States+0xdc>)
  8000d6a:	4613      	mov	r3, r2
@@ -1599,12 +2171,20 @@ int main(void)
  8000d76:	681b      	ldr	r3, [r3, #0]
  8000d78:	2002      	movs	r0, #2
  8000d7a:	4798      	blx	r3
+		break;
  8000d7c:	e028      	b.n	8000dd0 <Slave_States+0xd0>
+
+	case I2C_EV_DATA_REQ:
+		//make sure that the slave is really in transmitter mode
+		if(I2Cx->SR2 & (I2C_SR2_TRA))
  8000d7e:	687b      	ldr	r3, [r7, #4]
  8000d80:	699b      	ldr	r3, [r3, #24]
  8000d82:	f003 0304 	and.w	r3, r3, #4
  8000d86:	2b00      	cmp	r3, #0
  8000d88:	d01f      	beq.n	8000dca <Slave_States+0xca>
+		{
+			//The APP Layer should send the data (MCAL_I2C_SlaveSendData)in this state
+			Global_I2C_Config[index].P_Slave_Event_CallBack(I2C_EV_DATA_REQ);
  8000d8a:	7bfa      	ldrb	r2, [r7, #15]
  8000d8c:	4913      	ldr	r1, [pc, #76]	; (8000ddc <Slave_States+0xdc>)
  8000d8e:	4613      	mov	r3, r2
@@ -1616,12 +2196,22 @@ int main(void)
  8000d9a:	681b      	ldr	r3, [r3, #0]
  8000d9c:	2003      	movs	r0, #3
  8000d9e:	4798      	blx	r3
+		}
+
+		break;
  8000da0:	e013      	b.n	8000dca <Slave_States+0xca>
+
+	case I2C_EV_DATA_RCV:
+		//make sure that the slave is really in receiver mode
+		if(!(I2Cx->SR2 & (I2C_SR2_TRA)) )
  8000da2:	687b      	ldr	r3, [r7, #4]
  8000da4:	699b      	ldr	r3, [r3, #24]
  8000da6:	f003 0304 	and.w	r3, r3, #4
  8000daa:	2b00      	cmp	r3, #0
  8000dac:	d10f      	bne.n	8000dce <Slave_States+0xce>
+		{
+			//The APP Layer should read the data (MCAL_I2C_SlaveReceiveData)in this state
+			Global_I2C_Config[index].P_Slave_Event_CallBack(I2C_EV_DATA_RCV);
  8000dae:	7bfa      	ldrb	r2, [r7, #15]
  8000db0:	490a      	ldr	r1, [pc, #40]	; (8000ddc <Slave_States+0xdc>)
  8000db2:	4613      	mov	r3, r2
@@ -1633,12 +2223,20 @@ int main(void)
  8000dbe:	681b      	ldr	r3, [r3, #0]
  8000dc0:	2004      	movs	r0, #4
  8000dc2:	4798      	blx	r3
+		}
+
+		break;
  8000dc4:	e003      	b.n	8000dce <Slave_States+0xce>
+		break;
  8000dc6:	bf00      	nop
  8000dc8:	e002      	b.n	8000dd0 <Slave_States+0xd0>
+		break;
  8000dca:	bf00      	nop
  8000dcc:	e000      	b.n	8000dd0 <Slave_States+0xd0>
+		break;
  8000dce:	bf00      	nop
+	}
+}
  8000dd0:	bf00      	nop
  8000dd2:	3710      	adds	r7, #16
  8000dd4:	46bd      	mov	sp, r7
@@ -1647,100 +2245,184 @@ int main(void)
  8000ddc:	2000005c 	.word	0x2000005c
 
 08000de0 <I2C1_EV_IRQHandler>:
+ * 							ISR Functions
+ * =====================================================================================
+ */
+
+void I2C1_EV_IRQHandler(void)
+{
  8000de0:	b580      	push	{r7, lr}
  8000de2:	b086      	sub	sp, #24
  8000de4:	af00      	add	r7, sp, #0
+	volatile uint32_t dummyRead = 0;
  8000de6:	2300      	movs	r3, #0
  8000de8:	607b      	str	r3, [r7, #4]
+	I2C_TypeDef* I2Cx =I2C1 ;
  8000dea:	4b35      	ldr	r3, [pc, #212]	; (8000ec0 <I2C1_EV_IRQHandler+0xe0>)
  8000dec:	617b      	str	r3, [r7, #20]
+	//Interrupt Handler for both master and slave mode of a device
+	uint32_t temp1, temp2, temp3;
+
+	temp1 = I2Cx->CR2 & (I2C_CR2_ITEVTEN);
  8000dee:	697b      	ldr	r3, [r7, #20]
  8000df0:	685b      	ldr	r3, [r3, #4]
  8000df2:	f403 7300 	and.w	r3, r3, #512	; 0x200
  8000df6:	613b      	str	r3, [r7, #16]
+	temp2 = I2Cx->CR2 & (I2C_CR2_ITBUFEN);
  8000df8:	697b      	ldr	r3, [r7, #20]
  8000dfa:	685b      	ldr	r3, [r3, #4]
  8000dfc:	f403 6380 	and.w	r3, r3, #1024	; 0x400
  8000e00:	60fb      	str	r3, [r7, #12]
+
+	temp3 = I2Cx->SR1 & (I2C_SR1_STOPF);
  8000e02:	697b      	ldr	r3, [r7, #20]
  8000e04:	695b      	ldr	r3, [r3, #20]
  8000e06:	f003 0310 	and.w	r3, r3, #16
  8000e0a:	60bb      	str	r3, [r7, #8]
+
+	//Handle For Interrupt generated by STOPF event
+	//Note : Stop detection flag is applicable only slave mode
+	if(temp1 && temp3)
  8000e0c:	693b      	ldr	r3, [r7, #16]
  8000e0e:	2b00      	cmp	r3, #0
  8000e10:	d00c      	beq.n	8000e2c <I2C1_EV_IRQHandler+0x4c>
  8000e12:	68bb      	ldr	r3, [r7, #8]
  8000e14:	2b00      	cmp	r3, #0
  8000e16:	d009      	beq.n	8000e2c <I2C1_EV_IRQHandler+0x4c>
+	{
+		// STOP Flag is Set
+		// Clear the STOPF by reading SR1 register followed by writing to CR1 register
+		dummyRead = I2Cx->SR1;
  8000e18:	697b      	ldr	r3, [r7, #20]
  8000e1a:	695b      	ldr	r3, [r3, #20]
  8000e1c:	607b      	str	r3, [r7, #4]
+		I2Cx->CR1 = 0x0000;
  8000e1e:	697b      	ldr	r3, [r7, #20]
  8000e20:	2200      	movs	r2, #0
  8000e22:	601a      	str	r2, [r3, #0]
+		Slave_States(I2Cx,I2C_EV_STOP);
  8000e24:	2100      	movs	r1, #0
  8000e26:	6978      	ldr	r0, [r7, #20]
  8000e28:	f7ff ff6a 	bl	8000d00 <Slave_States>
+	}
+
+	/*---------------------------------------------------*/
+	temp3 = I2Cx->SR1 & (I2C_SR1_ADDR);
  8000e2c:	697b      	ldr	r3, [r7, #20]
  8000e2e:	695b      	ldr	r3, [r3, #20]
  8000e30:	f003 0302 	and.w	r3, r3, #2
  8000e34:	60bb      	str	r3, [r7, #8]
+
+	//Handle For Interrupt generated by ADDR event
+	//Note :When master mode : Address is sent
+	//		When slave mode  : Address is matched with own address
+	if(temp1 && temp3)
  8000e36:	693b      	ldr	r3, [r7, #16]
  8000e38:	2b00      	cmp	r3, #0
  8000e3a:	d012      	beq.n	8000e62 <I2C1_EV_IRQHandler+0x82>
  8000e3c:	68bb      	ldr	r3, [r7, #8]
  8000e3e:	2b00      	cmp	r3, #0
  8000e40:	d00f      	beq.n	8000e62 <I2C1_EV_IRQHandler+0x82>
+	{
+		// Interrupt is generated because of ADDR event
+		// check for device mode
+		if(I2Cx->SR2 & (I2C_SR2_MSL))
  8000e42:	697b      	ldr	r3, [r7, #20]
  8000e44:	699b      	ldr	r3, [r3, #24]
  8000e46:	f003 0301 	and.w	r3, r3, #1
  8000e4a:	2b00      	cmp	r3, #0
  8000e4c:	d109      	bne.n	8000e62 <I2C1_EV_IRQHandler+0x82>
+		}
+		else
+		{
+			//Slave mode
+			//Clear the ADDR flag (Read SR1 , Read SR2)
+			dummyRead = I2Cx->SR1;
  8000e4e:	697b      	ldr	r3, [r7, #20]
  8000e50:	695b      	ldr	r3, [r3, #20]
  8000e52:	607b      	str	r3, [r7, #4]
+			dummyRead = I2Cx->SR2;
  8000e54:	697b      	ldr	r3, [r7, #20]
  8000e56:	699b      	ldr	r3, [r3, #24]
  8000e58:	607b      	str	r3, [r7, #4]
+			Slave_States(I2Cx,I2C_EV_ADDR_Matched);
  8000e5a:	2102      	movs	r1, #2
  8000e5c:	6978      	ldr	r0, [r7, #20]
  8000e5e:	f7ff ff4f 	bl	8000d00 <Slave_States>
+		}
+	}
+
+	/*---------------------------------------------------*/
+	temp3 = I2Cx->SR1 & (I2C_SR1_TXE);
  8000e62:	697b      	ldr	r3, [r7, #20]
  8000e64:	695b      	ldr	r3, [r3, #20]
  8000e66:	f003 0380 	and.w	r3, r3, #128	; 0x80
  8000e6a:	60bb      	str	r3, [r7, #8]
+
+	//Handle For Interrupt generated by TXE event
+	if(temp1 && temp3)
  8000e6c:	693b      	ldr	r3, [r7, #16]
  8000e6e:	2b00      	cmp	r3, #0
  8000e70:	d00c      	beq.n	8000e8c <I2C1_EV_IRQHandler+0xac>
  8000e72:	68bb      	ldr	r3, [r7, #8]
  8000e74:	2b00      	cmp	r3, #0
  8000e76:	d009      	beq.n	8000e8c <I2C1_EV_IRQHandler+0xac>
+	{
+		// Interrupt is generated because of TXE event
+		// check for device mode
+		if(I2Cx->SR2 & (I2C_SR2_MSL))
  8000e78:	697b      	ldr	r3, [r7, #20]
  8000e7a:	699b      	ldr	r3, [r3, #24]
  8000e7c:	f003 0301 	and.w	r3, r3, #1
  8000e80:	2b00      	cmp	r3, #0
  8000e82:	d103      	bne.n	8000e8c <I2C1_EV_IRQHandler+0xac>
+			//Master mode
+		}
+		else
+		{
+			//Slave mode
+			Slave_States(I2Cx,I2C_EV_DATA_REQ);
  8000e84:	2103      	movs	r1, #3
  8000e86:	6978      	ldr	r0, [r7, #20]
  8000e88:	f7ff ff3a 	bl	8000d00 <Slave_States>
+		}
+	}
+	/*---------------------------------------------------*/
+	temp3 = I2Cx->SR1 & (I2C_SR1_RXNE);
  8000e8c:	697b      	ldr	r3, [r7, #20]
  8000e8e:	695b      	ldr	r3, [r3, #20]
  8000e90:	f003 0340 	and.w	r3, r3, #64	; 0x40
  8000e94:	60bb      	str	r3, [r7, #8]
+
+	//Handle For Interrupt generated by RXNE event
+	if(temp1 && temp3)
  8000e96:	693b      	ldr	r3, [r7, #16]
  8000e98:	2b00      	cmp	r3, #0
  8000e9a:	d00c      	beq.n	8000eb6 <I2C1_EV_IRQHandler+0xd6>
  8000e9c:	68bb      	ldr	r3, [r7, #8]
  8000e9e:	2b00      	cmp	r3, #0
  8000ea0:	d009      	beq.n	8000eb6 <I2C1_EV_IRQHandler+0xd6>
+	{
+		// Interrupt is generated because of RXNE event
+		// check for device mode
+		if(I2Cx->SR2 & (I2C_SR2_MSL))
  8000ea2:	697b      	ldr	r3, [r7, #20]
  8000ea4:	699b      	ldr	r3, [r3, #24]
  8000ea6:	f003 0301 	and.w	r3, r3, #1
  8000eaa:	2b00      	cmp	r3, #0
  8000eac:	d103      	bne.n	8000eb6 <I2C1_EV_IRQHandler+0xd6>
+			//Master mode
+		}
+		else
+		{
+			//Slave mode
+			Slave_States(I2Cx,I2C_EV_DATA_RCV);
  8000eae:	2104      	movs	r1, #4
  8000eb0:	6978      	ldr	r0, [r7, #20]
  8000eb2:	f7ff ff25 	bl	8000d00 <Slave_States>
+		}
+	}
+}
  8000eb6:	bf00      	nop
  8000eb8:	3718      	adds	r7, #24
  8000eba:	46bd      	mov	sp, r7
@@ -1749,33 +2431,61 @@ int main(void)
  8000ec0:	40005400 	.word	0x40005400
 
 08000ec4 <I2C1_ER_IRQHandler>:
+
+void I2C1_ER_IRQHandler(void)
+{
  8000ec4:	b480      	push	{r7}
  8000ec6:	af00      	add	r7, sp, #0
+
+}
  8000ec8:	bf00      	nop
  8000eca:	46bd      	mov	sp, r7
  8000ecc:	bc80      	pop	{r7}
  8000ece:	4770      	bx	lr
 
 08000ed0 <I2C2_EV_IRQHandler>:
+
+void I2C2_EV_IRQHandler(void)
+{
  8000ed0:	b480      	push	{r7}
  8000ed2:	af00      	add	r7, sp, #0
+//			//Slave mode
+//			Slave_States(I2Cx,I2C_EV_DATA_RCV);
+//		}
+//	}
+
+}
  8000ed4:	bf00      	nop
  8000ed6:	46bd      	mov	sp, r7
  8000ed8:	bc80      	pop	{r7}
  8000eda:	4770      	bx	lr
 
 08000edc <I2C2_ER_IRQHandler>:
+
+void I2C2_ER_IRQHandler(void)
+{
  8000edc:	b480      	push	{r7}
  8000ede:	af00      	add	r7, sp, #0
+
+}
  8000ee0:	bf00      	nop
  8000ee2:	46bd      	mov	sp, r7
  8000ee4:	bc80      	pop	{r7}
  8000ee6:	4770      	bx	lr
 
 08000ee8 <SPI1_IRQHandler>:
+ * 							ISR Functions
+ * =====================================================================================
+ */
+
+void SPI1_IRQHandler(void)
+{
  8000ee8:	b580      	push	{r7, lr}
  8000eea:	b082      	sub	sp, #8
  8000eec:	af00      	add	r7, sp, #0
+	struct S_IRQ_SRC irq_src ;
+
+	irq_src.TXE  = ( ( SPI1->SPI_SR  & (1<<1)) >> 1 ) ;
  8000eee:	4b13      	ldr	r3, [pc, #76]	; (8000f3c <SPI1_IRQHandler+0x54>)
  8000ef0:	689b      	ldr	r3, [r3, #8]
  8000ef2:	085b      	lsrs	r3, r3, #1
@@ -1784,6 +2494,7 @@ int main(void)
  8000efa:	793b      	ldrb	r3, [r7, #4]
  8000efc:	f362 0300 	bfi	r3, r2, #0, #1
  8000f00:	713b      	strb	r3, [r7, #4]
+	irq_src.RXNE = ( ( SPI1->SPI_SR  & (1<<0)) >> 0 ) ;
  8000f02:	4b0e      	ldr	r3, [pc, #56]	; (8000f3c <SPI1_IRQHandler+0x54>)
  8000f04:	689b      	ldr	r3, [r3, #8]
  8000f06:	f003 0301 	and.w	r3, r3, #1
@@ -1791,6 +2502,7 @@ int main(void)
  8000f0c:	793b      	ldrb	r3, [r7, #4]
  8000f0e:	f362 0341 	bfi	r3, r2, #1, #1
  8000f12:	713b      	strb	r3, [r7, #4]
+	irq_src.ERRI = ( ( SPI1->SPI_SR  & (1<<4)) >> 4 ) ;
  8000f14:	4b09      	ldr	r3, [pc, #36]	; (8000f3c <SPI1_IRQHandler+0x54>)
  8000f16:	689b      	ldr	r3, [r3, #8]
  8000f18:	091b      	lsrs	r3, r3, #4
@@ -1799,11 +2511,14 @@ int main(void)
  8000f20:	793b      	ldrb	r3, [r7, #4]
  8000f22:	f362 0382 	bfi	r3, r2, #2, #1
  8000f26:	713b      	strb	r3, [r7, #4]
+
+	Global_SPI_Config[SPI1_INDEX]->P_IRQ_CallBack(irq_src);
  8000f28:	4b05      	ldr	r3, [pc, #20]	; (8000f40 <SPI1_IRQHandler+0x58>)
  8000f2a:	681b      	ldr	r3, [r3, #0]
  8000f2c:	695b      	ldr	r3, [r3, #20]
  8000f2e:	7938      	ldrb	r0, [r7, #4]
  8000f30:	4798      	blx	r3
+}
  8000f32:	bf00      	nop
  8000f34:	3708      	adds	r7, #8
  8000f36:	46bd      	mov	sp, r7
@@ -1813,9 +2528,15 @@ int main(void)
  8000f40:	200000a4 	.word	0x200000a4
 
 08000f44 <SPI2_IRQHandler>:
+
+void SPI2_IRQHandler(void)
+{
  8000f44:	b580      	push	{r7, lr}
  8000f46:	b082      	sub	sp, #8
  8000f48:	af00      	add	r7, sp, #0
+	struct S_IRQ_SRC irq_src ;
+
+	irq_src.TXE  = ( ( SPI1->SPI_SR  & (1<<1)) >> 1 ) ;
  8000f4a:	4b13      	ldr	r3, [pc, #76]	; (8000f98 <SPI2_IRQHandler+0x54>)
  8000f4c:	689b      	ldr	r3, [r3, #8]
  8000f4e:	085b      	lsrs	r3, r3, #1
@@ -1824,6 +2545,7 @@ int main(void)
  8000f56:	793b      	ldrb	r3, [r7, #4]
  8000f58:	f362 0300 	bfi	r3, r2, #0, #1
  8000f5c:	713b      	strb	r3, [r7, #4]
+	irq_src.RXNE = ( ( SPI1->SPI_SR  & (1<<0)) >> 0 ) ;
  8000f5e:	4b0e      	ldr	r3, [pc, #56]	; (8000f98 <SPI2_IRQHandler+0x54>)
  8000f60:	689b      	ldr	r3, [r3, #8]
  8000f62:	f003 0301 	and.w	r3, r3, #1
@@ -1831,6 +2553,7 @@ int main(void)
  8000f68:	793b      	ldrb	r3, [r7, #4]
  8000f6a:	f362 0341 	bfi	r3, r2, #1, #1
  8000f6e:	713b      	strb	r3, [r7, #4]
+	irq_src.ERRI = ( ( SPI1->SPI_SR  & (1<<4)) >> 4 ) ;
  8000f70:	4b09      	ldr	r3, [pc, #36]	; (8000f98 <SPI2_IRQHandler+0x54>)
  8000f72:	689b      	ldr	r3, [r3, #8]
  8000f74:	091b      	lsrs	r3, r3, #4
@@ -1839,11 +2562,14 @@ int main(void)
  8000f7c:	793b      	ldrb	r3, [r7, #4]
  8000f7e:	f362 0382 	bfi	r3, r2, #2, #1
  8000f82:	713b      	strb	r3, [r7, #4]
+
+	Global_SPI_Config[SPI2_INDEX]->P_IRQ_CallBack(irq_src);
  8000f84:	4b05      	ldr	r3, [pc, #20]	; (8000f9c <SPI2_IRQHandler+0x58>)
  8000f86:	685b      	ldr	r3, [r3, #4]
  8000f88:	695b      	ldr	r3, [r3, #20]
  8000f8a:	7938      	ldrb	r0, [r7, #4]
  8000f8c:	4798      	blx	r3
+}
  8000f8e:	bf00      	nop
  8000f90:	3708      	adds	r7, #8
  8000f92:	46bd      	mov	sp, r7
@@ -2259,34 +2985,50 @@ void TIM4_IRQHandler()
  80011e8:	2000044c 	.word	0x2000044c
 
 080011ec <USART1_IRQHandler>:
+ * 							ISR Functions
+ * =====================================================================================
+ */
+
+void USART1_IRQHandler (void)
+{
  80011ec:	b580      	push	{r7, lr}
  80011ee:	af00      	add	r7, sp, #0
+	Global_UART_Config->P_IRQ_CallBack();
  80011f0:	4b02      	ldr	r3, [pc, #8]	; (80011fc <USART1_IRQHandler+0x10>)
  80011f2:	681b      	ldr	r3, [r3, #0]
  80011f4:	691b      	ldr	r3, [r3, #16]
  80011f6:	4798      	blx	r3
+}
  80011f8:	bf00      	nop
  80011fa:	bd80      	pop	{r7, pc}
  80011fc:	200000ac 	.word	0x200000ac
 
 08001200 <USART2_IRQHandler>:
+void USART2_IRQHandler (void)
+{
  8001200:	b580      	push	{r7, lr}
  8001202:	af00      	add	r7, sp, #0
+	Global_UART_Config->P_IRQ_CallBack();
  8001204:	4b02      	ldr	r3, [pc, #8]	; (8001210 <USART2_IRQHandler+0x10>)
  8001206:	681b      	ldr	r3, [r3, #0]
  8001208:	691b      	ldr	r3, [r3, #16]
  800120a:	4798      	blx	r3
+}
  800120c:	bf00      	nop
  800120e:	bd80      	pop	{r7, pc}
  8001210:	200000ac 	.word	0x200000ac
 
 08001214 <USART3_IRQHandler>:
+void USART3_IRQHandler (void)
+{
  8001214:	b580      	push	{r7, lr}
  8001216:	af00      	add	r7, sp, #0
+	Global_UART_Config->P_IRQ_CallBack();
  8001218:	4b02      	ldr	r3, [pc, #8]	; (8001224 <USART3_IRQHandler+0x10>)
  800121a:	681b      	ldr	r3, [r3, #0]
  800121c:	691b      	ldr	r3, [r3, #16]
  800121e:	4798      	blx	r3
+}
  8001220:	bf00      	nop
  8001222:	bd80      	pop	{r7, pc}
  8001224:	200000ac 	.word	0x200000ac
