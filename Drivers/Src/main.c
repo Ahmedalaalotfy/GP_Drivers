@@ -42,23 +42,7 @@ void clock_init(void)
 
 
 }
-void timer2 ()
-{
-  static int counter = 0 ;
 
-  if(counter == 0)
-  TIM2->CNT = Counter_Preload_Value;
-
-  if (counter == 0)
-  {
-
-	  counter = 0 ;
-
-	  MCAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1) ;
-
-  }
- // counter ++ ;
-}
 
 int main(void)
 {
@@ -66,25 +50,41 @@ int main(void)
 
 
 	TIM_Config_t timer_config ;
-	GPIO_PinConfig_t PinConfig ;
 
-	timer_config.TIM_Mode = TIM_Mode_UP_Count;
+
+	timer_config.TIM_Mode =  TIM_Mode_PWM;
+	//timer_config.PWM.Channel = TIM_CHANNEL_4;
+	timer_config.PWM.Ouptut_On_Compare_Match = PWM_Compare_Match_High;
+	timer_config.PWM.Mode = PWM_Mode_EDGE_DOWN;
+	timer_config.PWM.Compare_value = 45000;
 	timer_config.Prescaler = 8 ;
-	timer_config.Auto_Reload_Value = 0x0A ;
-	timer_config.Auto_Reload_status = TIM_Auto_Reload_Not_Bufferd ;
-	timer_config.IRQ_Enable = TIM_IRQ_MODE_OverFlow;
-	timer_config.P_IRQ_CallBack = timer2 ;
+	timer_config.Auto_Reload_Value = 60000 ;
+	timer_config.IRQ_Enable = TIM_IRQ_MODE_None;
+	timer_config.P_IRQ_CallBack = NULL ;
 
-	MCAL_TIM_Init(TIM2,&timer_config );
+	MCAL_TIM_GPIO_Set_Pins(TIM3, TIM_CHANNEL_1, TIM_Mode_PWM);
+	MCAL_TIM_GPIO_Set_Pins(TIM3, TIM_CHANNEL_2, TIM_Mode_PWM);
+	MCAL_TIM_GPIO_Set_Pins(TIM3, TIM_CHANNEL_3, TIM_Mode_PWM);
+	MCAL_TIM_GPIO_Set_Pins(TIM3, TIM_CHANNEL_4, TIM_Mode_PWM);
 
 
-	//toggle--> PA1
-	PinConfig.GPIO_PinNumber = GPIO_PIN_1;
-	PinConfig.GPIO_MODE = GPIO_MODE_OUTPUT_AF_PP;
-	PinConfig.GPIO_Output_Speed=GPIO_SPEED_10M;
-	MCAL_GPIO_Init(GPIOA, &PinConfig);
+	timer_config.PWM.Channel = TIM_CHANNEL_1;
+	MCAL_TIM_Init(TIM3,&timer_config );
 
-	MCAL_TIM_Start(TIM2);
+	timer_config.PWM.Channel = TIM_CHANNEL_2;
+	MCAL_TIM_Init(TIM3,&timer_config );
+
+	timer_config.PWM.Compare_value = 15000;
+	timer_config.Auto_Reload_Value = 60000 ;
+	timer_config.PWM.Channel = TIM_CHANNEL_3;
+	MCAL_TIM_Init(TIM3,&timer_config );
+
+	timer_config.PWM.Channel = TIM_CHANNEL_4;
+	MCAL_TIM_Init(TIM3,&timer_config );
+
+
+	MCAL_TIM_Start(TIM3);
+
 	while (1)
 	{
 

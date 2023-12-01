@@ -58,8 +58,8 @@ Drivers.bin \
 all: Drivers.axf secondary-outputs
 
 # Tool invocations
-Drivers.axf: $(OBJS) $(USER_OBJS) C:\Users\Acer\STM32CubeIDE\workspace_1.4.0\Drivers\STM32F103C6TX_FLASH.ld
-	arm-none-eabi-gcc -gdwarf-2 -o "Drivers.axf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Acer\STM32CubeIDE\workspace_1.4.0\Drivers\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Drivers.axf: $(OBJS) $(USER_OBJS) M:\Study\College\Graduation\ Project\ADAS\Drivers\STM32F103C6TX_FLASH.ld
+	arm-none-eabi-gcc -gdwarf-2 -o "Drivers.axf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"M:\Study\College\Graduation Project\ADAS\Drivers\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

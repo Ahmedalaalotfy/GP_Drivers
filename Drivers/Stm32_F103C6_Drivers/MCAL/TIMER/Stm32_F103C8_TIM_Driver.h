@@ -27,7 +27,8 @@ typedef enum
 	TIMx_NOT_Found,
 	TIM_MODE_NOT_Found,
 	TIM_Auto_Reload_Value_Exceeded,
-	TIM_Counter_Auto_Reload_Value_Exceeded
+	TIM_Counter_Auto_Reload_Value_Exceeded,
+	TIM_PWM_Auto_Reload_Value_Exceeded
 }Error_status;
 
 //struct S_IRQ_SRC
@@ -38,15 +39,39 @@ typedef enum
 //	uint8_t Reserved:5 ;
 //};
 
+
 typedef struct
 {
-	uint16_t   TIM_Mode ;             //specifies the TIM operation mode @ref TIM_Mode
-	uint16_t   Prescaler ;            //specifies the Prescaler that will be divided on
+	uint16_t   TIM_Mode ;            	 //specifies the TIM operation mode @ref TIM_Mode
+	uint16_t   Prescaler ;           	 //specifies the Prescaler that will be divided on
 	uint16_t   Counter_Preload_Value;
-	uint16_t   Auto_Reload_status ;   //specifies the auto reload buffer status @ref TIM_Auto_Reload_status
-	uint16_t   Auto_Reload_Value ;    //specifies the reloed value that will be count to
-	uint16_t   IRQ_Enable ;           //Specifies the source of interrupt @ref TIM_IRQ_Mode
-	void (* P_IRQ_CallBack)(void);  // Set C Function() which will be called once the IRQ Happen .
+	uint16_t   Auto_Reload_Value ;    	//specifies the reloed value that will be count to
+
+
+	struct {
+		uint8_t Count_Direction; 		//specifies the Timer Counting Direction @ref Count_Direction_Define
+	}Counter;
+
+
+	struct {
+		uint8_t	Channel; 				 //specifies the PWM MODE operating Channel
+									  	 //[You Can only select one channel at a time]  @ref TIM_CHANNEL_Define
+
+		uint8_t Mode; 				 	 //specifies the PWM MODE and Counter Direction @ref PWM_Mode_Define
+
+		uint16_t Compare_value;			//specifies the value to be loaded in the actual capture/compare register (preload value).
+										//The active capture/compare register contains the value to be compared to the counter
+										//TIMx_CNT and signaled on OC1 output.
+										// NOTE: Compare Value Must Not exceed The Auto Reload Value Set by the user Or else
+										//       There will be no PWM generated.
+
+
+		uint8_t Ouptut_On_Compare_Match; //specifies the PWM Output pin State [High/Low] On Compare match  @ref PWM_Compare_Match_Define
+
+	}PWM;
+
+	uint16_t   IRQ_Enable ;             //Specifies the source of interrupt @ref TIM_IRQ_Mode
+	void (* P_IRQ_CallBack)(void);      // Set C Function() which will be called once the IRQ Happen .
 
 }TIM_Config_t;
 
@@ -56,18 +81,43 @@ typedef struct
 //-----------------------------
 
 //@ref TIM_Mode
-#define TIM_Mode_UP_Count                          0X01
-#define TIM_Mode_DOWN_Count                        0X02
-#define TIM_Mode_UP_DOWN_Count                     0X03
-#define TIM_Mode_Output_Compare                    0X04
-#define TIM_Mode_PWM                               0X05
+
+
+		/*TIM_Mode_Counter*/
+#define TIM_Mode_Counter								0X01
+
+// @ref Count_Direction_Define
+#define Count_Direction_UP			0X00
+#define Count_Direction_DOWN		0X01
+#define Count_Direction_UP_DOWN		0X02
+
+
+		/*TIM_Mode_PWM*/
+#define TIM_Mode_PWM									0X02
+
+// @ref PWM_Mode_Define
+#define PWM_Mode_FROZEN					0X00
+#define PWM_Mode_EDGE_UP				0X01	
+#define PWM_Mode_EDGE_DOWN				0X02	
+#define PWM_Mode_Centre_Aligned			0X03
+
+
+//@ref PWM_Compare_Match_Define
+#define PWM_Compare_Match_Low  	 0
+#define PWM_Compare_Match_High   1
+
+//@ref TIM_CHANNEL_Define
+#define	TIM_CHANNEL_1				0X01	
+#define	TIM_CHANNEL_2				0X02	
+#define	TIM_CHANNEL_3				0X03	
+#define	TIM_CHANNEL_4				0X04
+
+/*TIM_Mode_Input_Capture*/
+#define TIM_Mode_Input_Capture						0x3
 
 //@ref TIM_Prescaler_option
 
 
-//@ref TIM_Auto_Reload_status
-#define TIM_Auto_Reload_Bufferd            (1<<7)
-#define TIM_Auto_Reload_Not_Bufferd        (0<<7)
 
 //@ref TIM_IRQ_Mode
 
@@ -89,7 +139,7 @@ typedef struct
 Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config);
 void MCAL_TIM_DeInit(TIM_TypeDef *TIMx);
 
-void MCAL_TIM_GPIO_Set_Pins(TIM_TypeDef *TIMx);
+Error_status MCAL_TIM_GPIO_Set_Pins(TIM_TypeDef *TIMx,uint8_t TIM_Channel,uint8_t TIM_Mode);
 
 Error_status MCAL_TIM_Start(TIM_TypeDef *TIMx);
 Error_status MCAL_TIM_Stop(TIM_TypeDef *TIMx);

@@ -20,10 +20,10 @@ TIM_Config_t Delay_timer_config ;
  */
 void HAL_Delay_Init(void)
 {
-	Delay_timer_config.TIM_Mode = TIM_Mode_UP_Count ;
+	Delay_timer_config.TIM_Mode =  TIM_Mode_Counter;
+	Delay_timer_config.Counter.Count_Direction =Count_Direction_UP;
 	Delay_timer_config.Prescaler = 8 ;
 	Delay_timer_config.Auto_Reload_Value = 0xFFFF ;
-	Delay_timer_config.Auto_Reload_status = TIM_Auto_Reload_Not_Bufferd ;
 	Delay_timer_config.IRQ_Enable = TIM_IRQ_MODE_None  ;
 	Delay_timer_config.P_IRQ_CallBack = NULL ;
 
