@@ -6,6 +6,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
   0 .isr_vector   00000130  08000000  08000000  00010000  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
 <<<<<<< HEAD
+<<<<<<< HEAD
   1 .text         00000e94  08000130  08000130  00010130  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   2 .rodata       00000000  08000fc4  08000fc4  00020004  2**0
@@ -46,6 +47,8 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  20 .debug_frame  00000c8c  00000000  00000000  000466b8  2**2
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
   1 .text         00001524  08000130  08000130  00010130  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   2 .rodata       00000000  08001654  08001654  00020004  2**0
@@ -85,7 +88,10 @@ Idx Name          Size      VMA       LMA       File off  Algn
  19 .comment      0000007b  00000000  00000000  00045786  2**0
                   CONTENTS, READONLY
  20 .debug_frame  00000d28  00000000  00000000  00045804  2**2
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -105,10 +111,14 @@ Disassembly of section .text:
  8000148:	20000004 	.word	0x20000004
  800014c:	00000000 	.word	0x00000000
 <<<<<<< HEAD
+<<<<<<< HEAD
  8000150:	08000fac 	.word	0x08000fac
 =======
  8000150:	0800163c 	.word	0x0800163c
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+ 8000150:	0800163c 	.word	0x0800163c
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 08000154 <frame_dummy>:
  8000154:	b508      	push	{r3, lr}
@@ -121,16 +131,22 @@ Disassembly of section .text:
  8000164:	00000000 	.word	0x00000000
  8000168:	20000008 	.word	0x20000008
 <<<<<<< HEAD
+<<<<<<< HEAD
  800016c:	08000fac 	.word	0x08000fac
 
 08000170 <clock_init>:
 #include "Delay.h"
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  800016c:	0800163c 	.word	0x0800163c
 
 08000170 <clock_init>:
 #include "Stm32f103c6_ADC.h"
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 
@@ -142,6 +158,7 @@ void clock_init(void)
 	//Enable clock to AFIO
 	AFIO_GPIO_CLK_EN();
 <<<<<<< HEAD
+<<<<<<< HEAD
  8000174:	4b0d      	ldr	r3, [pc, #52]	; (80001ac <clock_init+0x3c>)
  8000176:	699b      	ldr	r3, [r3, #24]
  8000178:	4a0c      	ldr	r2, [pc, #48]	; (80001ac <clock_init+0x3c>)
@@ -150,10 +167,16 @@ void clock_init(void)
  8000176:	699b      	ldr	r3, [r3, #24]
  8000178:	4a09      	ldr	r2, [pc, #36]	; (80001a0 <clock_init+0x30>)
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+ 8000174:	4b0a      	ldr	r3, [pc, #40]	; (80001a0 <clock_init+0x30>)
+ 8000176:	699b      	ldr	r3, [r3, #24]
+ 8000178:	4a09      	ldr	r2, [pc, #36]	; (80001a0 <clock_init+0x30>)
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  800017a:	f043 0301 	orr.w	r3, r3, #1
  800017e:	6193      	str	r3, [r2, #24]
 	//Enable clock to port A
 	RCC_GPIOA_CLK_EN();
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000180:	4b0a      	ldr	r3, [pc, #40]	; (80001ac <clock_init+0x3c>)
  8000182:	699b      	ldr	r3, [r3, #24]
@@ -163,10 +186,16 @@ void clock_init(void)
  8000182:	699b      	ldr	r3, [r3, #24]
  8000184:	4a06      	ldr	r2, [pc, #24]	; (80001a0 <clock_init+0x30>)
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+ 8000180:	4b07      	ldr	r3, [pc, #28]	; (80001a0 <clock_init+0x30>)
+ 8000182:	699b      	ldr	r3, [r3, #24]
+ 8000184:	4a06      	ldr	r2, [pc, #24]	; (80001a0 <clock_init+0x30>)
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000186:	f043 0304 	orr.w	r3, r3, #4
  800018a:	6193      	str	r3, [r2, #24]
 	//Enable clock to port B
 	RCC_GPIOB_CLK_EN();
+<<<<<<< HEAD
 <<<<<<< HEAD
  800018c:	4b07      	ldr	r3, [pc, #28]	; (80001ac <clock_init+0x3c>)
  800018e:	699b      	ldr	r3, [r3, #24]
@@ -191,6 +220,8 @@ void clock_init(void)
 
 080001b0 <main>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  800018c:	4b04      	ldr	r3, [pc, #16]	; (80001a0 <clock_init+0x30>)
  800018e:	699b      	ldr	r3, [r3, #24]
  8000190:	4a03      	ldr	r2, [pc, #12]	; (80001a0 <clock_init+0x30>)
@@ -206,11 +237,15 @@ void clock_init(void)
  80001a0:	40021000 	.word	0x40021000
 
 080001a4 <main>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 int main(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
  80001b0:	b580      	push	{r7, lr}
  80001b2:	b084      	sub	sp, #16
@@ -245,6 +280,8 @@ int main(void)
  80001d8:	f000 f834 	bl	8000244 <HAL_Delay_Init>
 
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  80001a4:	b580      	push	{r7, lr}
  80001a6:	b0a0      	sub	sp, #128	; 0x80
  80001a8:	af00      	add	r7, sp, #0
@@ -335,11 +372,15 @@ int main(void)
 	MCAL_TIM_Start(TIM3);
  800022c:	480f      	ldr	r0, [pc, #60]	; (800026c <main+0xc8>)
  800022e:	f001 f977 	bl	8001520 <MCAL_TIM_Start>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	while (1)
 	{
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		MCAL_WWDG_Start();
  80001dc:	f000 fe8c 	bl	8000ef8 <MCAL_WWDG_Start>
@@ -356,6 +397,8 @@ int main(void)
 
 080001f0 <Reset_Handler>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 		MCAL_ADC_READ(ADC1, &adc_cfg, &data_read);
  8000232:	f107 0262 	add.w	r2, r7, #98	; 0x62
@@ -391,13 +434,17 @@ int main(void)
  8000270:	40012400 	.word	0x40012400
 
 08000274 <Reset_Handler>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
   .section .text.Reset_Handler
   .weak Reset_Handler
   .type Reset_Handler, %function
 Reset_Handler:
   ldr   r0, =_estack
+<<<<<<< HEAD
 <<<<<<< HEAD
  80001f0:	480d      	ldr	r0, [pc, #52]	; (8000228 <LoopForever+0x2>)
   mov   sp, r0          /* set stack pointer */
@@ -491,6 +538,8 @@ LoopForever:
 
 08000240 <ADC3_IRQHandler>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000274:	480d      	ldr	r0, [pc, #52]	; (80002ac <LoopForever+0x2>)
   mov   sp, r0          /* set stack pointer */
  8000276:	4685      	mov	sp, r0
@@ -582,13 +631,17 @@ LoopForever:
  80002c0:	20000158 	.word	0x20000158
 
 080002c4 <ADC3_IRQHandler>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  * @retval : None
 */
   .section .text.Default_Handler,"ax",%progbits
 Default_Handler:
 Infinite_Loop:
   b Infinite_Loop
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000240:	e7fe      	b.n	8000240 <ADC3_IRQHandler>
 	...
@@ -645,12 +698,18 @@ void HAL_Delay_Init(void)
 
 080002c6 <delay_ms>:
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+ 80002c4:	e7fe      	b.n	80002c4 <ADC3_IRQHandler>
+
+080002c6 <delay_ms>:
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 /* HAL */
 #include "LCD_interface.h"
 #include "LCD_config.h"
 
 
 void delay_ms(uint32_t time) {
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000288:	b480      	push	{r7}
  800028a:	b085      	sub	sp, #20
@@ -688,6 +747,8 @@ void delay_ms(uint32_t time) {
 
 080002c0 <ADC1_2_IRQHandler>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  80002c6:	b480      	push	{r7}
  80002c8:	b085      	sub	sp, #20
  80002ca:	af00      	add	r7, sp, #0
@@ -1270,13 +1331,17 @@ uint16_t Get_the_channel_pin(uint16_t channel_num)
  800061a:	4770      	bx	lr
 
 0800061c <ADC1_2_IRQHandler>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  * 						ISR
  * ===============================================
  */
 
 void ADC1_2_IRQHandler(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
  80002c0:	b580      	push	{r7, lr}
  80002c2:	af00      	add	r7, sp, #0
@@ -1309,6 +1374,8 @@ void ADC1_2_IRQHandler(void)
 
 080002f8 <EXTI0_IRQHandler>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  800061c:	b580      	push	{r7, lr}
  800061e:	af00      	add	r7, sp, #0
 	/* ADC global interrupt */
@@ -1339,13 +1406,17 @@ void ADC1_2_IRQHandler(void)
  8000650:	200000b4 	.word	0x200000b4
 
 08000654 <EXTI0_IRQHandler>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  * =====================================================================================
  */
 
 
 void EXTI0_IRQHandler(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
  80002f8:	b580      	push	{r7, lr}
  80002fa:	af00      	add	r7, sp, #0
@@ -1641,6 +1712,8 @@ void EXTI15_10_IRQHandler(void)
 
 08000518 <Slave_States>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000654:	b580      	push	{r7, lr}
  8000656:	af00      	add	r7, sp, #0
 	// cleared by writing a ‘1’ into the bit Pending register (EXTI_PR)
@@ -2282,13 +2355,17 @@ void MCAL_GPIO_Init(GPIO_TypeDef *GPIOx,GPIO_PinConfig_t *PinConfig)
  8000a36:	bd90      	pop	{r4, r7, pc}
 
 08000a38 <Slave_States>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	/*Send The Address*/
 	I2Cx->DR = Address ;
 }
 
 void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000518:	b580      	push	{r7, lr}
  800051a:	b084      	sub	sp, #16
@@ -2318,6 +2395,8 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
  800054c:	08000597 	.word	0x08000597
  8000550:	080005bb 	.word	0x080005bb
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000a38:	b580      	push	{r7, lr}
  8000a3a:	b084      	sub	sp, #16
  8000a3c:	af00      	add	r7, sp, #0
@@ -2345,11 +2424,15 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
  8000a68:	08000a9f 	.word	0x08000a9f
  8000a6c:	08000ab7 	.word	0x08000ab7
  8000a70:	08000adb 	.word	0x08000adb
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	{
 	case I2C_ERROR_AF:
 		//make sure that the slave is really in transmitter mode
 		if(I2Cx->SR2 & (I2C_SR2_TRA))
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000554:	687b      	ldr	r3, [r7, #4]
  8000556:	699b      	ldr	r3, [r3, #24]
@@ -2357,19 +2440,28 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
  8000a74:	687b      	ldr	r3, [r7, #4]
  8000a76:	699b      	ldr	r3, [r3, #24]
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+ 8000a74:	687b      	ldr	r3, [r7, #4]
+ 8000a76:	699b      	ldr	r3, [r3, #24]
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 		{
 			//Slave shouldn't send anything else
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
  8000558:	e046      	b.n	80005e8 <Slave_States+0xd0>
 =======
  8000a78:	e046      	b.n	8000b08 <Slave_States+0xd0>
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+ 8000a78:	e046      	b.n	8000b08 <Slave_States+0xd0>
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	case I2C_EV_STOP:
 		//make sure that the slave is really in transmitter mode
 		if(I2Cx->SR2 & (I2C_SR2_TRA))
+<<<<<<< HEAD
 <<<<<<< HEAD
  800055a:	687b      	ldr	r3, [r7, #4]
  800055c:	699b      	ldr	r3, [r3, #24]
@@ -2394,6 +2486,8 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
 		break;
  800057c:	e02f      	b.n	80005de <Slave_States+0xc6>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000a7a:	687b      	ldr	r3, [r7, #4]
  8000a7c:	699b      	ldr	r3, [r3, #24]
  8000a7e:	f003 0304 	and.w	r3, r3, #4
@@ -2416,11 +2510,15 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
 		}
 		break;
  8000a9c:	e02f      	b.n	8000afe <Slave_States+0xc6>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	case I2C_EV_ADDR_Matched:
 		//Notify APP that The address is matched with The slave address
 		Global_I2C_Config[index].P_Slave_Event_CallBack(I2C_EV_ADDR_Matched);
+<<<<<<< HEAD
 <<<<<<< HEAD
  800057e:	7bfa      	ldrb	r2, [r7, #15]
  8000580:	491c      	ldr	r1, [pc, #112]	; (80005f4 <Slave_States+0xdc>)
@@ -2436,6 +2534,8 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
 		break;
  8000594:	e028      	b.n	80005e8 <Slave_States+0xd0>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000a9e:	7bfa      	ldrb	r2, [r7, #15]
  8000aa0:	491c      	ldr	r1, [pc, #112]	; (8000b14 <Slave_States+0xdc>)
  8000aa2:	4613      	mov	r3, r2
@@ -2449,11 +2549,15 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
  8000ab2:	4798      	blx	r3
 		break;
  8000ab4:	e028      	b.n	8000b08 <Slave_States+0xd0>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	case I2C_EV_DATA_REQ:
 		//make sure that the slave is really in transmitter mode
 		if(I2Cx->SR2 & (I2C_SR2_TRA))
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000596:	687b      	ldr	r3, [r7, #4]
  8000598:	699b      	ldr	r3, [r3, #24]
@@ -2479,6 +2583,8 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
 		break;
  80005b8:	e013      	b.n	80005e2 <Slave_States+0xca>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000ab6:	687b      	ldr	r3, [r7, #4]
  8000ab8:	699b      	ldr	r3, [r3, #24]
  8000aba:	f003 0304 	and.w	r3, r3, #4
@@ -2502,11 +2608,15 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
 
 		break;
  8000ad8:	e013      	b.n	8000b02 <Slave_States+0xca>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	case I2C_EV_DATA_RCV:
 		//make sure that the slave is really in receiver mode
 		if(!(I2Cx->SR2 & (I2C_SR2_TRA)) )
+<<<<<<< HEAD
 <<<<<<< HEAD
  80005ba:	687b      	ldr	r3, [r7, #4]
  80005bc:	699b      	ldr	r3, [r3, #24]
@@ -2550,6 +2660,8 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
 
 080005f8 <I2C1_EV_IRQHandler>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000ada:	687b      	ldr	r3, [r7, #4]
  8000adc:	699b      	ldr	r3, [r3, #24]
  8000ade:	f003 0304 	and.w	r3, r3, #4
@@ -2591,13 +2703,17 @@ void Slave_States(I2C_TypeDef *I2Cx,Slave_State State)
  8000b14:	20000060 	.word	0x20000060
 
 08000b18 <I2C1_EV_IRQHandler>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  * 							ISR Functions
  * =====================================================================================
  */
 
 void I2C1_EV_IRQHandler(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
  80005f8:	b580      	push	{r7, lr}
  80005fa:	b086      	sub	sp, #24
@@ -2609,6 +2725,8 @@ void I2C1_EV_IRQHandler(void)
  8000602:	4b35      	ldr	r3, [pc, #212]	; (80006d8 <I2C1_EV_IRQHandler+0xe0>)
  8000604:	617b      	str	r3, [r7, #20]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000b18:	b580      	push	{r7, lr}
  8000b1a:	b086      	sub	sp, #24
  8000b1c:	af00      	add	r7, sp, #0
@@ -2618,11 +2736,15 @@ void I2C1_EV_IRQHandler(void)
 	I2C_TypeDef* I2Cx =I2C1 ;
  8000b22:	4b35      	ldr	r3, [pc, #212]	; (8000bf8 <I2C1_EV_IRQHandler+0xe0>)
  8000b24:	617b      	str	r3, [r7, #20]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	//Interrupt Handler for both master and slave mode of a device
 	uint32_t temp1, temp2, temp3;
 
 	temp1 = I2Cx->CR2 & (I2C_CR2_ITEVTEN);
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000606:	697b      	ldr	r3, [r7, #20]
  8000608:	685b      	ldr	r3, [r3, #4]
@@ -2640,6 +2762,8 @@ void I2C1_EV_IRQHandler(void)
  800061e:	f003 0310 	and.w	r3, r3, #16
  8000622:	60bb      	str	r3, [r7, #8]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000b26:	697b      	ldr	r3, [r7, #20]
  8000b28:	685b      	ldr	r3, [r3, #4]
  8000b2a:	f403 7300 	and.w	r3, r3, #512	; 0x200
@@ -2655,11 +2779,15 @@ void I2C1_EV_IRQHandler(void)
  8000b3c:	695b      	ldr	r3, [r3, #20]
  8000b3e:	f003 0310 	and.w	r3, r3, #16
  8000b42:	60bb      	str	r3, [r7, #8]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	//Handle For Interrupt generated by STOPF event
 	//Note : Stop detection flag is applicable only slave mode
 	if(temp1 && temp3)
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000624:	693b      	ldr	r3, [r7, #16]
  8000626:	2b00      	cmp	r3, #0
@@ -2668,17 +2796,23 @@ void I2C1_EV_IRQHandler(void)
  800062c:	2b00      	cmp	r3, #0
  800062e:	d009      	beq.n	8000644 <I2C1_EV_IRQHandler+0x4c>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000b44:	693b      	ldr	r3, [r7, #16]
  8000b46:	2b00      	cmp	r3, #0
  8000b48:	d00c      	beq.n	8000b64 <I2C1_EV_IRQHandler+0x4c>
  8000b4a:	68bb      	ldr	r3, [r7, #8]
  8000b4c:	2b00      	cmp	r3, #0
  8000b4e:	d009      	beq.n	8000b64 <I2C1_EV_IRQHandler+0x4c>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	{
 		// STOP Flag is Set
 		// Clear the STOPF by reading SR1 register followed by writing to CR1 register
 		dummyRead = I2Cx->SR1;
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000630:	697b      	ldr	r3, [r7, #20]
  8000632:	695b      	ldr	r3, [r3, #20]
@@ -2692,6 +2826,8 @@ void I2C1_EV_IRQHandler(void)
  800063e:	6978      	ldr	r0, [r7, #20]
  8000640:	f7ff ff6a 	bl	8000518 <Slave_States>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000b50:	697b      	ldr	r3, [r7, #20]
  8000b52:	695b      	ldr	r3, [r3, #20]
  8000b54:	607b      	str	r3, [r7, #4]
@@ -2703,27 +2839,37 @@ void I2C1_EV_IRQHandler(void)
  8000b5c:	2100      	movs	r1, #0
  8000b5e:	6978      	ldr	r0, [r7, #20]
  8000b60:	f7ff ff6a 	bl	8000a38 <Slave_States>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	}
 
 	/*---------------------------------------------------*/
 	temp3 = I2Cx->SR1 & (I2C_SR1_ADDR);
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000644:	697b      	ldr	r3, [r7, #20]
  8000646:	695b      	ldr	r3, [r3, #20]
  8000648:	f003 0302 	and.w	r3, r3, #2
  800064c:	60bb      	str	r3, [r7, #8]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000b64:	697b      	ldr	r3, [r7, #20]
  8000b66:	695b      	ldr	r3, [r3, #20]
  8000b68:	f003 0302 	and.w	r3, r3, #2
  8000b6c:	60bb      	str	r3, [r7, #8]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	//Handle For Interrupt generated by ADDR event
 	//Note :When master mode : Address is sent
 	//		When slave mode  : Address is matched with own address
 	if(temp1 && temp3)
+<<<<<<< HEAD
 <<<<<<< HEAD
  800064e:	693b      	ldr	r3, [r7, #16]
  8000650:	2b00      	cmp	r3, #0
@@ -2732,17 +2878,23 @@ void I2C1_EV_IRQHandler(void)
  8000656:	2b00      	cmp	r3, #0
  8000658:	d00f      	beq.n	800067a <I2C1_EV_IRQHandler+0x82>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000b6e:	693b      	ldr	r3, [r7, #16]
  8000b70:	2b00      	cmp	r3, #0
  8000b72:	d012      	beq.n	8000b9a <I2C1_EV_IRQHandler+0x82>
  8000b74:	68bb      	ldr	r3, [r7, #8]
  8000b76:	2b00      	cmp	r3, #0
  8000b78:	d00f      	beq.n	8000b9a <I2C1_EV_IRQHandler+0x82>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	{
 		// Interrupt is generated because of ADDR event
 		// check for device mode
 		if(I2Cx->SR2 & (I2C_SR2_MSL))
+<<<<<<< HEAD
 <<<<<<< HEAD
  800065a:	697b      	ldr	r3, [r7, #20]
  800065c:	699b      	ldr	r3, [r3, #24]
@@ -2750,18 +2902,24 @@ void I2C1_EV_IRQHandler(void)
  8000662:	2b00      	cmp	r3, #0
  8000664:	d109      	bne.n	800067a <I2C1_EV_IRQHandler+0x82>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000b7a:	697b      	ldr	r3, [r7, #20]
  8000b7c:	699b      	ldr	r3, [r3, #24]
  8000b7e:	f003 0301 	and.w	r3, r3, #1
  8000b82:	2b00      	cmp	r3, #0
  8000b84:	d109      	bne.n	8000b9a <I2C1_EV_IRQHandler+0x82>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 		}
 		else
 		{
 			//Slave mode
 			//Clear the ADDR flag (Read SR1 , Read SR2)
 			dummyRead = I2Cx->SR1;
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000666:	697b      	ldr	r3, [r7, #20]
  8000668:	695b      	ldr	r3, [r3, #20]
@@ -2775,6 +2933,8 @@ void I2C1_EV_IRQHandler(void)
  8000674:	6978      	ldr	r0, [r7, #20]
  8000676:	f7ff ff4f 	bl	8000518 <Slave_States>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000b86:	697b      	ldr	r3, [r7, #20]
  8000b88:	695b      	ldr	r3, [r3, #20]
  8000b8a:	607b      	str	r3, [r7, #4]
@@ -2786,12 +2946,16 @@ void I2C1_EV_IRQHandler(void)
  8000b92:	2102      	movs	r1, #2
  8000b94:	6978      	ldr	r0, [r7, #20]
  8000b96:	f7ff ff4f 	bl	8000a38 <Slave_States>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 		}
 	}
 
 	/*---------------------------------------------------*/
 	temp3 = I2Cx->SR1 & (I2C_SR1_TXE);
+<<<<<<< HEAD
 <<<<<<< HEAD
  800067a:	697b      	ldr	r3, [r7, #20]
  800067c:	695b      	ldr	r3, [r3, #20]
@@ -2807,6 +2971,8 @@ void I2C1_EV_IRQHandler(void)
  800068c:	2b00      	cmp	r3, #0
  800068e:	d009      	beq.n	80006a4 <I2C1_EV_IRQHandler+0xac>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000b9a:	697b      	ldr	r3, [r7, #20]
  8000b9c:	695b      	ldr	r3, [r3, #20]
  8000b9e:	f003 0380 	and.w	r3, r3, #128	; 0x80
@@ -2820,11 +2986,15 @@ void I2C1_EV_IRQHandler(void)
  8000baa:	68bb      	ldr	r3, [r7, #8]
  8000bac:	2b00      	cmp	r3, #0
  8000bae:	d009      	beq.n	8000bc4 <I2C1_EV_IRQHandler+0xac>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	{
 		// Interrupt is generated because of TXE event
 		// check for device mode
 		if(I2Cx->SR2 & (I2C_SR2_MSL))
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000690:	697b      	ldr	r3, [r7, #20]
  8000692:	699b      	ldr	r3, [r3, #24]
@@ -2832,18 +3002,24 @@ void I2C1_EV_IRQHandler(void)
  8000698:	2b00      	cmp	r3, #0
  800069a:	d103      	bne.n	80006a4 <I2C1_EV_IRQHandler+0xac>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000bb0:	697b      	ldr	r3, [r7, #20]
  8000bb2:	699b      	ldr	r3, [r3, #24]
  8000bb4:	f003 0301 	and.w	r3, r3, #1
  8000bb8:	2b00      	cmp	r3, #0
  8000bba:	d103      	bne.n	8000bc4 <I2C1_EV_IRQHandler+0xac>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 			//Master mode
 		}
 		else
 		{
 			//Slave mode
 			Slave_States(I2Cx,I2C_EV_DATA_REQ);
+<<<<<<< HEAD
 <<<<<<< HEAD
  800069c:	2103      	movs	r1, #3
  800069e:	6978      	ldr	r0, [r7, #20]
@@ -2853,10 +3029,16 @@ void I2C1_EV_IRQHandler(void)
  8000bbe:	6978      	ldr	r0, [r7, #20]
  8000bc0:	f7ff ff3a 	bl	8000a38 <Slave_States>
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+ 8000bbc:	2103      	movs	r1, #3
+ 8000bbe:	6978      	ldr	r0, [r7, #20]
+ 8000bc0:	f7ff ff3a 	bl	8000a38 <Slave_States>
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 		}
 	}
 	/*---------------------------------------------------*/
 	temp3 = I2Cx->SR1 & (I2C_SR1_RXNE);
+<<<<<<< HEAD
 <<<<<<< HEAD
  80006a4:	697b      	ldr	r3, [r7, #20]
  80006a6:	695b      	ldr	r3, [r3, #20]
@@ -2872,6 +3054,8 @@ void I2C1_EV_IRQHandler(void)
  80006b6:	2b00      	cmp	r3, #0
  80006b8:	d009      	beq.n	80006ce <I2C1_EV_IRQHandler+0xd6>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000bc4:	697b      	ldr	r3, [r7, #20]
  8000bc6:	695b      	ldr	r3, [r3, #20]
  8000bc8:	f003 0340 	and.w	r3, r3, #64	; 0x40
@@ -2885,11 +3069,15 @@ void I2C1_EV_IRQHandler(void)
  8000bd4:	68bb      	ldr	r3, [r7, #8]
  8000bd6:	2b00      	cmp	r3, #0
  8000bd8:	d009      	beq.n	8000bee <I2C1_EV_IRQHandler+0xd6>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	{
 		// Interrupt is generated because of RXNE event
 		// check for device mode
 		if(I2Cx->SR2 & (I2C_SR2_MSL))
+<<<<<<< HEAD
 <<<<<<< HEAD
  80006ba:	697b      	ldr	r3, [r7, #20]
  80006bc:	699b      	ldr	r3, [r3, #24]
@@ -2897,18 +3085,24 @@ void I2C1_EV_IRQHandler(void)
  80006c2:	2b00      	cmp	r3, #0
  80006c4:	d103      	bne.n	80006ce <I2C1_EV_IRQHandler+0xd6>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000bda:	697b      	ldr	r3, [r7, #20]
  8000bdc:	699b      	ldr	r3, [r3, #24]
  8000bde:	f003 0301 	and.w	r3, r3, #1
  8000be2:	2b00      	cmp	r3, #0
  8000be4:	d103      	bne.n	8000bee <I2C1_EV_IRQHandler+0xd6>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 			//Master mode
 		}
 		else
 		{
 			//Slave mode
 			Slave_States(I2Cx,I2C_EV_DATA_RCV);
+<<<<<<< HEAD
 <<<<<<< HEAD
  80006c6:	2104      	movs	r1, #4
  80006c8:	6978      	ldr	r0, [r7, #20]
@@ -2943,6 +3137,8 @@ void I2C2_EV_IRQHandler(void)
  80006e8:	b480      	push	{r7}
  80006ea:	af00      	add	r7, sp, #0
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000be6:	2104      	movs	r1, #4
  8000be8:	6978      	ldr	r0, [r7, #20]
  8000bea:	f7ff ff25 	bl	8000a38 <Slave_States>
@@ -2975,13 +3171,17 @@ void I2C2_EV_IRQHandler(void)
 {
  8000c08:	b480      	push	{r7}
  8000c0a:	af00      	add	r7, sp, #0
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 //			//Slave mode
 //			Slave_States(I2Cx,I2C_EV_DATA_RCV);
 //		}
 //	}
 
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
  80006ec:	bf00      	nop
  80006ee:	46bd      	mov	sp, r7
@@ -3003,6 +3203,8 @@ void I2C2_ER_IRQHandler(void)
 
 08000700 <SPI1_IRQHandler>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000c0c:	bf00      	nop
  8000c0e:	46bd      	mov	sp, r7
  8000c10:	bc80      	pop	{r7}
@@ -3022,13 +3224,17 @@ void I2C2_ER_IRQHandler(void)
  8000c1e:	4770      	bx	lr
 
 08000c20 <SPI1_IRQHandler>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  * 							ISR Functions
  * =====================================================================================
  */
 
 void SPI1_IRQHandler(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000700:	b580      	push	{r7, lr}
  8000702:	b082      	sub	sp, #8
@@ -3130,6 +3336,8 @@ void SPI2_IRQHandler(void)
 
 080007b8 <MCAL_TIM_Init>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000c20:	b580      	push	{r7, lr}
  8000c22:	b082      	sub	sp, #8
  8000c24:	af00      	add	r7, sp, #0
@@ -3229,7 +3437,10 @@ void SPI2_IRQHandler(void)
  8000cd4:	200000a8 	.word	0x200000a8
 
 08000cd8 <MCAL_TIM_Init>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  * @retval		 -none
  * Note			 -none
  */
@@ -3237,22 +3448,29 @@ void SPI2_IRQHandler(void)
 Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
  80007b8:	b4b0      	push	{r4, r5, r7}
  80007ba:	b083      	sub	sp, #12
  80007bc:	af00      	add	r7, sp, #0
  80007be:	6078      	str	r0, [r7, #4]
  80007c0:	6039      	str	r1, [r7, #0]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000cd8:	b4b0      	push	{r4, r5, r7}
  8000cda:	b083      	sub	sp, #12
  8000cdc:	af00      	add	r7, sp, #0
  8000cde:	6078      	str	r0, [r7, #4]
  8000ce0:	6039      	str	r1, [r7, #0]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 	//Clock & Configurations
 	if (TIMx == TIM2)
+<<<<<<< HEAD
 <<<<<<< HEAD
  80007c2:	687b      	ldr	r3, [r7, #4]
  80007c4:	f1b3 4f80 	cmp.w	r3, #1073741824	; 0x40000000
@@ -3340,6 +3558,8 @@ Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
  8000864:	6013      	str	r3, [r2, #0]
  8000866:	e001      	b.n	800086c <MCAL_TIM_Init+0xb4>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000ce2:	687b      	ldr	r3, [r7, #4]
  8000ce4:	f1b3 4f80 	cmp.w	r3, #1073741824	; 0x40000000
  8000ce8:	d116      	bne.n	8000d18 <MCAL_TIM_Init+0x40>
@@ -3425,11 +3645,15 @@ Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
  8000d80:	f043 4380 	orr.w	r3, r3, #1073741824	; 0x40000000
  8000d84:	6013      	str	r3, [r2, #0]
  8000d86:	e001      	b.n	8000d8c <MCAL_TIM_Init+0xb4>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	}
 	else
 	{
 		return TIMx_NOT_Found ;
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000868:	2301      	movs	r3, #1
  800086a:	e291      	b.n	8000d90 <MCAL_TIM_Init+0x5d8>
@@ -3437,12 +3661,17 @@ Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
  8000d88:	2301      	movs	r3, #1
  8000d8a:	e291      	b.n	80012b0 <MCAL_TIM_Init+0x5d8>
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+ 8000d88:	2301      	movs	r3, #1
+ 8000d8a:	e291      	b.n	80012b0 <MCAL_TIM_Init+0x5d8>
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 
 	//Mode Selection
 
 	switch(TIM_Config->TIM_Mode)
+<<<<<<< HEAD
 <<<<<<< HEAD
  800086c:	683b      	ldr	r3, [r7, #0]
  800086e:	881b      	ldrh	r3, [r3, #0]
@@ -3452,6 +3681,8 @@ Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
  8000876:	d034      	beq.n	80008e2 <MCAL_TIM_Init+0x12a>
  8000878:	e231      	b.n	8000cde <MCAL_TIM_Init+0x526>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000d8c:	683b      	ldr	r3, [r7, #0]
  8000d8e:	881b      	ldrh	r3, [r3, #0]
  8000d90:	2b01      	cmp	r3, #1
@@ -3459,7 +3690,10 @@ Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
  8000d94:	2b02      	cmp	r3, #2
  8000d96:	d034      	beq.n	8000e02 <MCAL_TIM_Init+0x12a>
  8000d98:	e231      	b.n	80011fe <MCAL_TIM_Init+0x526>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 		//TIM_Auto_Reload_Not_Bufferd
 		//	Bit 7 ARPE: Auto-reload preload enable
@@ -3467,39 +3701,52 @@ Error_status MCAL_TIM_Init(TIM_TypeDef *TIMx,TIM_Config_t *TIM_Config)
 		//	1: TIMx_ARR register is buffered
 		CLR_BIT(TIMx->CR1,7);
 <<<<<<< HEAD
+<<<<<<< HEAD
  800087a:	687b      	ldr	r3, [r7, #4]
  800087c:	681b      	ldr	r3, [r3, #0]
  800087e:	f023 0280 	bic.w	r2, r3, #128	; 0x80
  8000882:	687b      	ldr	r3, [r7, #4]
  8000884:	601a      	str	r2, [r3, #0]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000d9a:	687b      	ldr	r3, [r7, #4]
  8000d9c:	681b      	ldr	r3, [r3, #0]
  8000d9e:	f023 0280 	bic.w	r2, r3, #128	; 0x80
  8000da2:	687b      	ldr	r3, [r7, #4]
  8000da4:	601a      	str	r2, [r3, #0]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 
 		if(TIM_Config->Counter.Count_Direction == Count_Direction_UP)
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000886:	683b      	ldr	r3, [r7, #0]
  8000888:	7a1b      	ldrb	r3, [r3, #8]
  800088a:	2b00      	cmp	r3, #0
  800088c:	d10c      	bne.n	80008a8 <MCAL_TIM_Init+0xf0>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000da6:	683b      	ldr	r3, [r7, #0]
  8000da8:	7a1b      	ldrb	r3, [r3, #8]
  8000daa:	2b00      	cmp	r3, #0
  8000dac:	d10c      	bne.n	8000dc8 <MCAL_TIM_Init+0xf0>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 – Update generation through the slave mode controller
 1: Only counter overflow/underflow generates an update interrupt or DMA request if
 enabled.
 			 */
 
 			SET_BIT(TIMx->CR1,2) ;
+<<<<<<< HEAD
 <<<<<<< HEAD
  800088e:	687b      	ldr	r3, [r7, #4]
  8000890:	681b      	ldr	r3, [r3, #0]
@@ -3515,6 +3762,8 @@ enabled.
  80008a2:	687b      	ldr	r3, [r7, #4]
  80008a4:	601a      	str	r2, [r3, #0]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000dae:	687b      	ldr	r3, [r7, #4]
  8000db0:	681b      	ldr	r3, [r3, #0]
  8000db2:	f043 0204 	orr.w	r2, r3, #4
@@ -3528,13 +3777,17 @@ enabled.
  8000dbe:	f023 0210 	bic.w	r2, r3, #16
  8000dc2:	687b      	ldr	r3, [r7, #4]
  8000dc4:	601a      	str	r2, [r3, #0]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 		{
 			//Bit 2 URS: Update request source
 			SET_BIT(TIMx->CR1,2) ;
 		}
 
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
  80008a6:	e222      	b.n	8000cee <MCAL_TIM_Init+0x536>
 		else if(TIM_Config->Counter.Count_Direction == Count_Direction_DOWN)
@@ -3570,6 +3823,8 @@ enabled.
 		break;
  80008e0:	e205      	b.n	8000cee <MCAL_TIM_Init+0x536>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000dc6:	e222      	b.n	800120e <MCAL_TIM_Init+0x536>
 		else if(TIM_Config->Counter.Count_Direction == Count_Direction_DOWN)
  8000dc8:	683b      	ldr	r3, [r7, #0]
@@ -3603,7 +3858,10 @@ enabled.
  8000dfe:	601a      	str	r2, [r3, #0]
 		break;
  8000e00:	e205      	b.n	800120e <MCAL_TIM_Init+0x536>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 		//TIM_Auto_Reload_Bufferd
 		//	Bit 7 ARPE: Auto-reload preload enable
@@ -3611,18 +3869,24 @@ enabled.
 		//	1: TIMx_ARR register is buffered
 		SET_BIT(TIMx->CR1,7);
 <<<<<<< HEAD
+<<<<<<< HEAD
  80008e2:	687b      	ldr	r3, [r7, #4]
  80008e4:	681b      	ldr	r3, [r3, #0]
  80008e6:	f043 0280 	orr.w	r2, r3, #128	; 0x80
  80008ea:	687b      	ldr	r3, [r7, #4]
  80008ec:	601a      	str	r2, [r3, #0]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000e02:	687b      	ldr	r3, [r7, #4]
  8000e04:	681b      	ldr	r3, [r3, #0]
  8000e06:	f043 0280 	orr.w	r2, r3, #128	; 0x80
  8000e0a:	687b      	ldr	r3, [r7, #4]
  8000e0c:	601a      	str	r2, [r3, #0]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 1: Re-initialize the counter and generates an update of the registers. Note that the prescaler
 counter is cleared too (anyway the prescaler ratio is not affected). The counter is cleared if
 the center-aligned mode is selected or if DIR=0 (upcounting), else it takes the auto-reload
@@ -3630,34 +3894,46 @@ value (TIMx_ARR) if DIR=1 (downcounting).
 		 */
 		SET_BIT(TIMx->EGR,0);
 <<<<<<< HEAD
+<<<<<<< HEAD
  80008ee:	687b      	ldr	r3, [r7, #4]
  80008f0:	695b      	ldr	r3, [r3, #20]
  80008f2:	f043 0201 	orr.w	r2, r3, #1
  80008f6:	687b      	ldr	r3, [r7, #4]
  80008f8:	615a      	str	r2, [r3, #20]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000e0e:	687b      	ldr	r3, [r7, #4]
  8000e10:	695b      	ldr	r3, [r3, #20]
  8000e12:	f043 0201 	orr.w	r2, r3, #1
  8000e16:	687b      	ldr	r3, [r7, #4]
  8000e18:	615a      	str	r2, [r3, #20]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 		/******************** Channel Configuration ********************/
 
 		if(TIM_Config->PWM.Channel == TIM_CHANNEL_1 ){
 <<<<<<< HEAD
+<<<<<<< HEAD
  80008fa:	683b      	ldr	r3, [r7, #0]
  80008fc:	7a9b      	ldrb	r3, [r3, #10]
  80008fe:	2b01      	cmp	r3, #1
  8000900:	d175      	bne.n	80009ee <MCAL_TIM_Init+0x236>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000e1a:	683b      	ldr	r3, [r7, #0]
  8000e1c:	7a9b      	ldrb	r3, [r3, #10]
  8000e1e:	2b01      	cmp	r3, #1
  8000e20:	d175      	bne.n	8000f0e <MCAL_TIM_Init+0x236>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 			/*
 			 Bits 1:0 CC1S: Capture/Compare 1 selection
 			This bit-field defines the direction of the channel (input/output) as well as the used input.
@@ -3665,16 +3941,22 @@ value (TIMx_ARR) if DIR=1 (downcounting).
 			 */
 			TIMx->CCMR1 |= (0b00 << 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
  8000902:	687b      	ldr	r3, [r7, #4]
  8000904:	699a      	ldr	r2, [r3, #24]
  8000906:	687b      	ldr	r3, [r7, #4]
  8000908:	619a      	str	r2, [r3, #24]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000e22:	687b      	ldr	r3, [r7, #4]
  8000e24:	699a      	ldr	r2, [r3, #24]
  8000e26:	687b      	ldr	r3, [r7, #4]
  8000e28:	619a      	str	r2, [r3, #24]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 
@@ -3682,22 +3964,29 @@ value (TIMx_ARR) if DIR=1 (downcounting).
 			/****** Mode Configuration ********/
 			if(TIM_Config->PWM.Mode == PWM_Mode_FROZEN){
 <<<<<<< HEAD
+<<<<<<< HEAD
  800090a:	683b      	ldr	r3, [r7, #0]
  800090c:	7adb      	ldrb	r3, [r3, #11]
  800090e:	2b00      	cmp	r3, #0
  8000910:	d104      	bne.n	800091c <MCAL_TIM_Init+0x164>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000e2a:	683b      	ldr	r3, [r7, #0]
  8000e2c:	7adb      	ldrb	r3, [r3, #11]
  8000e2e:	2b00      	cmp	r3, #0
  8000e30:	d104      	bne.n	8000e3c <MCAL_TIM_Init+0x164>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 Note: In PWM mode 1 or 2, the OCREF level changes only when the result of the
 comparison changes or when the output compare mode switches from “frozen” mode to “PWM” mode.
 
 				 */
 				//000: Frozen
 				TIMx->CCMR1 |= (0b000 << 4);
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000912:	687b      	ldr	r3, [r7, #4]
  8000914:	699a      	ldr	r2, [r3, #24]
@@ -3711,6 +4000,8 @@ comparison changes or when the output compare mode switches from “frozen” mo
  8000920:	2b01      	cmp	r3, #1
  8000922:	d123      	bne.n	800096c <MCAL_TIM_Init+0x1b4>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000e32:	687b      	ldr	r3, [r7, #4]
  8000e34:	699a      	ldr	r2, [r3, #24]
  8000e36:	687b      	ldr	r3, [r7, #4]
@@ -3722,13 +4013,17 @@ comparison changes or when the output compare mode switches from “frozen” mo
  8000e3e:	7adb      	ldrb	r3, [r3, #11]
  8000e40:	2b01      	cmp	r3, #1
  8000e42:	d123      	bne.n	8000e8c <MCAL_TIM_Init+0x1b4>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	– Update generation through the slave mode controller
 	1: Only counter overflow/underflow generates an update interrupt or DMA request if
 	enabled.
 				 */
 				// Update request source Enable
 				CLR_BIT(TIMx->CR1,2) ;
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000924:	687b      	ldr	r3, [r7, #4]
  8000926:	681b      	ldr	r3, [r3, #0]
@@ -3744,6 +4039,8 @@ comparison changes or when the output compare mode switches from “frozen” mo
  8000938:	687b      	ldr	r3, [r7, #4]
  800093a:	601a      	str	r2, [r3, #0]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000e44:	687b      	ldr	r3, [r7, #4]
  8000e46:	681b      	ldr	r3, [r3, #0]
  8000e48:	f023 0204 	bic.w	r2, r3, #4
@@ -3757,11 +4054,15 @@ comparison changes or when the output compare mode switches from “frozen” mo
  8000e54:	f023 0210 	bic.w	r2, r3, #16
  8000e58:	687b      	ldr	r3, [r7, #4]
  8000e5a:	601a      	str	r2, [r3, #0]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 				//****************************************************************************
 
 				if(TIM_Config->PWM.Ouptut_On_Compare_Match == PWM_Compare_Match_High){
+<<<<<<< HEAD
 <<<<<<< HEAD
  800093c:	683b      	ldr	r3, [r7, #0]
  800093e:	7b9b      	ldrb	r3, [r3, #14]
@@ -3777,6 +4078,8 @@ comparison changes or when the output compare mode switches from “frozen” mo
  800094e:	619a      	str	r2, [r3, #24]
  8000950:	e005      	b.n	800095e <MCAL_TIM_Init+0x1a6>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000e5c:	683b      	ldr	r3, [r7, #0]
  8000e5e:	7b9b      	ldrb	r3, [r3, #14]
  8000e60:	2b01      	cmp	r3, #1
@@ -3790,11 +4093,15 @@ comparison changes or when the output compare mode switches from “frozen” mo
  8000e6c:	687b      	ldr	r3, [r7, #4]
  8000e6e:	619a      	str	r2, [r3, #24]
  8000e70:	e005      	b.n	8000e7e <MCAL_TIM_Init+0x1a6>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 				}else{
 					//110: PWM mode 1
 					TIMx->CCMR1 |= (0b110 << 4);
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000952:	687b      	ldr	r3, [r7, #4]
  8000954:	699b      	ldr	r3, [r3, #24]
@@ -3802,16 +4109,22 @@ comparison changes or when the output compare mode switches from “frozen” mo
  800095a:	687b      	ldr	r3, [r7, #4]
  800095c:	619a      	str	r2, [r3, #24]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000e72:	687b      	ldr	r3, [r7, #4]
  8000e74:	699b      	ldr	r3, [r3, #24]
  8000e76:	f043 0260 	orr.w	r2, r3, #96	; 0x60
  8000e7a:	687b      	ldr	r3, [r7, #4]
  8000e7c:	619a      	str	r2, [r3, #24]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 				}
 
 				//0: CCxP: Capture/Compare output polarity OCx active high
 				CLR_BIT(TIMx->CCER,1);
+<<<<<<< HEAD
 <<<<<<< HEAD
  800095e:	687b      	ldr	r3, [r7, #4]
  8000960:	6a1b      	ldr	r3, [r3, #32]
@@ -3843,6 +4156,8 @@ comparison changes or when the output compare mode switches from “frozen” mo
  8000988:	687b      	ldr	r3, [r7, #4]
  800098a:	601a      	str	r2, [r3, #0]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000e7e:	687b      	ldr	r3, [r7, #4]
  8000e80:	6a1b      	ldr	r3, [r3, #32]
  8000e82:	f023 0202 	bic.w	r2, r3, #2
@@ -3872,11 +4187,15 @@ comparison changes or when the output compare mode switches from “frozen” mo
  8000ea4:	f043 0210 	orr.w	r2, r3, #16
  8000ea8:	687b      	ldr	r3, [r7, #4]
  8000eaa:	601a      	str	r2, [r3, #0]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 				//****************************************
 
 				if(TIM_Config->PWM.Ouptut_On_Compare_Match == PWM_Compare_Match_High){
+<<<<<<< HEAD
 <<<<<<< HEAD
  800098c:	683b      	ldr	r3, [r7, #0]
  800098e:	7b9b      	ldrb	r3, [r3, #14]
@@ -3892,6 +4211,8 @@ comparison changes or when the output compare mode switches from “frozen” mo
  800099e:	619a      	str	r2, [r3, #24]
  80009a0:	e005      	b.n	80009ae <MCAL_TIM_Init+0x1f6>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000eac:	683b      	ldr	r3, [r7, #0]
  8000eae:	7b9b      	ldrb	r3, [r3, #14]
  8000eb0:	2b01      	cmp	r3, #1
@@ -3905,11 +4226,15 @@ comparison changes or when the output compare mode switches from “frozen” mo
  8000ebc:	687b      	ldr	r3, [r7, #4]
  8000ebe:	619a      	str	r2, [r3, #24]
  8000ec0:	e005      	b.n	8000ece <MCAL_TIM_Init+0x1f6>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 				}else{
 					//111: PWM mode 2
 					TIMx->CCMR1 |= (0b111 << 4);
+<<<<<<< HEAD
 <<<<<<< HEAD
  80009a2:	687b      	ldr	r3, [r7, #4]
  80009a4:	699b      	ldr	r3, [r3, #24]
@@ -3917,16 +4242,22 @@ comparison changes or when the output compare mode switches from “frozen” mo
  80009aa:	687b      	ldr	r3, [r7, #4]
  80009ac:	619a      	str	r2, [r3, #24]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000ec2:	687b      	ldr	r3, [r7, #4]
  8000ec4:	699b      	ldr	r3, [r3, #24]
  8000ec6:	f043 0270 	orr.w	r2, r3, #112	; 0x70
  8000eca:	687b      	ldr	r3, [r7, #4]
  8000ecc:	619a      	str	r2, [r3, #24]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 				}
 
 				//0: CCxP: Capture/Compare output polarity OCx active high
 				CLR_BIT(TIMx->CCER,1);
+<<<<<<< HEAD
 <<<<<<< HEAD
  80009ae:	687b      	ldr	r3, [r7, #4]
  80009b0:	6a1b      	ldr	r3, [r3, #32]
@@ -3934,18 +4265,24 @@ comparison changes or when the output compare mode switches from “frozen” mo
  80009b6:	687b      	ldr	r3, [r7, #4]
  80009b8:	621a      	str	r2, [r3, #32]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000ece:	687b      	ldr	r3, [r7, #4]
  8000ed0:	6a1b      	ldr	r3, [r3, #32]
  8000ed2:	f023 0202 	bic.w	r2, r3, #2
  8000ed6:	687b      	ldr	r3, [r7, #4]
  8000ed8:	621a      	str	r2, [r3, #32]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 It is loaded permanently if the preload feature is not selected in the TIMx_CCMR1 register
 (bit OC1PE). Else the preload value is copied in the active capture/compare 1 register when an update event occurs.
 The active capture/compare register contains the value to be compared to the counter
 TIMx_CNT and signaled on OC1 output.
 			 */
 			if(TIM_Config->PWM.Compare_value <= TIM_Config->Auto_Reload_Value){
+<<<<<<< HEAD
 <<<<<<< HEAD
  80009ba:	683b      	ldr	r3, [r7, #0]
  80009bc:	899a      	ldrh	r2, [r3, #12]
@@ -3961,6 +4298,8 @@ TIMx_CNT and signaled on OC1 output.
  80009cc:	687b      	ldr	r3, [r7, #4]
  80009ce:	635a      	str	r2, [r3, #52]	; 0x34
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000eda:	683b      	ldr	r3, [r7, #0]
  8000edc:	899a      	ldrh	r2, [r3, #12]
  8000ede:	683b      	ldr	r3, [r7, #0]
@@ -3974,7 +4313,10 @@ TIMx_CNT and signaled on OC1 output.
  8000eea:	461a      	mov	r2, r3
  8000eec:	687b      	ldr	r3, [r7, #4]
  8000eee:	635a      	str	r2, [r3, #52]	; 0x34
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 1: These bits can not be modified as long as LOCK level 3 has been programmed
 (LOCK bits in TIMx_BDTR register) and CC1S=00 (the channel is configured in output).
 2: The PWM mode can be used without validating the preload register only
@@ -3982,18 +4324,24 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
 			 */
 			SET_BIT(TIMx->CCMR1,3);
 <<<<<<< HEAD
+<<<<<<< HEAD
  80009d0:	687b      	ldr	r3, [r7, #4]
  80009d2:	699b      	ldr	r3, [r3, #24]
  80009d4:	f043 0208 	orr.w	r2, r3, #8
  80009d8:	687b      	ldr	r3, [r7, #4]
  80009da:	619a      	str	r2, [r3, #24]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000ef0:	687b      	ldr	r3, [r7, #4]
  8000ef2:	699b      	ldr	r3, [r3, #24]
  8000ef4:	f043 0208 	orr.w	r2, r3, #8
  8000ef8:	687b      	ldr	r3, [r7, #4]
  8000efa:	619a      	str	r2, [r3, #24]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 0: Off - OC1 is not active.
 1: On - OC1 signal is output on the corresponding output pin.
 			 */
@@ -4001,24 +4349,31 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
 			//Capture/Compare output enable
 			SET_BIT(TIMx->CCER,0);
 <<<<<<< HEAD
+<<<<<<< HEAD
  80009dc:	687b      	ldr	r3, [r7, #4]
  80009de:	6a1b      	ldr	r3, [r3, #32]
  80009e0:	f043 0201 	orr.w	r2, r3, #1
  80009e4:	687b      	ldr	r3, [r7, #4]
  80009e6:	621a      	str	r2, [r3, #32]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000efc:	687b      	ldr	r3, [r7, #4]
  8000efe:	6a1b      	ldr	r3, [r3, #32]
  8000f00:	f043 0201 	orr.w	r2, r3, #1
  8000f04:	687b      	ldr	r3, [r7, #4]
  8000f06:	621a      	str	r2, [r3, #32]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 		}
 
 
 
 
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
  80009e8:	e183      	b.n	8000cf2 <MCAL_TIM_Init+0x53a>
 				return TIM_PWM_Auto_Reload_Value_Exceeded;
@@ -4432,6 +4787,8 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
  8000cda:	2305      	movs	r3, #5
  8000cdc:	e058      	b.n	8000d90 <MCAL_TIM_Init+0x5d8>
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8000f08:	e183      	b.n	8001212 <MCAL_TIM_Init+0x53a>
 				return TIM_PWM_Auto_Reload_Value_Exceeded;
  8000f0a:	2305      	movs	r3, #5
@@ -4843,11 +5200,15 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
 				return TIM_PWM_Auto_Reload_Value_Exceeded;
  80011fa:	2305      	movs	r3, #5
  80011fc:	e058      	b.n	80012b0 <MCAL_TIM_Init+0x5d8>
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 	default:
 		CLR_BIT(TIMx->CR1,2) ;
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000cde:	687b      	ldr	r3, [r7, #4]
  8000ce0:	681b      	ldr	r3, [r3, #0]
@@ -4863,6 +5224,8 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
 		break;
  8000cf2:	bf00      	nop
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  80011fe:	687b      	ldr	r3, [r7, #4]
  8001200:	681b      	ldr	r3, [r3, #0]
  8001202:	f023 0204 	bic.w	r2, r3, #4
@@ -4876,7 +5239,10 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
  8001210:	e000      	b.n	8001214 <MCAL_TIM_Init+0x53c>
 		break;
  8001212:	bf00      	nop
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 		break;
 
 	}
@@ -4884,22 +5250,29 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
 
 	CLR_BIT(TIMx->CR1,1) ; //Update enable Bit 1 UDIS: Update disable
 <<<<<<< HEAD
+<<<<<<< HEAD
  8000cf4:	687b      	ldr	r3, [r7, #4]
  8000cf6:	681b      	ldr	r3, [r3, #0]
  8000cf8:	f023 0202 	bic.w	r2, r3, #2
  8000cfc:	687b      	ldr	r3, [r7, #4]
  8000cfe:	601a      	str	r2, [r3, #0]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8001214:	687b      	ldr	r3, [r7, #4]
  8001216:	681b      	ldr	r3, [r3, #0]
  8001218:	f023 0202 	bic.w	r2, r3, #2
  800121c:	687b      	ldr	r3, [r7, #4]
  800121e:	601a      	str	r2, [r3, #0]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 	// Prescaler set
 	TIMx->PSC = (uint16_t)(TIM_Config->Prescaler-1) ;
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000d00:	683b      	ldr	r3, [r7, #0]
  8000d02:	885b      	ldrh	r3, [r3, #2]
@@ -4924,6 +5297,8 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
  8000d20:	687b      	ldr	r3, [r7, #4]
  8000d22:	62da      	str	r2, [r3, #44]	; 0x2c
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8001220:	683b      	ldr	r3, [r7, #0]
  8001222:	885b      	ldrh	r3, [r3, #2]
  8001224:	3b01      	subs	r3, #1
@@ -4946,13 +5321,17 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
  800123e:	461a      	mov	r2, r3
  8001240:	687b      	ldr	r3, [r7, #4]
  8001242:	62da      	str	r2, [r3, #44]	; 0x2c
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	{
 		return TIM_Auto_Reload_Value_Exceeded ;
 
 	}
 
 	if (TIM_Config->IRQ_Enable == TIM_IRQ_MODE_None )
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000d24:	683b      	ldr	r3, [r7, #0]
  8000d26:	8a1b      	ldrh	r3, [r3, #16]
@@ -5016,6 +5395,8 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
  8000d8a:	687b      	ldr	r3, [r7, #4]
  8000d8c:	601a      	str	r2, [r3, #0]
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  8001244:	683b      	ldr	r3, [r7, #0]
  8001246:	8a1b      	ldrh	r3, [r3, #16]
  8001248:	2b00      	cmp	r3, #0
@@ -5077,12 +5458,16 @@ in one pulse mode (OPM bit set in TIMx_CR1 register). Else the behavior is not g
  80012a6:	f023 0202 	bic.w	r2, r3, #2
  80012aa:	687b      	ldr	r3, [r7, #4]
  80012ac:	601a      	str	r2, [r3, #0]
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	}
 
 
 
 return 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000d8e:	2300      	movs	r3, #0
 
@@ -5096,6 +5481,8 @@ return 0;
 
 08000d9c <MCAL_TIM_Count_Reset>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  80012ae:	2300      	movs	r3, #0
 
 }
@@ -5107,11 +5494,15 @@ return 0;
  80012ba:	bf00      	nop
 
 080012bc <MCAL_TIM_GPIO_Set_Pins>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  * @param [in]   -TIMx :  were x can be (1,2,3,4 depending on device used)to select the Timer Peripheral
  * @retval		 -none
  * Note			 -none
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 Error_status MCAL_TIM_Count_Reset(TIM_TypeDef *TIMx)
 {
@@ -5148,6 +5539,8 @@ Error_status MCAL_TIM_Count_Reset(TIM_TypeDef *TIMx)
 
 08000dc0 <TIM2_IRQHandler>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 Error_status MCAL_TIM_GPIO_Set_Pins(TIM_TypeDef *TIMx,uint8_t TIM_Channel,uint8_t TIM_Mode)
 {
  80012bc:	b580      	push	{r7, lr}
@@ -5627,13 +6020,17 @@ CEN is cleared automatically in one-pulse mode, when an update event occurs.
 	...
 
 0800154c <TIM2_IRQHandler>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  * 							IRQHandler Functions
  * =====================================================================================
  */
 
 void TIM2_IRQHandler()
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000dc0:	b580      	push	{r7, lr}
  8000dc2:	af00      	add	r7, sp, #0
@@ -5693,6 +6090,8 @@ void TIM4_IRQHandler()
 
 08000e14 <USART1_IRQHandler>:
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  800154c:	b580      	push	{r7, lr}
  800154e:	af00      	add	r7, sp, #0
 	TIM2->SR = 0x00 ;
@@ -5750,13 +6149,17 @@ void TIM4_IRQHandler()
  800159c:	20000110 	.word	0x20000110
 
 080015a0 <USART1_IRQHandler>:
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  * 							ISR Functions
  * =====================================================================================
  */
 
 void USART1_IRQHandler (void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
  8000e14:	b580      	push	{r7, lr}
  8000e16:	af00      	add	r7, sp, #0
@@ -6046,6 +6449,8 @@ void WWDG_IRQHandler ()
  8000fc0:	469e      	mov	lr, r3
  8000fc2:	4770      	bx	lr
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
  80015a0:	b580      	push	{r7, lr}
  80015a2:	af00      	add	r7, sp, #0
 	Global_UART_Config->P_IRQ_CallBack();
@@ -6146,4 +6551,7 @@ void USART3_IRQHandler (void)
  800164e:	bc08      	pop	{r3}
  8001650:	469e      	mov	lr, r3
  8001652:	4770      	bx	lr
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c

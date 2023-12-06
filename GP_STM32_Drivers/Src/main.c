@@ -29,10 +29,13 @@
 #include "Stm32_F103C8_TIM_Driver.h"
 #include "Stm32f103c6_ADC.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "Stm32_F103C8_WWDG_Driver.h"
 #include "Delay.h"
 =======
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 
@@ -47,10 +50,13 @@ void clock_init(void)
 	RCC_GPIOB_CLK_EN();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	//Enable Clock To WWDG
 	RCC_WWDG_CLK_EN();
 =======
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 }
 
@@ -59,6 +65,7 @@ int main(void)
 {
 	clock_init();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	WWDG_Config_t WWDG_Config ;
 
@@ -73,6 +80,8 @@ int main(void)
     HAL_Delay_Init();
 
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	TIM_Config_t timer_config ;
 
@@ -112,11 +121,15 @@ int main(void)
 
 
 	uint32_t duty;
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	while (1)
 	{
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		MCAL_WWDG_Start();
 
@@ -124,6 +137,8 @@ int main(void)
 
 		MCAL_WWDG_Kick();
 =======
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 		MCAL_ADC_READ(ADC1, &adc_cfg, &data_read);
 
@@ -137,7 +152,10 @@ int main(void)
 
 		//MCAL_TIM_DUTY_CYCLE(duty);
 
+<<<<<<< HEAD
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	}
 

@@ -59,12 +59,17 @@ all: GP_STM32_Drivers.axf secondary-outputs
 
 # Tool invocations
 <<<<<<< HEAD
+<<<<<<< HEAD
 GP_STM32_Drivers.axf: $(OBJS) $(USER_OBJS) C:\Users\ahmed\STM32CubeIDE\workspace_1.4.0\GP_STM32_Drivers\STM32F103C8TX_FLASH.ld
 	arm-none-eabi-gcc -o "GP_STM32_Drivers.axf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\ahmed\STM32CubeIDE\workspace_1.4.0\GP_STM32_Drivers\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="GP_STM32_Drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 =======
 GP_STM32_Drivers.axf: $(OBJS) $(USER_OBJS) M:\Study\SELF\ LEARNING\Mastering\ Embedded\ Systems\Diploma_direc\STM32CubeIDE\GP_STM32_Drivers\STM32F103C8TX_FLASH.ld
 	arm-none-eabi-gcc -o "GP_STM32_Drivers.axf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"M:\Study\SELF LEARNING\Mastering Embedded Systems\Diploma_direc\STM32CubeIDE\GP_STM32_Drivers\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="GP_STM32_Drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 >>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
+=======
+GP_STM32_Drivers.axf: $(OBJS) $(USER_OBJS) M:\Study\SELF\ LEARNING\Mastering\ Embedded\ Systems\Diploma_direc\STM32CubeIDE\GP_STM32_Drivers\STM32F103C8TX_FLASH.ld
+	arm-none-eabi-gcc -o "GP_STM32_Drivers.axf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"M:\Study\SELF LEARNING\Mastering Embedded Systems\Diploma_direc\STM32CubeIDE\GP_STM32_Drivers\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="GP_STM32_Drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+>>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 	@echo 'Finished building target: $@'
 	@echo ' '
 
