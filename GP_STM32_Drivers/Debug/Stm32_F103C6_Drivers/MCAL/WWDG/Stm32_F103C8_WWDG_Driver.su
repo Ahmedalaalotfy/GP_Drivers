@@ -1,0 +1,4 @@
+Stm32_F103C8_WWDG_Driver.c:40:19:MCAL_WWDG_Init	16	static
+Stm32_F103C8_WWDG_Driver.c:77:19:MCAL_WWDG_Start	4	static
+Stm32_F103C8_WWDG_Driver.c:93:19:MCAL_WWDG_Kick	4	static
+Stm32_F103C8_WWDG_Driver.c:102:6:WWDG_IRQHandler	8	static

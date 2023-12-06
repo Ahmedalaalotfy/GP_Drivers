@@ -1,4 +1,0 @@
-STM32f103c6_ADC.c:15:6:MCAL_ADC_init	24	static
-STM32f103c6_ADC.c:53:6:MCAL_ADC_pins_set	24	static
-STM32f103c6_ADC.c:78:6:MCAL_ADC_READ	32	static
-STM32f103c6_ADC.c:112:10:Get_the_channel_pin	24	static
