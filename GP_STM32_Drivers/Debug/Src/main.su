@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 main.c:36:6:clock_init	4	static
 main.c:52:5:main	24	static
+=======
+main.c:34:6:clock_init	4	static
+main.c:48:5:main	136	static
+>>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0

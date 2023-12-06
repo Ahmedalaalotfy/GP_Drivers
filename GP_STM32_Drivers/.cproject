@@ -41,7 +41,10 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths.1413087897" name="Include paths (-I)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../Inc"/>
+<<<<<<< HEAD
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Stm32_F103C6_Drivers/MCAL/WWDG}&quot;"/>
+=======
+>>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/AhmedLotfy_RTOS/inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/CMSIS_v5}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Stm32_F103C6_Drivers/HAL/Delay}&quot;"/>
