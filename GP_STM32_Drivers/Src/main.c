@@ -28,14 +28,8 @@
 #include "Scheduler.h"
 #include "Stm32_F103C8_TIM_Driver.h"
 #include "Stm32f103c6_ADC.h"
-<<<<<<< HEAD
-<<<<<<< HEAD
 #include "Stm32_F103C8_WWDG_Driver.h"
 #include "Delay.h"
-=======
->>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
-=======
->>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 
 
@@ -49,14 +43,8 @@ void clock_init(void)
 	//Enable clock to port B
 	RCC_GPIOB_CLK_EN();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	//Enable Clock To WWDG
 	RCC_WWDG_CLK_EN();
-=======
->>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
-=======
->>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 }
 
@@ -65,8 +53,6 @@ int main(void)
 {
 	clock_init();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 	WWDG_Config_t WWDG_Config ;
 
 	WWDG_Config.Prescaler = WWDG_Counter_div_8;
@@ -79,83 +65,15 @@ int main(void)
 
     HAL_Delay_Init();
 
-=======
-=======
->>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
-
-	TIM_Config_t timer_config ;
-
-
-	timer_config.TIM_Mode =  TIM_Mode_PWM;
-	timer_config.PWM.Ouptut_On_Compare_Match = PWM_Compare_Match_Low;
-	timer_config.PWM.Mode = PWM_Mode_EDGE_UP;
-	//timer_config.PWM.Compare_value = 1000 ;
-	timer_config.Prescaler = 16 ;
-	timer_config.Auto_Reload_Value = 10000 ;
-	timer_config.IRQ_Enable = TIM_IRQ_MODE_None;
-	timer_config.P_IRQ_CallBack = NULL ;
-	timer_config.PWM.Channel = TIM_CHANNEL_1;
-
-	MCAL_TIM_GPIO_Set_Pins(TIM3, TIM_CHANNEL_1, TIM_Mode_PWM);
-	MCAL_TIM_Init(TIM3,&timer_config );
-
-
-
-
-	uint16_t data_read=0;
-
-	ADC_Config_t adc_cfg;
-
-	adc_cfg.Continous_Mode = ADC_CONT_disabled;
-	adc_cfg.Data_Alignment = ADC_Right_alignment;
-	adc_cfg.Interrupt = ADC_Interrupt_disable;
-	adc_cfg.Number_of_channels = 1;
-
-	adc_cfg.channels[Rank0].Channel_num = Ch_A0;
-	adc_cfg.channels[Rank0].channel_Sampling_rate = SR_1_cycle;
-
-
-	MCAL_ADC_init(ADC1, &adc_cfg);
-	MCAL_ADC_pins_set(ADC1,&adc_cfg);
-	MCAL_TIM_Start(TIM3);
-
-
-	uint32_t duty;
-<<<<<<< HEAD
->>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
-=======
->>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	while (1)
 	{
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 		MCAL_WWDG_Start();
 
         delay_ms(10000);
 
 		MCAL_WWDG_Kick();
-=======
-=======
->>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
-
-		MCAL_ADC_READ(ADC1, &adc_cfg, &data_read);
-
-		duty = (data_read*100)/4096  ;
-
-		TIM3->CCR3 = (duty*100);
-
-		delay_ms(250);
-
-		//duty = (f_duty / 100);
-
-		//MCAL_TIM_DUTY_CYCLE(duty);
-
-<<<<<<< HEAD
->>>>>>> d6218abae6c2a77c0ae01b261611d8968c94a2c0
-=======
->>>>>>> 5033a1618605a2db464913d1148f6516c7ee9a5c
 
 	}
 
