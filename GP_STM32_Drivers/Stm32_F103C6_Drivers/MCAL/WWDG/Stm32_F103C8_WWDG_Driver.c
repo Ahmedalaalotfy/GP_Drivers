@@ -40,26 +40,38 @@ WWDG_Config_t G_Config  ;
 WWDG_Error_status MCAL_WWDG_Init(WWDG_Config_t *WWDG_Config)
 {
 
-	SET_BIT(WWDG->CR,7);
-
-	WWDG->CR |=  WWDG_Config->Counter_Start_VAL ;
-
-	WWDG->CFR = 0 ;
-	WWDG->CFR |=  WWDG_Config->Window_Value ;
-
-
-	WWDG->CFR |= WWDG_Config->Prescaler ; //Prescaler
-
-
-
 	G_Config = *WWDG_Config ;
+
+
+	uint16_t tempCR = 0,
+			tempCFR = 0;
+
+
+	//Enable Clock To WWDG
+	RCC_WWDG_CLK_EN();
+
+/*
+Bit 9 DBG_WWDG_STOP: Debug window watchdog stopped when core is halted
+0: The window watchdog counter clock continues even if the core is halted
+1: The window watchdog counter clock is stopped when the core is halted
+*/
+
+	//DBGMCU_CR |= (uint32_t)(1<<9);
+
+
+	tempCR |=  WWDG_Config->Counter_Start_VAL ;
+
+	tempCFR |=  WWDG_Config->Window_Value ;
+
+	tempCFR |= WWDG_Config->Prescaler ; //Prescaler
+
 
 
 
 	if (WWDG_Config->EWI_IRQ_Enable == WWDG_EWI_IRQ_Enable)
 	{
 		NVIC_IRQ0_WWDG_Enable();
-		SET_BIT(WWDG->CFR,9);
+		SET_BIT(tempCFR,9);
 	}
 	else if (WWDG_Config->EWI_IRQ_Enable == WWDG_EWI_IRQ_None)
 	{
@@ -67,7 +79,19 @@ WWDG_Error_status MCAL_WWDG_Init(WWDG_Config_t *WWDG_Config)
 	}
 
 
+	//Set actual registers values
 
+	//WWDG->CR |=1<<7;
+
+	//Important condition
+	//wait until T6:0 < W6:0
+	while((WWDG->CFR & 0x7F) < (WWDG->CR & 0x7F));
+
+	WWDG->CR = tempCR;
+
+	WWDG->CFR = tempCFR;
+
+	WWDG->SR = 0;
 
 
 	return WWDG_OK ;

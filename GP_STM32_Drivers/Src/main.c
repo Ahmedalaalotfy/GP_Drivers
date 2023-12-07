@@ -43,27 +43,30 @@ void clock_init(void)
 	//Enable clock to port B
 	RCC_GPIOB_CLK_EN();
 
-	//Enable Clock To WWDG
-	RCC_WWDG_CLK_EN();
+
 
 }
 
 
 int main(void)
 {
+
+
+
 	clock_init();
+	HAL_Delay_Init();
 
 	WWDG_Config_t WWDG_Config ;
 
-	WWDG_Config.Prescaler = WWDG_Counter_div_8;
-	WWDG_Config.Counter_Start_VAL = 95 ;
+	WWDG_Config.Prescaler = WWDG_Counter_div_2;
+	WWDG_Config.Counter_Start_VAL = 83 ;
 	WWDG_Config.Window_Value = 80 ;
 	WWDG_Config.EWI_IRQ_Enable = WWDG_EWI_IRQ_None ;
 	WWDG_Config.P_IRQ_CallBack = NULL ;
 
     MCAL_WWDG_Init(&WWDG_Config);
 
-    HAL_Delay_Init();
+
 
 
 	while (1)
@@ -71,7 +74,7 @@ int main(void)
 
 		MCAL_WWDG_Start();
 
-        delay_ms(10000);
+        Delay_ms(10);
 
 		MCAL_WWDG_Kick();
 

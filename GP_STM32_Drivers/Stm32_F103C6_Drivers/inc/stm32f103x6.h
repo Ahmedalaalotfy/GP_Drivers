@@ -27,6 +27,9 @@
 
 #define Cortex_M3_Internal_Peripherals_BASE   0xE0000000UL
 
+//DBG register address
+#define DBGMCU_CR							 *((volatile uint32_t *)0xE0042004)
+
 //NVIC register map
 
 #define NVIC_BASE                             (0xE000E100UL)
