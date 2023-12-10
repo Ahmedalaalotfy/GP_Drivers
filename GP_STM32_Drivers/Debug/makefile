@@ -17,6 +17,7 @@ RM := rm -rf
 -include Stm32_F103C6_Drivers/MCAL/GPIO/subdir.mk
 -include Stm32_F103C6_Drivers/MCAL/EXTI/subdir.mk
 -include Stm32_F103C6_Drivers/MCAL/ADC/subdir.mk
+-include Stm32_F103C6_Drivers/HAL/Pedal/subdir.mk
 -include Stm32_F103C6_Drivers/HAL/LCD_Driver/subdir.mk
 -include Stm32_F103C6_Drivers/HAL/KPD_Driver/subdir.mk
 -include Stm32_F103C6_Drivers/HAL/EEPROM/subdir.mk

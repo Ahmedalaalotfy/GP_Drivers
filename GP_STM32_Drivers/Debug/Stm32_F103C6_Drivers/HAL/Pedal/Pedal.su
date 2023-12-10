@@ -1,0 +1,5 @@
+Pedal.c:31:6:HAL_PEDAL_Init	8	static
+Pedal.c:69:6:HAL_PEDAL_Read_Disable	4	static
+Pedal.c:75:6:HAL_PEDAL_DriveMotors	32	static
+Pedal.c:96:6:Send	24	static
+Pedal.c:142:16:Receive	32	static

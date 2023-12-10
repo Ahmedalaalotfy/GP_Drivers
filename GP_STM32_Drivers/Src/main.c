@@ -29,7 +29,7 @@
 #include "Stm32_F103C8_TIM_Driver.h"
 #include "Stm32f103c6_ADC.h"
 #include "Stm32_F103C8_WWDG_Driver.h"
-#include "Delay.h"
+#include <Pedal.h>
 
 
 
@@ -51,32 +51,26 @@ void clock_init(void)
 int main(void)
 {
 
+GPIO_PinConfig_t PinConfig;
+PinConfig.GPIO_PinNumber = GPIO_PIN_2;
+PinConfig.GPIO_MODE = GPIO_MODE_OUTPUT_PP ;
+PinConfig.GPIO_Output_Speed = GPIO_SPEED_10M ;
 
+MCAL_GPIO_Init(GPIOA, &PinConfig);
 
 	clock_init();
 	HAL_Delay_Init();
-
-	WWDG_Config_t WWDG_Config ;
-
-	WWDG_Config.Prescaler = WWDG_Counter_div_2;
-	WWDG_Config.Counter_Start_VAL = 83 ;
-	WWDG_Config.Window_Value = 80 ;
-	WWDG_Config.EWI_IRQ_Enable = WWDG_EWI_IRQ_None ;
-	WWDG_Config.P_IRQ_CallBack = NULL ;
-
-    MCAL_WWDG_Init(&WWDG_Config);
-
-
 
 
 	while (1)
 	{
 
-		MCAL_WWDG_Start();
 
-        Delay_ms(10);
 
-		MCAL_WWDG_Kick();
+        Delay_us(1);
+
+        GPIOA->ODR ^= 1<<2 ;
+
 
 	}
 

@@ -6,6 +6,7 @@
 "Stm32_F103C6_Drivers/HAL/EEPROM/I2C_Slave_EEPROM.o"
 "Stm32_F103C6_Drivers/HAL/KPD_Driver/KPD_program.o"
 "Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.o"
+"Stm32_F103C6_Drivers/HAL/Pedal/Pedal.o"
 "Stm32_F103C6_Drivers/MCAL/ADC/STM32f103c6_ADC.o"
 "Stm32_F103C6_Drivers/MCAL/EXTI/Stm32_F103C6_EXTI_Driver.o"
 "Stm32_F103C6_Drivers/MCAL/GPIO/Stm32_F103C6_GPIO_Driver.o"

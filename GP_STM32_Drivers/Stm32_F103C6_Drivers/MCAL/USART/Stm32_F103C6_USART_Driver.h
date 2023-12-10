@@ -53,9 +53,9 @@ typedef struct
 
 
 /* @ref UART_Mode_define */
-#define UAERT_Mode_RX                       (uint32_t)(1<<2)   // Bit 2 RE: Receiver enable
-#define UAERT_Mode_TX                       (uint32_t)(1<<3)   // Bit 3 TE: Transmitter enable
-#define UAERT_Mode_TX_RX                    (uint32_t)(1<<2 | 1<<3)
+#define UART_Mode_RX                       (uint32_t)(1<<2)   // Bit 2 RE: Receiver enable
+#define UART_Mode_TX                       (uint32_t)(1<<3)   // Bit 3 TE: Transmitter enable
+#define UART_Mode_TX_RX                    (uint32_t)(1<<2 | 1<<3)
 
 /* @ref UART_BaudRate_define */
 #define UART_BaudRate_2400                   2400

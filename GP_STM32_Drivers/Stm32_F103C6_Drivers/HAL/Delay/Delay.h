@@ -10,6 +10,7 @@
 
 #include "stm32f103x6.h"
 #include "Stm32_F103C6_GPIO_Driver.h"
+#include "Stm32_F103C8_TIM_Driver.h"
 
 //Specifies Timer instance to be used in Delay driver
 #define DELAY_Timer TIM2

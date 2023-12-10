@@ -15,7 +15,10 @@
  * =====================================================================================
  */
 
-USART_Config_t* Global_UART_Config = NULL ;
+//index [0] --> USART1
+//index [1] --> USART2
+//index [2] --> USART3
+USART_Config_t GLOBAL_UART_Config[3] ;
 
 
 /*
@@ -50,8 +53,19 @@ USART_Config_t* Global_UART_Config = NULL ;
  */
 void MCAL_UART_Init(USART_TypeDef* USARTx, USART_Config_t* UART_Config)
 {
-	Global_UART_Config = UART_Config ;
+
 	uint32_t PCLK , BRR ;
+
+	//set GLOBAL_UART_Config for USARTx used
+	if(USARTx == USART1){
+		GLOBAL_UART_Config[0] = *UART_Config;
+
+	}else if(USARTx == USART2){
+		GLOBAL_UART_Config[1] = *UART_Config;
+
+	}else if(USARTx == USART3){
+		GLOBAL_UART_Config[2] = *UART_Config;
+	}
 
 	// Enable the clock for given USART peripheral
 	if(USARTx == USART1)
@@ -167,14 +181,51 @@ void MCAL_UART_SendData(USART_TypeDef* USARTx,uint16_t* pTxBuffer , enum Polling
 	   while(! (USARTx->SR & 1<<7));
 
    //Check the USART_Wordlength item for 9BIT or 8BIT in a frame
-   	if (Global_UART_Config->Payload_Length == UART_Payload_Length_9B)
-   	{
-   		USARTx->DR = (*pTxBuffer & (uint16_t) 0x01FF);
-   	}else
-   	{
-   		// this is 8bit data transfer
-   		USARTx->DR = (*pTxBuffer & (uint8_t) 0xFF);
-   	}
+	//set GLOBAL_UART_Config for USARTx used
+	if(USARTx == USART1){
+
+		//Check the USART Word Length item for 9BIT or 8BIT on a frame
+		if(GLOBAL_UART_Config[0].Payload_Length == UART_Payload_Length_9B){
+
+			USARTx->DR = (*pTxBuffer & (uint16_t)0x1FF);
+
+		}else{
+
+			USARTx->DR = (*pTxBuffer & (uint16_t)0xFF);
+
+		}
+
+
+	}else if(USARTx == USART2){
+
+		//Check the USART Word Length item for 9BIT or 8BIT on a frame
+		if(GLOBAL_UART_Config[1].Payload_Length == UART_Payload_Length_9B){
+
+			USARTx->DR = (*pTxBuffer & (uint16_t)0x1FF);
+
+		}else{
+
+			USARTx->DR = (*pTxBuffer & (uint16_t)0xFF);
+
+		}
+
+
+	}else if(USARTx == USART3){
+
+		//Check the USART Word Length item for 9BIT or 8BIT on a frame
+		if(GLOBAL_UART_Config[2].Payload_Length == UART_Payload_Length_9B){
+
+			USARTx->DR = (*pTxBuffer & (uint16_t)0x1FF);
+
+		}else{
+
+			USARTx->DR = (*pTxBuffer & (uint16_t)0xFF);
+
+		}
+
+	}
+
+
 
 
 }
@@ -196,38 +247,67 @@ void MCAL_UART_WAIT_TC(USART_TypeDef* USARTx)
  ********************************************************************************************************************/
 void MCAL_UART_ReceiveData(USART_TypeDef* USARTx,uint16_t* pRxBuffer , enum Polling_Mechanism PollingEN)
 {
-	//wait until RXNE is set
-		if (PollingEN == enable)
-		{
-			while(!(USARTx->SR &(1<<5)));
+	USART_Config_t* Temp_UART_Config = NULL;
+
+		//poll for RXNE Pin
+		if(PollingEN == enable){
+			/*	Status register (USART_SR)
+			 *
+			Bit 5 RXNE: Read data register not empty
+			This bit is set by hardware when the content of the RDR shift register has been transferred to
+			the USART_DR register. An interrupt is generated if RXNEIE=1 in the USART_CR1 register.
+			It is cleared by a read to the USART_DR register. The RXNE flag can also be cleared by
+			writing a zero to it. This clearing sequence is recommended only for multibuffer
+			communication.
+			0: Data is not received
+			1: Received data is ready to be read.*/
+
+			while( GET_BIT(USARTx->SR,5) == 0 ) ; //Wait
+		}
+
+		//set GLOBAL_UART_Config for USARTx used
+		if(USARTx == USART1){
+			Temp_UART_Config =	&GLOBAL_UART_Config[0] ;
+
+		}else if(USARTx == USART2){
+			Temp_UART_Config =	&GLOBAL_UART_Config[1] ;
+
+		}else if(USARTx == USART3){
+			Temp_UART_Config =	&GLOBAL_UART_Config[2] ;
 		}
 
 
-		if(Global_UART_Config->Payload_Length == UART_Payload_Length_9B)
-		{
-			if(Global_UART_Config->Parity == UART_Parity_NONE)
-			{
-				//no parity so all 9bits are data
-				*((uint16_t*)pRxBuffer) = USARTx->DR ;
-			}
-			else
-			{
-				//if parity is used so 8bit is data and the last one is parity
-				*((uint16_t*)pRxBuffer) =( USARTx->DR & (uint8_t)0xFF);
-			}
-		}
 
-		else //8 bit data
-		{
-			if(Global_UART_Config->Parity == UART_Parity_NONE)
-			{
-				//no parity so all 8bits are data
-				*((uint16_t*)pRxBuffer) = (USARTx->DR   & (uint8_t)0xFF);
+		//Check the USART Word Length item for 9BIT or 8BIT on a frame
+		if(Temp_UART_Config->Payload_Length == UART_Payload_Length_9B){
+
+
+			//Check if parity is Enabled
+			if(Temp_UART_Config->Parity == UART_Parity_NONE){
+
+				//Read all data register content
+				*pRxBuffer	= (USARTx->DR & (uint16_t)0x1FF);
+			}else{
+
+				//Parity is on, Read only Least 8Bit from data register content
+				*pRxBuffer	= (USARTx->DR & (uint16_t)0xFF);
+			}
+
+
+		}else{
+
+			//Check if parity is Enabled
+			if(Temp_UART_Config->Parity == UART_Parity_NONE){
+
+				//Read Least 8Bit from data register content
+				*pRxBuffer	= (USARTx->DR & (uint16_t)0xFF);
 
 			}else{
-				//if parity is used so 8bit is data and the last one is parity
-				*((uint16_t*)pRxBuffer) =( USARTx->DR & (uint8_t)0x7F);
+
+				//Parity is on, Read only Least 7Bit from data register content
+				*pRxBuffer	= (USARTx->DR & (uint16_t)0x7F);
 			}
+
 		}
 }
 
@@ -242,6 +322,7 @@ void MCAL_UART_ReceiveData(USART_TypeDef* USARTx,uint16_t* pRxBuffer , enum Poll
  * */
 void MCAL_UART_GPIO_Set_Pins(USART_TypeDef* USARTx)
 {
+
 	GPIO_PinConfig_t PinCfg ;
 
 		if(USARTx == USART1)
@@ -263,7 +344,7 @@ void MCAL_UART_GPIO_Set_Pins(USART_TypeDef* USARTx)
 			MCAL_GPIO_Init(GPIOA, &PinCfg);
 
 			//PA11 >>	CTS
-			if(Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_CTS	 || Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_RTS_CTS )
+			if(GLOBAL_UART_Config[0].HwFlowCtl == UART_HWFlowCtrl_CTS	 || GLOBAL_UART_Config[0].HwFlowCtl == UART_HWFlowCtrl_RTS_CTS )
 			{
 				PinCfg.GPIO_PinNumber = GPIO_PIN_11 ;
 				PinCfg.GPIO_MODE =	GPIO_MODE_INPUT_FLO ;
@@ -272,7 +353,7 @@ void MCAL_UART_GPIO_Set_Pins(USART_TypeDef* USARTx)
 			}
 
 			//PA12 >>	RTS
-			if (Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_RTS || Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_RTS_CTS)
+			if (GLOBAL_UART_Config[0].HwFlowCtl == UART_HWFlowCtrl_RTS || GLOBAL_UART_Config[0].HwFlowCtl == UART_HWFlowCtrl_RTS_CTS)
 			{
 				PinCfg.GPIO_PinNumber = GPIO_PIN_12 ;
 				PinCfg.GPIO_MODE =	GPIO_MODE_OUTPUT_AF_PP ;
@@ -300,7 +381,7 @@ void MCAL_UART_GPIO_Set_Pins(USART_TypeDef* USARTx)
 			MCAL_GPIO_Init(GPIOA, &PinCfg);
 
 			//PA0 >>	CTS
-			if(Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_CTS	 || Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_RTS_CTS )
+			if(GLOBAL_UART_Config[1].HwFlowCtl == UART_HWFlowCtrl_CTS	 || GLOBAL_UART_Config[1].HwFlowCtl == UART_HWFlowCtrl_RTS_CTS )
 			{
 				PinCfg.GPIO_PinNumber = GPIO_PIN_0 ;
 				PinCfg.GPIO_MODE =	GPIO_MODE_INPUT_FLO ;
@@ -309,7 +390,7 @@ void MCAL_UART_GPIO_Set_Pins(USART_TypeDef* USARTx)
 			}
 
 			//PA1 >>	RTS
-			if (Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_RTS || Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_RTS_CTS)
+			if (GLOBAL_UART_Config[1].HwFlowCtl == UART_HWFlowCtrl_RTS || GLOBAL_UART_Config[1].HwFlowCtl == UART_HWFlowCtrl_RTS_CTS)
 			{
 				PinCfg.GPIO_PinNumber = GPIO_PIN_1 ;
 				PinCfg.GPIO_MODE =	GPIO_MODE_OUTPUT_AF_PP ;
@@ -337,7 +418,7 @@ void MCAL_UART_GPIO_Set_Pins(USART_TypeDef* USARTx)
 			MCAL_GPIO_Init(GPIOB, &PinCfg);
 
 			//PB13 >>	CTS
-			if(Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_CTS	 || Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_RTS_CTS )
+			if(GLOBAL_UART_Config[2].HwFlowCtl == UART_HWFlowCtrl_CTS	 || GLOBAL_UART_Config[2].HwFlowCtl == UART_HWFlowCtrl_RTS_CTS )
 			{
 				PinCfg.GPIO_PinNumber = GPIO_PIN_13 ;
 				PinCfg.GPIO_MODE =	GPIO_MODE_INPUT_FLO ;
@@ -346,7 +427,7 @@ void MCAL_UART_GPIO_Set_Pins(USART_TypeDef* USARTx)
 			}
 
 			//PB14 >>	RTS
-			if (Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_RTS || Global_UART_Config->HwFlowCtl == UART_HWFlowCtrl_RTS_CTS)
+			if (GLOBAL_UART_Config[2].HwFlowCtl == UART_HWFlowCtrl_RTS || GLOBAL_UART_Config[2].HwFlowCtl == UART_HWFlowCtrl_RTS_CTS)
 			{
 				PinCfg.GPIO_PinNumber = GPIO_PIN_14 ;
 				PinCfg.GPIO_MODE =	GPIO_MODE_OUTPUT_AF_PP ;
@@ -367,15 +448,15 @@ void MCAL_UART_GPIO_Set_Pins(USART_TypeDef* USARTx)
 
 void USART1_IRQHandler (void)
 {
-	Global_UART_Config->P_IRQ_CallBack();
+	GLOBAL_UART_Config[0].P_IRQ_CallBack();
 }
 void USART2_IRQHandler (void)
 {
-	Global_UART_Config->P_IRQ_CallBack();
+	GLOBAL_UART_Config[1].P_IRQ_CallBack();
 }
 void USART3_IRQHandler (void)
 {
-	Global_UART_Config->P_IRQ_CallBack();
+	GLOBAL_UART_Config[2].P_IRQ_CallBack();
 }
 
 

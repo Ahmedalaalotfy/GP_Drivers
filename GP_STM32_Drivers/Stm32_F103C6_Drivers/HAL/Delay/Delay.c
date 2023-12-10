@@ -7,7 +7,7 @@
 
 
 #include "Delay.h"
-#include "Stm32_F103C8_TIM_Driver.h"
+
 
 TIM_Config_t Delay_timer_config ;
 
@@ -37,9 +37,9 @@ void HAL_Delay_Init(void)
 void Delay_us(uint16_t Num)
 {
 
-	DELAY_Timer->ARR = Num;
-	MCAL_TIM_Count_Reset(DELAY_Timer);
-	MCAL_TIM_Start(DELAY_Timer);
+	DELAY_Timer->ARR = Num		;
+	DELAY_Timer->CNT = 0x0000	;
+	SET_BIT(DELAY_Timer->CR1,0) ; //Timer Enable
 
 	//poll for timer Update interrupt flag (Counting Done)
 	/*
@@ -55,7 +55,7 @@ if URS=0 and UDIS=0 in the TIMx_CR1 register.
 	*/
 
 	while(GET_BIT(DELAY_Timer->SR,0) == 0);
-	MCAL_TIM_Stop(DELAY_Timer);
+	CLR_BIT(DELAY_Timer->CR1,0) ;
 	CLR_BIT(DELAY_Timer->SR,0);
 
 
