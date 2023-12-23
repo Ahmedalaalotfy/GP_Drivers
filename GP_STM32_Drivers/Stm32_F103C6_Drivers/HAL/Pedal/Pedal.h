@@ -55,14 +55,14 @@ typedef struct{
 #define START_FRAME       0xABCD      // [-] Start frame definition for reliable serial communication
 
 
+
+
 //================ APIs ================//
 void HAL_PEDAL_Init			(void);
 void HAL_PEDAL_DeInit		(void);
 
 void HAL_PEDAL_DriveMotors	(void);
 
-void			Send   (int16_t uSteer, int16_t uSpeed);
-SerialFeedback  Receive (void);
 
 
 

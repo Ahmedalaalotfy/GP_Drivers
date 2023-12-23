@@ -62,14 +62,28 @@ MCAL_GPIO_Init(GPIOA, &PinConfig);
 	HAL_Delay_Init();
 
 
+	WWDG_Config_t  WWDG_Config;
+
+	WWDG_Config.Prescaler = WWDG_Counter_div_1;
+	WWDG_Config.Counter_Start_VAL = 85;
+	WWDG_Config.Window_Value = 83;
+	WWDG_Config.EWI_IRQ_Enable =WWDG_EWI_IRQ_None;
+	WWDG_Config.P_IRQ_CallBack = NULL;
+
+	MCAL_WWDG_Init(&WWDG_Config);
+
+	MCAL_WWDG_Start();
+
+	Delay_ms(2000);
+	MCAL_GPIO_WritePin(GPIOA, GPIO_PIN_2 , 1);
 	while (1)
 	{
 
 
 
-        Delay_us(1);
+        Delay_ms(5);
 
-        GPIOA->ODR ^= 1<<2 ;
+        MCAL_WWDG_Kick();
 
 
 	}
