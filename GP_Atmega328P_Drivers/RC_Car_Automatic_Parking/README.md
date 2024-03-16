@@ -5,7 +5,9 @@
 <img align="center" alt="Simulation" width="800" src="https://github.com/Ahmedalaalotfy/GP_Drivers/blob/main/GP_Atmega328P_Drivers/RC_Car_Automatic_Parking/Media/2.2.png">
 
 This code is used to control the motion of an RC car using a blutooth module (HC-05) to interface with a mobile application.
+
 The code contains the function of Automatic free parking space detection and Automatic parking.
+
 all variable in the code are based on the used project components , test environment , car dimensions , and some specific assumptions.
 
 ## Key assumptions guiding the project include:
