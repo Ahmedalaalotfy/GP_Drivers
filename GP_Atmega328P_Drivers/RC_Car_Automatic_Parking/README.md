@@ -1,8 +1,8 @@
 # Automatic Parking Test Algorithm on Small RC Car
 
-<img align="center" alt="Simulation" width="800" src="https://github.com/Ahmedalaalotfy/GP_Drivers/blob/main/GP_Atmega328P_Drivers/RC_Car_Automatic_Parking/Pics/1.1.png">
+<img align="center" alt="Simulation" width="800" src="https://github.com/Ahmedalaalotfy/GP_Drivers/blob/main/GP_Atmega328P_Drivers/RC_Car_Automatic_Parking/Media/1.1.png">
 
-<img align="center" alt="Simulation" width="800" src="https://github.com/Ahmedalaalotfy/GP_Drivers/blob/main/GP_Atmega328P_Drivers/RC_Car_Automatic_Parking/Pics/2.2.png">
+<img align="center" alt="Simulation" width="800" src="https://github.com/Ahmedalaalotfy/GP_Drivers/blob/main/GP_Atmega328P_Drivers/RC_Car_Automatic_Parking/Media/2.2.png">
 
 This code is used to control the motion of an RC car using a blutooth module (HC-05) to interface with a mobile application.
 The code contains the function of Automatic free parking space detection and Automatic parking.
