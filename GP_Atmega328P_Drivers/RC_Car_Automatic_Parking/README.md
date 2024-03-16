@@ -6,7 +6,7 @@
 
 This code is used to control the motion of an RC car using a blutooth module (HC-05) to interface with a mobile application.
 The code contains the function of Automatic free parking space detection and Automatic parking.
-all variable in the code are based on the used project components , test environment , car dimensions , and some specific assumptions
+all variable in the code are based on the used project components , test environment , car dimensions , and some specific assumptions.
 
 ## Key assumptions guiding the project include:
 
@@ -22,4 +22,4 @@ all variable in the code are based on the used project components , test environ
 
 6- The parking detection mechanism is designed to function exclusively for the right side of the car.
 
-### It's crucial to note that any alterations to these assumptions or conditions will necessitate corresponding adjustments within the code.
+### #It's crucial to note that any alterations to these assumptions or conditions will necessitate corresponding adjustments within the code.
