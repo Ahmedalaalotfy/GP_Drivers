@@ -20,15 +20,15 @@
       distance_Safety_Action();
       
       left();
-      delay(50);
+      delay(60);
       stop();
-      delay(50);
+      delay(40);
 
       readSensors();
     }
 
     readSensors();
-    while(distance4 > 14)
+    while(distance4 > 15)
     {
       //Stop the car if any obstacle appears suddenly 
       distance_Safety_Action();
@@ -36,7 +36,20 @@
       backward();
       delay(45);
       stop();
-      delay(45);
+      delay(40);
+
+      readSensors();
+    }
+
+        while(distance4 > 9)
+    {
+      //Stop the car if any obstacle appears suddenly 
+      distance_Safety_Action();
+
+      backward();
+      delay(20);
+      stop();
+      delay(30);
 
       readSensors();
     }
@@ -47,8 +60,37 @@
 
 
       while(1)
-      {
-        stop();
+      {          
+        
+        if (Serial.available()) 
+        {
+
+       command = Serial.read();
+
+        if(command == 'M')
+          { 
+             //Reset all counters & Flags
+
+            lc=0;
+            rc=0;
+            ec=0;
+           count_Done=0;
+            Auto_Mode_Is_On = 0;
+            Tstart = 0 , Tstop = 0;
+
+
+          //Turn off Auto mode & return to manual mode
+          Auto_Mode_Is_On = 0;
+       
+          return;
+          }else
+          {
+          stop();            
+          }
+       
+        }
+        stop(); 
+        
       }
 
 
@@ -326,20 +368,24 @@ void align_Vertically()
       //turn right until car is aligned Vertically
       while((distance1 > 15 || distance4 > 15) )
       {
-       //Stop the car if any obstacle appears suddenly 
-       digitalWrite(LedG, HIGH);
-       parking_Safety_Action();
+
+        digitalWrite(LedG, HIGH);
 
         right();
-        delay(45);
+        delay(50);
        stop();
-       delay(45);
+       delay(30);
 
        readSensors();
-      }
+      }     
+
+
+        right();
+        delay(50);
+       stop();
+
+       
       digitalWrite(LedG, LOW);
-
-
 
       readSensors();
       while(  (distance3 - distance2) >= 2 )
@@ -347,9 +393,7 @@ void align_Vertically()
 
       while(( (distance3 - distance2) >= 2) && (distance3 > distance2))
       {
-       //Stop the car if any obstacle appears suddenly 
-       distance_Safety_Action();
-
+ 
         right();
         delay(45);
        stop();
@@ -357,6 +401,8 @@ void align_Vertically()
 
        readSensors();
        }
+
+       
         /*
        while( (distance2 - distance3) >= 1 && (distance2 > distance3))
        {

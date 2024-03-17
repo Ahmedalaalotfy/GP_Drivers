@@ -131,14 +131,28 @@ all variable in the code are based on the used project components , test environ
 
   void loop() {
 
-        while(empty_Parking_Detection() == false);
+
+    //read blutooth module output and control car accordingly
+    blutooth_Control_And_Reading();      
+    
+
+    //Check if Automatic Parking Algorithm is activated
+    if(Auto_Mode_Is_On)
+    {
+      
+      while(empty_Parking_Detection() == false);
+
+      automatic_Parking_Algorithm();
+  
+    }        
         
-        automatic_Parking_Algorithm();
+        
+        
 
   }
 
 
-  //################### APPLICATION FUNCTIONS ###################
+
 
 
 
