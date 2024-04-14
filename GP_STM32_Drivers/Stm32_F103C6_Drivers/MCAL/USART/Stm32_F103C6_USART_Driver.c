@@ -7,7 +7,7 @@
 
 
 #include <Stm32_F103C6_USART_Driver.h>
-
+#include <BIT_MATH.h>
 
 /*
  * =====================================================================================
@@ -26,6 +26,8 @@ USART_Config_t GLOBAL_UART_Config[3] ;
  * 							Generic Macros
  * =====================================================================================
  */
+
+#define UART_STATUS_CHECK(UART_inistant) (UART_inistant->SR &(1<<5))
 
 
 /*
@@ -448,15 +450,24 @@ void MCAL_UART_GPIO_Set_Pins(USART_TypeDef* USARTx)
 
 void USART1_IRQHandler (void)
 {
-	GLOBAL_UART_Config[0].P_IRQ_CallBack();
+	if( UART_STATUS_CHECK(USART1))
+	{
+		GLOBAL_UART_Config[0].P_IRQ_CallBack();
+	}
 }
 void USART2_IRQHandler (void)
 {
-	GLOBAL_UART_Config[1].P_IRQ_CallBack();
+	if( UART_STATUS_CHECK(USART2))
+	{
+		GLOBAL_UART_Config[1].P_IRQ_CallBack();
+	}
 }
 void USART3_IRQHandler (void)
 {
-	GLOBAL_UART_Config[2].P_IRQ_CallBack();
+	if( UART_STATUS_CHECK(USART3))
+	{
+		GLOBAL_UART_Config[2].P_IRQ_CallBack();
+	}
 }
 
 

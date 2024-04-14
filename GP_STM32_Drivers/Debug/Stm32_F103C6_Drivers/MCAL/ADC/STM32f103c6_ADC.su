@@ -1,6 +1,6 @@
-STM32f103c6_ADC.c:58:6:MCAL_ADC_init	24	static
-STM32f103c6_ADC.c:115:6:MCAL_ADC_Deinit	16	static
-STM32f103c6_ADC.c:170:6:MCAL_ADC_pins_set	24	static
-STM32f103c6_ADC.c:209:6:MCAL_ADC_READ	32	static
-STM32f103c6_ADC.c:258:10:Get_the_channel_pin	24	static
-STM32f103c6_ADC.c:314:6:ADC1_2_IRQHandler	8	static
+../Stm32_F103C6_Drivers/MCAL/ADC/STM32f103c6_ADC.c:58:6:MCAL_ADC_init	24	static
+../Stm32_F103C6_Drivers/MCAL/ADC/STM32f103c6_ADC.c:115:6:MCAL_ADC_Deinit	16	static
+../Stm32_F103C6_Drivers/MCAL/ADC/STM32f103c6_ADC.c:170:6:MCAL_ADC_pins_set	24	static
+../Stm32_F103C6_Drivers/MCAL/ADC/STM32f103c6_ADC.c:209:6:MCAL_ADC_READ	32	static
+../Stm32_F103C6_Drivers/MCAL/ADC/STM32f103c6_ADC.c:258:10:Get_the_channel_pin	24	static
+../Stm32_F103C6_Drivers/MCAL/ADC/STM32f103c6_ADC.c:314:6:ADC1_2_IRQHandler	8	static

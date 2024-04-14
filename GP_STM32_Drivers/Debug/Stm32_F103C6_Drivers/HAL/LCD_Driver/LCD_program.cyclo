@@ -1,0 +1,13 @@
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:22:6:delay_ms	3
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:28:6:LCD_init	1
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:68:6:LCD_GPIO_Init	1
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:131:6:LCD_sendCmnd	1
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:169:6:LCD_sendChar	1
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:207:13:writeHalfPort	5
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:246:6:LCD_sendString	3
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:260:6:LCD_clear	1
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:268:6:LCD_shift	3
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:283:6:LCD_goToSpecificPosition	5
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:302:6:LCD_writeNumber	4
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:326:6:LCD_Custom_Char	3
+../Stm32_F103C6_Drivers/HAL/LCD_Driver/LCD_program.c:338:6:LCD_SaveIn_CGRAM	1

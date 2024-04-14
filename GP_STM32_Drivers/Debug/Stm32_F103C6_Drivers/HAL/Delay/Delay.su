@@ -1,4 +1,4 @@
-Delay.c:21:6:HAL_Delay_Init	8	static
-Delay.c:37:6:Delay_us	16	static
-Delay.c:65:6:Delay_ms	24	static
-Delay.c:76:6:Delay_s	24	static
+../Stm32_F103C6_Drivers/HAL/Delay/Delay.c:21:6:HAL_Delay_Init	8	static
+../Stm32_F103C6_Drivers/HAL/Delay/Delay.c:37:6:Delay_us	16	static
+../Stm32_F103C6_Drivers/HAL/Delay/Delay.c:65:6:Delay_ms	24	static
+../Stm32_F103C6_Drivers/HAL/Delay/Delay.c:76:6:Delay_s	24	static

@@ -182,7 +182,7 @@ void I2C_GenerateSTART(I2C_TypeDef *I2Cx, Fuctional_State NewState, Repeated_Sta
 	if(Start != RepeatedStart)
 	{
 		//Check if bus is idle
-		while(I2C_GetFlagSTATUS(I2Cx, I2C_BUS_BUSY));
+	while(I2C_GetFlagSTATUS(I2Cx, I2C_BUS_BUSY));
 	}
 	//	Bit 8 START: Start generation
 	//	This bit is set and cleared by software and cleared by hardware when start is sent or PE=0.
@@ -478,13 +478,13 @@ void MCAL_I2C_GPIO_Set_Pins(I2C_TypeDef *I2Cx)
 
 		PinCfg.GPIO_PinNumber = GPIO_PIN_6;
 		PinCfg.GPIO_MODE = GPIO_MODE_OUTPUT_AF_OD;
-		PinCfg.GPIO_Output_Speed = GPIO_SPEED_10M;
+		PinCfg.GPIO_Output_Speed = GPIO_SPEED_50M;
 		MCAL_GPIO_Init(GPIOB, &PinCfg);
 
 
 		PinCfg.GPIO_PinNumber = GPIO_PIN_7;
 		PinCfg.GPIO_MODE = GPIO_MODE_OUTPUT_AF_OD;
-		PinCfg.GPIO_Output_Speed = GPIO_SPEED_10M;
+		PinCfg.GPIO_Output_Speed = GPIO_SPEED_50M;
 		MCAL_GPIO_Init(GPIOB, &PinCfg);
 
 

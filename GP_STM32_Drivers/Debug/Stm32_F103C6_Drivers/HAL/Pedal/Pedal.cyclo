@@ -1,0 +1,5 @@
+../Stm32_F103C6_Drivers/HAL/Pedal/Pedal.c:53:6:Motor_Send	1
+../Stm32_F103C6_Drivers/HAL/Pedal/Pedal.c:99:16:Motor_Receive	7
+../Stm32_F103C6_Drivers/HAL/Pedal/Pedal.c:166:6:HAL_PEDAL_Init	1
+../Stm32_F103C6_Drivers/HAL/Pedal/Pedal.c:204:6:HAL_PEDAL_Read_Disable	1
+../Stm32_F103C6_Drivers/HAL/Pedal/Pedal.c:210:6:HAL_PEDAL_DriveMotors	1

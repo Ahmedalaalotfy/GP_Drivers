@@ -1,0 +1,6 @@
+../Src/main.c:92:6:clock_init	1
+../Src/main.c:109:6:HW_Init	1
+../Src/main.c:252:5:main	1
+../Src/main.c:292:6:vUART_ComunicationWithTabHandler	1
+../Src/main.c:306:6:vReadUltraonicSensorHandler	9
+../Src/main.c:413:6:vI2C_CommunicateWithAtmega32Handler	5

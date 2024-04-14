@@ -1,5 +1,5 @@
-Pedal.c:53:6:Motor_Send	24	static
-Pedal.c:99:16:Motor_Receive	32	static
-Pedal.c:166:6:HAL_PEDAL_Init	8	static
-Pedal.c:204:6:HAL_PEDAL_Read_Disable	4	static
-Pedal.c:210:6:HAL_PEDAL_DriveMotors	32	static
+../Stm32_F103C6_Drivers/HAL/Pedal/Pedal.c:53:6:Motor_Send	24	static
+../Stm32_F103C6_Drivers/HAL/Pedal/Pedal.c:99:16:Motor_Receive	32	static
+../Stm32_F103C6_Drivers/HAL/Pedal/Pedal.c:166:6:HAL_PEDAL_Init	8	static
+../Stm32_F103C6_Drivers/HAL/Pedal/Pedal.c:204:6:HAL_PEDAL_Read_Disable	4	static
+../Stm32_F103C6_Drivers/HAL/Pedal/Pedal.c:210:6:HAL_PEDAL_DriveMotors	32	static
