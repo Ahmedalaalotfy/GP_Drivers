@@ -37,7 +37,7 @@
 
 #define num 600
 #define POT_MAX_RIGHT_VALUE 900
-#define POT_MAX_LEFT_VALUE 620
+#define POT_MAX_LEFT_VALUE 610
 #define POT_CENTRE_VALUE 746
 
 // #define DEBUG_RX                     // [-] Debug received data. Prints all bytes to serial (comment-out to disable)

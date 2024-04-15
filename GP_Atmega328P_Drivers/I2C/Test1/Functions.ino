@@ -183,8 +183,42 @@ void Pedal_Motor_Drive()
 
 //////////////////////////////////////////
 
-void Automatic_Steering_Test()
+void Automatic_Steering_Test(unsigned int angle)
 {
+
+      Steering_POT_Value = analogRead(Steering_POT_Pin);
+
+      angle = map(angle, 0, 100 , POT_MAX_LEFT_VALUE, POT_MAX_RIGHT_VALUE);
+
+      if(Steering_POT_Value > angle)
+      {
+        digitalWrite(dirPin,HIGH);
+        first=millis();
+        while(analogRead(Steering_POT_Pin) > (angle) && ((millis()-first)<5000))
+        {
+          digitalWrite(stepPin,HIGH);
+          delayMicroseconds(num);
+          digitalWrite(stepPin,LOW);
+          delayMicroseconds(num);
+        }
+      }else
+      {
+
+        digitalWrite(dirPin,LOW);
+        first=millis();
+        while(analogRead(Steering_POT_Pin) < (angle) && ((millis()-first)<5000))
+        {
+          digitalWrite(stepPin,HIGH);
+          delayMicroseconds(num);
+          digitalWrite(stepPin,LOW);
+          delayMicroseconds(num);
+        }
+        
+      }
+
+      
+
+  /*    
 
       //turn left
       if(Steering_POT_Value > POT_MAX_LEFT_VALUE)
@@ -200,7 +234,6 @@ void Automatic_Steering_Test()
              }
 
           }
-
 
 
         //turn Right
@@ -255,7 +288,7 @@ void Automatic_Steering_Test()
                 }
              }
 
-
+*/
 }
 
 void Steering_Left()
