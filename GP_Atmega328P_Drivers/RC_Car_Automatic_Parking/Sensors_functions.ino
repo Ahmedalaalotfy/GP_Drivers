@@ -21,6 +21,8 @@
 
   }
 
+
+
   long readDistance(int trigPin, int echoPin) {
     // Clear the trigPin
     digitalWrite(trigPin, LOW);
