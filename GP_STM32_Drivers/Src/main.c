@@ -45,7 +45,7 @@
 /*****General Data******/
 char Recieved_Data = 'A' ;
 
-//int counter2 = 0 , counter3 = 0;
+int counter = 0 ;
 
 uint32_t Sensor1_distance = 0 ;
 uint32_t Sensor2_distance = 0 ;
@@ -77,15 +77,11 @@ void vI2C_CommunicateWithAtmega32Handler(void *parms);
 
 
 
-//void TIM2_Handler(void)
-//{
-//	counter2++;
-//}
-//
-//void TIM3_Handler(void)
-//{
-//	counter3++;
-//}
+
+void TIM3_Handler(void)
+{
+	counter++;
+}
 
 
 
@@ -122,7 +118,7 @@ void HW_Init(void)
 
 	MCAL_GPIO_WritePin(GPIOC, GPIO_PIN_13 , 1);
 
-   ///////////////////////////////
+	///////////////////////////////
 
 	GPIO_PinConfig_t PinConfig1;
 
@@ -213,21 +209,21 @@ void HW_Init(void)
 
 
 
-//	//////////////////////////*///////////////////////////////////////
-//	//////////////////////////*///////////////////////////////////////
-//	//======================= TIM2 INIT =====================//
-//	TIM_Config_t timer2_config ;
-//
-//	timer2_config.TIM_Mode =  TIM_IRQ_MODE_OverFlow;
-//	timer2_config.Counter.Count_Direction = Count_Direction_UP;
-//	timer2_config.Prescaler = 8 ;
-//	timer2_config.Auto_Reload_Value = 0x16A8 ;
-//	timer2_config.IRQ_Enable = TIM_IRQ_MODE_OverFlow ;
-//	timer2_config.P_IRQ_CallBack = TIM2_Handler ;
-//
-//
-//	MCAL_TIM_Init(TIM2,&timer2_config);
-//	MCAL_TIM_Count_Reset(TIM2);
+	//	//////////////////////////*///////////////////////////////////////
+	//	//////////////////////////*///////////////////////////////////////
+	//	//======================= TIM2 INIT =====================//
+	//	TIM_Config_t timer2_config ;
+	//
+	//	timer2_config.TIM_Mode =  TIM_IRQ_MODE_OverFlow;
+	//	timer2_config.Counter.Count_Direction = Count_Direction_UP;
+	//	timer2_config.Prescaler = 8 ;
+	//	timer2_config.Auto_Reload_Value = 0x16A8 ;
+	//	timer2_config.IRQ_Enable = TIM_IRQ_MODE_OverFlow ;
+	//	timer2_config.P_IRQ_CallBack = TIM2_Handler ;
+	//
+	//
+	//	MCAL_TIM_Init(TIM2,&timer2_config);
+	//	MCAL_TIM_Count_Reset(TIM2);
 
 
 
@@ -237,12 +233,12 @@ void HW_Init(void)
 
 	TIM_Config_t timer_config ;
 
-	timer_config.TIM_Mode =  TIM_Mode_Counter;
+	timer_config.TIM_Mode =  TIM_IRQ_MODE_OverFlow;
 	timer_config.Counter.Count_Direction =Count_Direction_UP;
 	timer_config.Prescaler = 8 ;
-	timer_config.Auto_Reload_Value = 0xFFFF ;
-	timer_config.IRQ_Enable = TIM_IRQ_MODE_None  ;
-	timer_config.P_IRQ_CallBack = NULL ;
+	timer_config.Auto_Reload_Value = 0xBBBB ;
+	timer_config.IRQ_Enable = TIM_IRQ_MODE_OverFlow  ;
+	timer_config.P_IRQ_CallBack =  TIM3_Handler ;
 
 	MCAL_TIM_Init(TIM3,&timer_config);
 	MCAL_TIM_Count_Reset(TIM3);
@@ -276,6 +272,7 @@ int main(void)
 
 	while (1)
 	{
+
 
 		//		MCAL_GPIO_WritePin(GPIOC, GPIO_PIN_13 , 0);
 		//		Delay_ms(5000);
@@ -319,12 +316,20 @@ void vReadUltraonicSensorHandler(void *parms)
 
 		while ( MCAL_GPIO_ReadPin(GPIOB, GPIO_PIN_9) ); //Wait for echo to go low
 
+
 		Sensor1_time = TIM3->CNT ; //Get the value of timer 3
 
 		MCAL_TIM_Stop(TIM3); //stop timer 3
 		MCAL_TIM_Count_Reset(TIM3); // reset timer 3
 
 		Sensor1_distance = (Sensor1_time/58) ; // calculate the distance
+
+		if(counter == 1)
+		{
+			Sensor1_distance = 1200 ;
+		}
+
+		counter = 0 ;
 
 		vTaskDelay(5);
 
@@ -335,7 +340,6 @@ void vReadUltraonicSensorHandler(void *parms)
 		vTaskDelay(1);
 		MCAL_GPIO_WritePin(GPIOB, GPIO_PIN_14 , 1); //Pull the trigger high
 		vTaskDelay(1);
-
 		MCAL_GPIO_WritePin(GPIOB, GPIO_PIN_14 , 0); //Pull the trigger low
 
 		while ( ! MCAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15) ); //Wait for echo to go high
@@ -344,12 +348,20 @@ void vReadUltraonicSensorHandler(void *parms)
 
 		while ( MCAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15) ); //Wait for echo to go low
 
+
 		Sensor2_time = TIM3->CNT ; //Get the value of timer 3
 
 		MCAL_TIM_Stop(TIM3); //stop timer 3
 		MCAL_TIM_Count_Reset(TIM3); // reset timer 3
 
 		Sensor2_distance = (Sensor2_time/58) ; // calculate the distance
+
+		if(counter == 1)
+		{
+			Sensor2_distance = 1200 ;
+		}
+
+		counter = 0 ;
 
 		vTaskDelay(5);
 
@@ -360,7 +372,6 @@ void vReadUltraonicSensorHandler(void *parms)
 		vTaskDelay(1);
 		MCAL_GPIO_WritePin(GPIOB, GPIO_PIN_12 , 1); //Pull the trigger high
 		vTaskDelay(1);
-
 		MCAL_GPIO_WritePin(GPIOB, GPIO_PIN_12 , 0); //Pull the trigger low
 
 		while ( ! MCAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13) ); //Wait for echo to go high
@@ -369,6 +380,7 @@ void vReadUltraonicSensorHandler(void *parms)
 
 		while ( MCAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13) ); //Wait for echo to go low
 
+
 		Sensor3_time = TIM3->CNT ; //Get the value of timer 3
 
 		MCAL_TIM_Stop(TIM3); //stop timer 3
@@ -376,15 +388,22 @@ void vReadUltraonicSensorHandler(void *parms)
 
 		Sensor3_distance = (Sensor3_time/58) ; // calculate the distance
 
+		if(counter == 1)
+		{
+			Sensor3_distance = 1200 ;
+		}
+
+		counter = 0 ;
+
 		vTaskDelay(5);
 
 		//////////////////////*//////////////////////////
+
 
 		MCAL_GPIO_WritePin(GPIOA, GPIO_PIN_11 , 0); //Pull the trigger low
 		vTaskDelay(1);
 		MCAL_GPIO_WritePin(GPIOA, GPIO_PIN_11 , 1); //Pull the trigger high
 		vTaskDelay(1);
-
 		MCAL_GPIO_WritePin(GPIOA, GPIO_PIN_11 , 0); //Pull the trigger low
 
 		while ( ! MCAL_GPIO_ReadPin(GPIOA, GPIO_PIN_12) ); //Wait for echo to go high
@@ -393,12 +412,20 @@ void vReadUltraonicSensorHandler(void *parms)
 
 		while ( MCAL_GPIO_ReadPin(GPIOA, GPIO_PIN_12) ); //Wait for echo to go low
 
+
 		Sensor4_time = TIM3->CNT ; //Get the value of timer 3
 
 		MCAL_TIM_Stop(TIM3); //stop timer 3
 		MCAL_TIM_Count_Reset(TIM3); // reset timer 3
 
 		Sensor4_distance = (Sensor4_time/58) ; // calculate the distance
+
+		if(counter == 1)
+		{
+			Sensor4_distance = 1200 ;
+		}
+
+		counter = 0 ;
 
 		vTaskDelay(5);
 
