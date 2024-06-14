@@ -476,6 +476,7 @@ void finish_Parking()
 
 void distance_Safety_Action()
 {
+
    readSensors();
   while(distance1 <= 3 || distance2 <= 3 || distance3 <= 3 || distance4 <= 3 )
   {
@@ -488,6 +489,7 @@ void distance_Safety_Action()
   }
 
    digitalWrite(LedR, LOW);
+   
 }
 
 void parking_Safety_Action()

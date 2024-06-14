@@ -1,0 +1,406 @@
+#include <Wire.h>
+
+// ***********************************************
+// **   Arduino controlled robot project code   **
+// **                                           **
+// **                                          **     
+// **                                           **      
+// **                                           **                      
+// ***********************************************
+// INFO:
+// • This sketch uses the the Serial Software interface to communicate and send commands to the hoverboard
+// • The built-in (HW) Serial interface is used for debugging and visualization. In case the debugging is not needed,
+//   it is recommended to use the built-in Serial interface for full speed perfomace.
+// • The data packaging includes a Start Frame, checksum, and re-syncronization capability for reliable communication
+// 
+// This code controls the robot wheels,Suction fan(Relay),
+// and Neon LEDS(Relay)using HC-05 Blutooth module with smartphone interface. 
+//
+// CONFIGURATION on the hoverboard side in config.h:
+// • Option 1: Serial on Right Sensor cable (short wired cable) - recommended, since the USART3 pins are 5V tolerant.
+//   #define CONTROL_SERIAL_USART3
+//   #define FEEDBACK_SERIAL_USART3
+//   // #define DEBUG_SERIAL_USART3
+// • Option 2: Serial on Left Sensor cable (long wired cable) - use only with 3.3V devices! The USART2 pins are not 5V tolerant!
+//   #define CONTROL_SERIAL_USART2
+//   #define FEEDBACK_SERIAL_USART2
+//   // #define DEBUG_SERIAL_USART2
+// ***********************
+
+// ########################## DEFINES ##########################
+#define HOVER_SERIAL_BAUD   115200      // [-] Baud rate for HoverSerial (used to communicate with the hoverboard)
+#define SERIAL_BAUD         115200      // [-] Baud rate for built-in Serial (used for the Serial Monitor)
+#define START_FRAME         0xABCD      // [-] Start frme definition for reliable serial communication
+#define SPEED_MAX           300         // [-] Maximum speed for testing         (-300  to 300)
+
+const int stepPin = 2; 
+const int dirPin = 5; 
+const int enPin = 6;
+int POT_Pin = A0;  
+int speed_pedal ;    // select the input pin for the potentiometer
+int POT_Value = 0;
+unsigned long first = 0;
+const int Auto_Park_EN = 7 ;
+const int Direction_Switch = 12 ;
+const int Buzzer_Pin = 11 ; 
+
+
+
+struct SerialData {
+  short int distance1;
+  short int distance2;
+  short int distance3;
+  short int distance4;
+  short int DriverState ; 
+}SerialData1;
+
+
+
+
+
+// #define DEBUG_RX                     // [-] Debug received data. Prints all bytes to serial (comment-out to disable)
+
+
+#include <SoftwareSerial.h>
+SoftwareSerial HoverSerial(8,9);        // RX, TX
+       
+
+#define num 600
+#define POT_MAX_RIGHT_VALUE  900
+#define POT_MAX_LEFT_VALUE   620
+#define POT_CENTRE_VALUE     746
+// #define HIGH 1 
+// #define LOW 0 
+
+// Global variables
+uint8_t idx = 0;                        // Index for new data pointer
+byte *p;                                // Pointer declaration for the new received data
+byte incomingByte;
+byte incomingBytePrev;
+uint16_t bufStartFrame;                 // Buffer Start Frame
+uint16_t Serial_cmd;
+uint16_t fspeed =-300;       //Set initial forward speed
+uint16_t bspeed =300;      //Set initial Backward speed 
+   
+typedef struct{
+   uint16_t start;
+   int16_t  steer;
+   int16_t  speed;
+   uint16_t checksum;
+} SerialCommand;
+SerialCommand Command;
+
+typedef struct{
+   uint16_t start;
+   int16_t  cmd1;
+   int16_t  cmd2;
+   int16_t  speedR_meas;
+   int16_t  speedL_meas;
+   int16_t  batVoltage;
+   int16_t  boardTemp;
+   uint16_t cmdLed;
+   uint16_t checksum;
+} SerialFeedback;
+SerialFeedback Feedback;
+SerialFeedback NewFeedback;
+
+// ########################## SETUP ##########################
+void setup() 
+{
+  
+Serial.begin(9600);                     //HC-05 serial baud rate (pins 0,1)
+HoverSerial.begin(HOVER_SERIAL_BAUD);   //Hoverboard serial baud rate
+
+
+  pinMode(stepPin,OUTPUT); 
+  pinMode(dirPin,OUTPUT);
+  pinMode(enPin,OUTPUT);
+  pinMode(Auto_Park_EN,INPUT_PULLUP);
+  pinMode(Direction_Switch, INPUT_PULLUP);
+  pinMode(Buzzer_Pin, OUTPUT);
+
+
+    fspeed=-250;
+    bspeed=250;
+
+
+  // Initialize I2C communication as slave with address 8
+  Wire.begin(8);
+
+
+  // Register receive event handler
+  Wire.onReceive(receiveEvent);
+
+//Serial.begin(SERIAL_BAUD);
+// Serial.println("Hoverboard Serial v1.0");
+
+Serial.println("Welcome");
+
+
+}
+
+// ########################## SEND ##########################
+void Send(int16_t uSteer, int16_t uSpeed)
+{
+  // Create command
+  Command.start    = (uint16_t)START_FRAME;
+  Command.steer    = (int16_t)uSteer;
+  Command.speed    = (int16_t)uSpeed;
+  Command.checksum = (uint16_t)(Command.start ^ Command.steer ^ Command.speed);
+
+  // Write to Serial
+  HoverSerial.write((uint8_t *) &Command, sizeof(Command)); 
+}
+
+// ########################## RECEIVE ##########################
+void Receive()
+{
+
+    // Check for new data availability in the Serial buffer
+    if (HoverSerial.available()) {
+        incomingByte    = HoverSerial.read();                                   // Read the incoming byte
+        bufStartFrame = ((uint16_t)(incomingByte) << 8) | incomingBytePrev;       // Construct the start frame
+    }
+    else {
+        return;
+    }
+
+  // If DEBUG_RX is defined print all incoming bytes
+  #ifdef DEBUG_RX
+        Serial.print(incomingByte);
+        return;
+    #endif
+
+    // Copy received data
+    if (bufStartFrame == START_FRAME) {                     // Initialize if new data is detected
+        p       = (byte *)&NewFeedback;
+        *p++    = incomingBytePrev;
+        *p++    = incomingByte;
+        idx     = 2;  
+    } else if (idx >= 2 && idx < sizeof(SerialFeedback)) {  // Save the new received data
+        *p++    = incomingByte; 
+        idx++;
+    } 
+    
+    // Check if we reached the end of the package
+    if (idx == sizeof(SerialFeedback)) {
+        uint16_t checksum;
+        checksum = (uint16_t)(NewFeedback.start ^ NewFeedback.cmd1 ^ NewFeedback.cmd2 ^ NewFeedback.speedR_meas ^ NewFeedback.speedL_meas
+                            ^ NewFeedback.batVoltage ^ NewFeedback.boardTemp ^ NewFeedback.cmdLed);
+
+        // Check validity of the new data
+        if (NewFeedback.start == START_FRAME && checksum == NewFeedback.checksum) {
+            // Copy the new data
+            memcpy(&Feedback, &NewFeedback, sizeof(SerialFeedback));
+
+            // Print data to built-in Serial                (if debug is open)
+            Serial.print("1: ");   Serial.print(Feedback.cmd1);
+            Serial.print(" 2: ");  Serial.print(Feedback.cmd2);
+            Serial.print(" 3: ");  Serial.print(Feedback.speedR_meas);
+            Serial.print(" 4: ");  Serial.print(Feedback.speedL_meas);
+            Serial.print(" 5: ");  Serial.print(Feedback.batVoltage);
+            Serial.print(" 6: ");  Serial.print(Feedback.boardTemp);
+            Serial.print(" 7: ");  Serial.println(Feedback.cmdLed);
+        } else {
+          Serial.println("Non-valid data skipped");
+        }
+        idx = 0;    // Reset the index (it prevents to enter in this if condition in the next cycle)
+    }
+
+    // Update previous states
+    incomingBytePrev = incomingByte;
+}
+
+// ########################## LOOP ##########################
+
+void loop(void)
+{ 
+    
+    if (SerialData1.DriverState == 2) {
+
+      digitalWrite(Buzzer_Pin, HIGH);
+      Serial.print("7777");
+      
+    }
+    else if (SerialData1.DriverState == 1)
+     {
+  
+        digitalWrite(Buzzer_Pin, HIGH);
+    }
+    else {
+      digitalWrite(Buzzer_Pin, LOW);
+      
+    }
+  
+//Serial.println("2222");
+
+Receive();
+
+
+  if ( (digitalRead(Auto_Park_EN) == LOW )/* || (SerialData1.DriverState == 2)*/)
+  {
+
+   Serial.println("5555");
+    digitalWrite(enPin,LOW);
+
+  // Check for new received data
+  POT_Value = analogRead(POT_Pin);  
+
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+   
+       //move forward
+       Send(0,fspeed);
+       delay(50); 
+       Send(0,0);
+
+//Serial.println("3333");
+       
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+  
+   
+      //move Backward
+      Send(0,bspeed);
+      delay(50); 
+      Send(0,0);
+
+
+      
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+   
+  
+//   //move left 
+//   if(POT_Value > POT_MAX_LEFT_VALUE)
+//       {
+//          digitalWrite(dirPin,HIGH);
+//         first=millis();
+//          while(analogRead(POT_Pin) > (POT_MAX_LEFT_VALUE+1) && ((millis()-first)<5000)) 
+//          {
+//             digitalWrite(stepPin,HIGH); 
+//             delayMicroseconds(num); 
+//             digitalWrite(stepPin,LOW); 
+//             delayMicroseconds(num); 
+//          }
+
+//       }
+
+
+      
+// //**********************************************************/**********************************************************
+// //**********************************************************/**********************************************************
+// //**********************************************************/**********************************************************
+  
+
+//     //turn Right
+//    //Serial.write('R'); 
+//      if(POT_Value < (POT_MAX_RIGHT_VALUE-1))
+//       {
+//          digitalWrite(dirPin,LOW);  
+//          first=millis();
+
+//          while(analogRead(POT_Pin) < (POT_MAX_RIGHT_VALUE-1) && ((millis()-first)<5000)) 
+//          {
+//             digitalWrite(stepPin,HIGH); 
+//             delayMicroseconds(num); 
+//             digitalWrite(stepPin,LOW); 
+//             delayMicroseconds(num); 
+//          }
+
+//       }
+
+   
+
+// //**********************************************************/**********************************************************
+// //**********************************************************/**********************************************************
+// //**********************************************************/**********************************************************
+
+//    //move centr 
+//    //Serial.write('C');
+
+//     if(POT_Value > POT_CENTRE_VALUE)
+//       {
+
+//          digitalWrite(dirPin,HIGH);
+
+//          first=millis();
+//          while(analogRead(POT_Pin) > (POT_CENTRE_VALUE+1) && ((millis()-first)<5000))
+//          {
+//             digitalWrite(stepPin,HIGH); 
+//             delayMicroseconds(num); 
+//             digitalWrite(stepPin,LOW); 
+//             delayMicroseconds(num); 
+//          }
+
+//       }
+//       else if(POT_Value < POT_CENTRE_VALUE)
+//       {
+//         digitalWrite(dirPin,LOW);
+//         first=millis();
+//          while(analogRead(POT_Pin) < (POT_CENTRE_VALUE-1) && ((millis()-first)<5000)) 
+//          {
+//             digitalWrite(stepPin,HIGH); 
+//             delayMicroseconds(num); 
+//             digitalWrite(stepPin,LOW); 
+//             delayMicroseconds(num); 
+//             // if((milis()-first)== 4999){
+//             //   Serial.print("Time out ");
+//             }
+//          }
+
+         delay(50); //Debouncing Delay 
+    
+ // Serial.println("4444");
+  }
+
+
+
+
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+//**********************************************************/**********************************************************
+
+
+
+
+  else if ((digitalRead(Auto_Park_EN) == HIGH) /* || (SerialData1.DriverState != 2)*/ )
+  {
+
+    //disable steering
+  digitalWrite(enPin,HIGH);
+  
+  speed_pedal = analogRead(A1);            // reads the value of the potentiometer (value between 0 and 1023)
+  speed_pedal = map(speed_pedal, 0,400, 0, 1000);  
+
+  Set_Motor_Direction(&speed_pedal);
+  
+  Serial.println(speed_pedal);
+
+  if((speed_pedal < -40) || (speed_pedal > 40) )
+  {
+   Send(0,speed_pedal);
+    }else{
+      Send(0,0);
+      }
+      Serial.println("6666");
+
+}
+
+     delay(50);
+    
+ 
+}
+
+// ########################## END ##########################
+
+
